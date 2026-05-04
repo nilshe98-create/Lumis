@@ -3172,11 +3172,8 @@ async function submitSoulmate() {
   try {
     const result = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.anthropic.com/v1/messages');
+      xhr.open('POST', '/api/reading');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.setRequestHeader('x-api-key', 'ANTHROPIC_KEY_PLACEHOLDER');
-      xhr.setRequestHeader('anthropic-version', '2023-06-01');
-      xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
       xhr.timeout = 60000;
       xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else { reject(new Error(xhr.status)); } };
       xhr.onerror = () => reject(new Error('網路錯誤'));
@@ -3271,11 +3268,8 @@ async function submitStarChild() {
   try {
     const result = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.anthropic.com/v1/messages');
+      xhr.open('POST', '/api/reading');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.setRequestHeader('x-api-key', 'ANTHROPIC_KEY_PLACEHOLDER');
-      xhr.setRequestHeader('anthropic-version', '2023-06-01');
-      xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
       xhr.timeout = 60000;
       xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else { reject(new Error(xhr.status)); } };
       xhr.onerror = () => reject(new Error('網路錯誤'));
@@ -3420,13 +3414,10 @@ async function testCompatibility() {
   }
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/reading', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': 'ANTHROPIC_KEY_PLACEHOLDER',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify({
         model: 'claude-opus-4-7',
@@ -3482,13 +3473,10 @@ async function testChildren() {
   }
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/reading', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': 'ANTHROPIC_KEY_PLACEHOLDER',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify({
         model: 'claude-opus-4-7',
@@ -3794,11 +3782,8 @@ async function retryCurrentChapter() {
   try {
     const result = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.anthropic.com/v1/messages');
+      xhr.open('POST', '/api/reading');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.setRequestHeader('x-api-key', 'ANTHROPIC_KEY_PLACEHOLDER');
-      xhr.setRequestHeader('anthropic-version', '2023-06-01');
-      xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
       xhr.timeout = 60000;
       xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else { reject(new Error(xhr.status)); } };
       xhr.onerror = () => reject(new Error('網路錯誤'));
@@ -4194,9 +4179,8 @@ async function submitForm() {
 
   async function getVedAstroChart(dob, time, place) {
     const parsed = parseBirthForVedAstro(dob, time, place);
-    const apiKey = 'VEDASTRO_KEY_PLACEHOLDER';
-    // Fetch all planet data
-    const url = `https://api.vedastro.org/api/Calculate/AllPlanetData/PlanetName/All/${parsed.location}/${parsed.time}?apiKey=${apiKey}`;
+    // Fetch all planet data via Vercel backend (key hidden server-side)
+    const url = `/api/vedastro?time=${encodeURIComponent(parsed.time)}&location=${encodeURIComponent(parsed.location)}`;
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url);
@@ -4216,11 +4200,8 @@ async function submitForm() {
   async function callAPI(prompt, userMsg) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.anthropic.com/v1/messages');
+      xhr.open('POST', '/api/reading');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.setRequestHeader('x-api-key', 'ANTHROPIC_KEY_PLACEHOLDER');
-      xhr.setRequestHeader('anthropic-version', '2023-06-01');
-      xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
       xhr.timeout = 90000;
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
