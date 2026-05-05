@@ -1773,7 +1773,7 @@
       <li><a href="#star-child">星童</a></li>
       <li><a href="#about">關於我們</a></li>
     </ul>
-    <button class="nav-cta" onclick="openModal()">開始探索</button>
+    <button class="nav-cta" onclick="openChapter(1)">開始探索</button>
     <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
       <span></span><span></span><span></span>
     </button>
@@ -1787,7 +1787,7 @@
     <a href="#compatibility" onclick="toggleMobileNav()">靈魂配對</a>
     <a href="#star-child" onclick="toggleMobileNav()">星童</a>
     <a href="#about" onclick="toggleMobileNav()">關於我們</a>
-    <a href="#" onclick="toggleMobileNav(); openModal()">開始探索 ✦</a>
+    <a href="#" onclick="toggleMobileNav(); openChapter(1)">開始探索 ✦</a>
     <a href="#" onclick="toggleMobileNav(); openFeedback()">意見回饋</a>
   </div>
 
@@ -1801,7 +1801,7 @@
       <div class="hero-divider-line right"></div>
     </div>
     <div class="hero-tagline">你的光，早已寫在星辰之中</div>
-    <button class="hero-btn" onclick="openModal()">
+    <button class="hero-btn" onclick="openChapter(1)">
       <span>✨ 探索你的命運</span>
     </button>
     <div class="scroll-indicator">
@@ -1865,7 +1865,7 @@
         <div class="chapter-preview">「有些事關於你<br>連你自己都說不清楚<br>星辰早已記錄在案」</div>
         <div class="chapter-lock">
           <div class="chapter-price">免費</div>
-          <button class="chapter-btn" onclick="openModal()">立即解鎖</button>
+        <button class="chapter-btn" onclick="openChapter(1)">立即解鎖</button>
         </div>
       </div>
 
@@ -1875,7 +1875,7 @@
         <div class="chapter-preview">「你在感情裡的模式<br>比你以為的<br>更有規律」</div>
         <div class="chapter-lock">
           <div class="chapter-price">NT$150</div>
-          <button class="chapter-btn" onclick="openModal()">查看</button>
+          <button class="chapter-btn" onclick="openChapter(2)">查看</button>
         </div>
       </div>
 
@@ -1885,7 +1885,7 @@
         <div class="chapter-preview">「你天生適合的方向<br>可能不是你現在走的路<br>但你心裡一直有感覺」</div>
         <div class="chapter-lock">
           <div class="chapter-price">NT$150</div>
-          <button class="chapter-btn" onclick="openModal()">查看</button>
+          <button class="chapter-btn" onclick="openChapter(3)">查看</button>
         </div>
       </div>
 
@@ -1895,7 +1895,7 @@
         <div class="chapter-preview">「每個人都有一個<br>不斷重複的模式<br>你的是什麼？」</div>
         <div class="chapter-lock">
           <div class="chapter-price">NT$150</div>
-          <button class="chapter-btn" onclick="openModal()">查看</button>
+          <button class="chapter-btn" onclick="openChapter(4)">查看</button>
         </div>
       </div>
 
@@ -1905,7 +1905,7 @@
         <div class="chapter-preview">「你走過的路<br>和將要走的路<br>其實是同一條」</div>
         <div class="chapter-lock">
           <div class="chapter-price">NT$150</div>
-          <button class="chapter-btn" onclick="openModal()">查看</button>
+          <button class="chapter-btn" onclick="openChapter(5)">查看</button>
         </div>
       </div>
 
@@ -1918,7 +1918,7 @@
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">一次解鎖全部五章</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:8px;">NT$600</div>
         <div style="font-size:1.05rem; color:var(--silver); margin-bottom:24px; letter-spacing:2px;">你完整的星辰圖案，一次擁有</div>
-        <button class="hero-btn" onclick="openModal()"><span>✦ 解鎖完整故事</span></button>
+        <button class="hero-btn" onclick="openAllChapters()"><span>✦ 解鎖完整故事</span></button>
       </div>
     </div>
 
@@ -1959,7 +1959,7 @@
           <li>LINE 送達或網站查看</li>
           <li>7天免費體驗</li>
         </ul>
-        <button class="pricing-btn" onclick="openModal()">開始體驗</button>
+        <button class="pricing-btn" onclick="requireLoginForSubscription('basic')">開始體驗</button>
       </div>
       <div class="pricing-card featured reveal">
         <div class="pricing-badge">✦ 最受歡迎 ✦</div>
@@ -1976,7 +1976,7 @@
         <div style="font-size:0.74rem; color:rgba(168,168,192,0.5); margin:12px 0; letter-spacing:1px; line-height:1.7; text-align:left; padding:10px; border:1px dashed rgba(201,168,76,0.15);">
           訂閱後在帳號設定中<br>新增孩子的出生資料即可
         </div>
-        <button class="pricing-btn" onclick="openModal()">開始體驗</button>
+        <button class="pricing-btn" onclick="requireLoginForSubscription('family')">開始體驗</button>
       </div>
     </div>
   </section>
@@ -2143,7 +2143,7 @@
 
       <div class="reveal">
         <div style="font-size:0.76rem; letter-spacing:6px; color:var(--gold-deep); margin-bottom:28px;">✦ · · · ✦ · · · ✦</div>
-        <button class="hero-btn" onclick="openModal()"><span>✨ 讀取我的星辰圖案</span></button>
+        <button class="hero-btn" onclick="openChapter(1)"><span>✨ 讀取我的星辰圖案</span></button>
       </div>
 
     </div>
@@ -2188,52 +2188,64 @@
         輸入你們的出生資料<br>星辰將揭示你們之間的真相
       </div>
 
-      <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:16px;">✦ 你的資料</div>
+      <div style="font-size:0.78rem; color:rgba(201,168,76,0.7); text-align:center; margin-bottom:24px; padding:12px 16px; border:1px dashed rgba(201,168,76,0.25); letter-spacing:1px; line-height:1.8;">
+        ✦ 你的星辰資料已儲存
+      </div>
+
+      <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:16px;">☽ 對方的資料</div>
 
       <div class="form-group">
-        <label class="form-label">出生日期</label>
-        <input type="text" id="s-my-dob" class="form-input" placeholder="如：4/21/2026（月/日/年）">
+        <label class="form-label">📅 對方出生日期</label>
+        <input type="text" id="s-dob" class="form-input" placeholder="如：4/21/2001（月/日/年）">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 日期越準確，解讀越精準</div>
       </div>
       <div class="form-group">
-        <label class="form-label">出生時間</label>
-        <input type="text" id="s-my-time" class="form-input" placeholder="如：06:00 或 6:00 AM">
-      </div>
-      <div class="form-group">
-        <label class="form-label">出生地點</label>
-        <input type="text" id="s-my-place" class="form-input" placeholder="如：台北市，台灣">
-      </div>
-      <div class="form-group">
-        <label class="form-label">你的性別</label>
-        <div style="display:flex; gap:10px;">
-          <button type="button" class="gender-btn" id="s-my-gender-m" onclick="selectGender('s-my','男性')">男性</button>
-          <button type="button" class="gender-btn" id="s-my-gender-f" onclick="selectGender('s-my','女性')">女性</button>
-          <button type="button" class="gender-btn" id="s-my-gender-o" onclick="selectGender('s-my','不透露')">不透露</button>
+        <label class="form-label">🕐 對方出生時間</label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <select id="s-time-h" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncPartnerTime()">
+            <option value="">時</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+            <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+          </select>
+          <span style="color:var(--gold); font-size:1.2rem; font-weight:bold;">:</span>
+          <select id="s-time-m" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncPartnerTime()">
+            <option value="">分</option>
+            <option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option>
+            <option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option>
+            <option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option>
+            <option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+            <option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option>
+            <option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
+            <option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option>
+            <option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option>
+            <option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option>
+            <option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option>
+          </select>
+          <select id="s-time-ampm" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncPartnerTime()">
+            <option value="">上午/下午</option>
+            <option value="AM">AM 上午</option>
+            <option value="PM">PM 下午</option>
+          </select>
         </div>
-        <input type="hidden" id="s-my-gender" value="">
-      </div>
-
-      <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin:24px 0 16px;">☽ 對方的資料</div>
-
-      <div class="form-group">
-        <label class="form-label">對方出生日期</label>
-        <input type="text" id="s-dob" class="form-input" placeholder="如：2/10/2001（月/日/年）">
+        <input type="hidden" id="s-time" value="">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 不確定？填大概：清晨→5:00 AM・中午→12:00 PM・傍晚→6:00 PM</div>
       </div>
       <div class="form-group">
-        <label class="form-label">對方出生時間</label>
-        <input type="text" id="s-time" class="form-input" placeholder="如：06:20 或 6:20 AM">
-      </div>
-      <div class="form-group">
-        <label class="form-label">對方出生地點</label>
+        <label class="form-label">📍 對方出生地點</label>
         <input type="text" id="s-place" class="form-input" placeholder="如：台北市，台灣">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 城市名稱即可，越具體越好</div>
       </div>
       <div class="form-group">
-        <label class="form-label">對方性別</label>
+        <label class="form-label">👤 對方性別</label>
         <div style="display:flex; gap:10px;">
           <button type="button" class="gender-btn" id="s-gender-m" onclick="selectGender('s','男性')">男性</button>
           <button type="button" class="gender-btn" id="s-gender-f" onclick="selectGender('s','女性')">女性</button>
           <button type="button" class="gender-btn" id="s-gender-o" onclick="selectGender('s','不透露')">不透露</button>
         </div>
         <input type="hidden" id="s-gender" value="">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 這是你的空間，沒有錯誤的答案</div>
       </div>
 
       <button class="form-submit" onclick="submitSoulmate()">✦ 揭示我們的靈魂配對</button>
@@ -2293,42 +2305,64 @@
       <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.0rem; color:var(--silver); text-align:center; margin-bottom:16px; line-height:1.8; letter-spacing:1px;">
         讓星辰告訴你孩子帶來的宇宙密碼
       </div>
-      <div style="font-size:0.78rem; color:rgba(201,168,76,0.6); text-align:center; margin-bottom:24px; padding:10px; border:1px dashed rgba(201,168,76,0.2); letter-spacing:1px; line-height:1.8;">
-        ✦ 登入後你的資料將自動帶入
+      <div style="font-size:0.78rem; color:rgba(201,168,76,0.7); text-align:center; margin-bottom:24px; padding:12px 16px; border:1px dashed rgba(201,168,76,0.25); letter-spacing:1px; line-height:1.8;">
+        ✦ 你的星辰資料已儲存
       </div>
 
-      <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:16px;">✦ 你的資料</div>
+      <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:16px;">✦ 孩子的資料</div>
 
       <div class="form-group">
-        <label class="form-label">出生日期</label>
-        <input type="text" id="ls-my-dob" class="form-input" placeholder="如：4/21/2026（月/日/年）">
-      </div>
-      <div class="form-group">
-        <label class="form-label">出生時間</label>
-        <input type="text" id="ls-my-time" class="form-input" placeholder="如：06:00 或 6:00 AM">
-      </div>
-      <div class="form-group">
-        <label class="form-label">出生地點</label>
-        <input type="text" id="ls-my-place" class="form-input" placeholder="如：台北市，台灣">
-      </div>
-
-      <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin:24px 0 16px;">✦ 孩子的資料</div>
-
-      <div class="form-group">
-        <label class="form-label">孩子出生日期</label>
+        <label class="form-label">📅 孩子出生日期</label>
         <input type="text" id="ls-dob" class="form-input" placeholder="如：6/15/2018（月/日/年）">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 日期越準確，解讀越精準</div>
       </div>
       <div class="form-group">
-        <label class="form-label">孩子出生時間</label>
-        <input type="text" id="ls-time" class="form-input" placeholder="如：09:30 或 9:30 AM">
+        <label class="form-label">🕐 孩子出生時間</label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <select id="ls-time-h" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncChildTime()">
+            <option value="">時</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+            <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+          </select>
+          <span style="color:var(--gold); font-size:1.2rem; font-weight:bold;">:</span>
+          <select id="ls-time-m" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncChildTime()">
+            <option value="">分</option>
+            <option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option>
+            <option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option>
+            <option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option>
+            <option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
+            <option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option>
+            <option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
+            <option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option>
+            <option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option>
+            <option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option>
+            <option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option>
+          </select>
+          <select id="ls-time-ampm" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncChildTime()">
+            <option value="">上午/下午</option>
+            <option value="AM">AM 上午</option>
+            <option value="PM">PM 下午</option>
+          </select>
+        </div>
+        <input type="hidden" id="ls-time" value="">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 不確定？填大概：清晨→5:00 AM・中午→12:00 PM・傍晚→6:00 PM</div>
       </div>
       <div class="form-group">
-        <label class="form-label">孩子出生地點</label>
+        <label class="form-label">📍 孩子出生地點</label>
         <input type="text" id="ls-place" class="form-input" placeholder="如：台北市，台灣">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 城市名稱即可，越具體越好</div>
       </div>
       <div class="form-group">
-        <label class="form-label">孩子性別</label>
-        <input type="text" id="ls-gender" class="form-input" placeholder="男孩 · 女孩 · 其他">
+        <label class="form-label">👤 孩子性別</label>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="gender-btn" id="ls-gender-m" onclick="selectChildGender('男孩')">男孩</button>
+          <button type="button" class="gender-btn" id="ls-gender-f" onclick="selectChildGender('女孩')">女孩</button>
+          <button type="button" class="gender-btn" id="ls-gender-o" onclick="selectChildGender('其他')">其他</button>
+        </div>
+        <input type="hidden" id="ls-gender" value="">
+        <div style="font-size:0.72rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 這是你的空間，沒有錯誤的答案</div>
       </div>
 
       <button class="form-submit" onclick="submitStarChild()">✦ 揭示孩子的宇宙密碼</button>
@@ -2364,6 +2398,252 @@
 </div>
 
 </div><!-- end content -->
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal" style="max-width:440px; padding:0; overflow:hidden;">
+    <button class="modal-close" onclick="closeAuthModal()" style="z-index:10;">✕</button>
+
+    <!-- STEP 1: New or Returning -->
+    <div id="auth-who" style="padding:48px 36px; text-align:center; display:block;">
+      <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; margin-bottom:8px;">LUMIS</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--soft-white); margin-bottom:6px;" id="auth-title">開始你的星辰旅程</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--silver); font-size:0.9rem; margin-bottom:28px;" id="auth-subtitle">請選擇</div>
+      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:32px;"></div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <button onclick="showAuthStep('login-new')" style="padding:18px; background:rgba(201,168,76,0.08); border:1px solid var(--gold); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.15)'" onmouseout="this.style.background='rgba(201,168,76,0.08)'">
+          ✦ 我是新用戶
+        </button>
+        <button onclick="showAuthStep('login-returning')" style="padding:18px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.05)'" onmouseout="this.style.background='transparent'">
+          ☽ 我已有帳號
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2A: New User Login -->
+    <div id="auth-login-new" style="display:none; padding:40px 36px;">
+      <button onclick="showAuthStep('who')" style="background:none; border:none; color:var(--silver); cursor:pointer; font-size:0.8rem; letter-spacing:2px; margin-bottom:20px; padding:0;">← 返回</button>
+      <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--soft-white); text-align:center; margin-bottom:24px;">建立你的帳號</div>
+      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
+      <button onclick="handleGoogleSignup()" style="width:100%; padding:14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.4); color:var(--soft-white); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#C9A84C" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#A8A8C0" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#E8E8F0" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#8B6914" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        ✦ 使用 Google 建立帳號
+      </button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
+        <div style="font-size:0.75rem; color:rgba(168,168,192,0.5); letter-spacing:2px;">或</div>
+        <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
+      </div>
+      <input type="email" id="new-email" placeholder="電子郵件" class="form-input" style="width:100%; box-sizing:border-box; margin-bottom:10px;">
+      <input type="password" id="new-password" placeholder="設定密碼（至少6位）" class="form-input" style="width:100%; box-sizing:border-box; margin-bottom:14px;">
+      <button onclick="handleEmailSignup()" style="width:100%; padding:14px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:3px; cursor:pointer; font-weight:bold; margin-bottom:14px;">
+        建立帳號 ✦
+      </button>
+      <div style="text-align:center; font-size:0.72rem; color:rgba(168,168,192,0.5); letter-spacing:1px; line-height:1.8;">
+        建立帳號即表示同意
+        <span onclick="closeAuthModal();openPrivacy();" style="color:rgba(201,168,76,0.6); cursor:pointer;">隱私政策</span>
+        與
+        <span onclick="closeAuthModal();openTerms();" style="color:rgba(201,168,76,0.6); cursor:pointer;">服務條款</span>
+      </div>
+    </div>
+
+    <!-- STEP 2B: Returning User Login -->
+    <div id="auth-login-returning" style="display:none; padding:40px 36px;">
+      <button onclick="showAuthStep('who')" style="background:none; border:none; color:var(--silver); cursor:pointer; font-size:0.8rem; letter-spacing:2px; margin-bottom:20px; padding:0;">← 返回</button>
+      <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--soft-white); text-align:center; margin-bottom:24px;">歡迎回來 ☽</div>
+      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
+      <button onclick="handleGoogleLogin()" style="width:100%; padding:14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.4); color:var(--soft-white); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#C9A84C" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#A8A8C0" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#E8E8F0" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#8B6914" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        ✦ 使用 Google 登入
+      </button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
+        <div style="font-size:0.75rem; color:rgba(168,168,192,0.5); letter-spacing:2px;">或</div>
+        <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
+      </div>
+      <input type="email" id="ret-email" placeholder="電子郵件" class="form-input" style="width:100%; box-sizing:border-box; margin-bottom:10px;">
+      <input type="password" id="ret-password" placeholder="密碼" class="form-input" style="width:100%; box-sizing:border-box; margin-bottom:14px;">
+      <button onclick="handleEmailLogin()" style="width:100%; padding:14px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:3px; cursor:pointer; font-weight:bold;">
+        登入 ✦
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal" style="max-width:440px; padding:0; overflow:hidden;">
+    <button class="modal-close" onclick="closePaymentModal()" style="z-index:10;">✕</button>
+
+    <!-- Payment Form -->
+    <div id="payment-step-form" style="padding:40px 36px;">
+      <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--soft-white); text-align:center; margin-bottom:4px;" id="payment-title">解鎖篇章</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); text-align:center; margin-bottom:4px;" id="payment-price">NT$150</div>
+      <div style="font-size:0.72rem; color:rgba(168,168,192,0.5); text-align:center; letter-spacing:2px; margin-bottom:24px;" id="payment-desc">一次解鎖，永久保存</div>
+      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:28px;"></div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.72rem; letter-spacing:2px; color:var(--gold-deep); display:block; margin-bottom:8px;">持卡人姓名</label>
+        <input type="text" placeholder="Name on Card" class="form-input" style="width:100%; box-sizing:border-box;" readonly onfocus="this.removeAttribute('readonly')">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.72rem; letter-spacing:2px; color:var(--gold-deep); display:block; margin-bottom:8px;">信用卡號碼</label>
+        <input type="text" placeholder="1234  5678  9012  3456" class="form-input" style="width:100%; box-sizing:border-box; letter-spacing:2px;" readonly onfocus="this.removeAttribute('readonly')">
+      </div>
+      <div style="display:flex; gap:12px; margin-bottom:24px;">
+        <div style="flex:1;">
+          <label style="font-size:0.72rem; letter-spacing:2px; color:var(--gold-deep); display:block; margin-bottom:8px;">有效期限</label>
+          <input type="text" placeholder="MM / YY" class="form-input" style="width:100%; box-sizing:border-box;" readonly onfocus="this.removeAttribute('readonly')">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:0.72rem; letter-spacing:2px; color:var(--gold-deep); display:block; margin-bottom:8px;">安全碼</label>
+          <input type="text" placeholder="CVV" class="form-input" style="width:100%; box-sizing:border-box;" readonly onfocus="this.removeAttribute('readonly')">
+        </div>
+      </div>
+
+      <button onclick="handlePayment()" style="width:100%; padding:16px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; font-weight:bold; margin-bottom:12px;">
+        ✦ 確認付款
+      </button>
+      <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+        <span style="font-size:0.7rem; color:rgba(168,168,192,0.4); letter-spacing:1px;">🔒 安全加密付款</span>
+        <span style="font-size:0.7rem; color:rgba(168,168,192,0.3);">·</span>
+        <span style="font-size:0.7rem; color:rgba(168,168,192,0.4); letter-spacing:1px;">VISA / Mastercard</span>
+      </div>
+      <div style="margin-top:12px; text-align:center; font-size:0.7rem; color:rgba(168,168,192,0.3); letter-spacing:1px;">
+        LINE Pay — 即將推出
+      </div>
+    </div>
+
+    <!-- Payment Success -->
+    <div id="payment-step-success" style="display:none; padding:48px 36px; text-align:center;">
+      <div style="font-size:3rem; margin-bottom:16px;">✦</div>
+      <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; margin-bottom:12px;">LUMIS</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--soft-white); margin-bottom:12px;">付款成功</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--silver); font-size:1rem; line-height:1.8; margin-bottom:32px;" id="payment-success-msg">
+        你的篇章已解鎖<br>星辰正在為你準備
+      </div>
+      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:28px;"></div>
+      <button onclick="afterPaymentSuccess()" style="width:100%; padding:14px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:3px; cursor:pointer; font-weight:bold;">
+        開始閱讀 ✦
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN GATE MODAL -->
+<!-- FAMILY HOROSCOPE MODAL -->
+<div class="modal-overlay" id="family-modal">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" onclick="closeFamilyModal()">✕</button>
+    <div class="modal-title">LUMIS</div>
+    <div class="modal-subtitle">家庭星辰訂閱</div>
+    <div class="modal-divider">✦ · · · ✦</div>
+
+    <div style="font-size:0.78rem; color:rgba(201,168,76,0.7); text-align:center; margin-bottom:24px; padding:12px 16px; border:1px dashed rgba(201,168,76,0.25); letter-spacing:1px; line-height:1.8;">
+      ✦ 你的星辰資料已儲存
+    </div>
+
+    <div id="family-children-container">
+      <!-- Child 1 - always shown -->
+      <div class="family-child-block" id="family-child-1">
+        <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:14px; border-bottom:1px solid rgba(201,168,76,0.15); padding-bottom:10px;">✦ 孩子 1</div>
+        <div class="form-group">
+          <label class="form-label">📅 出生日期</label>
+          <input type="text" id="fc-dob-1" class="form-input" placeholder="如：6/15/2018（月/日/年）">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🕐 出生時間</label>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="fc-time-h-1" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(1)">
+              <option value="">時</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+            </select>
+            <span style="color:var(--gold); font-size:1.2rem;">:</span>
+            <select id="fc-time-m-1" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(1)">
+              <option value="">分</option>
+              <option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option>
+              <option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+            </select>
+            <select id="fc-time-ampm-1" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(1)">
+              <option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>
+            </select>
+          </div>
+          <input type="hidden" id="fc-time-1" value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">📍 出生地點</label>
+          <input type="text" id="fc-place-1" class="form-input" placeholder="如：台北市，台灣">
+        </div>
+        <div class="form-group">
+          <label class="form-label">👤 性別</label>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="gender-btn" id="fc-g-m-1" onclick="selectFamilyGender(1,'男孩')">男孩</button>
+            <button type="button" class="gender-btn" id="fc-g-f-1" onclick="selectFamilyGender(1,'女孩')">女孩</button>
+            <button type="button" class="gender-btn" id="fc-g-o-1" onclick="selectFamilyGender(1,'其他')">其他</button>
+          </div>
+          <input type="hidden" id="fc-gender-1" value="">
+        </div>
+      </div>
+
+      <!-- Child 2 - always shown -->
+      <div class="family-child-block" id="family-child-2" style="margin-top:24px;">
+        <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:14px; border-bottom:1px solid rgba(201,168,76,0.15); padding-bottom:10px;">✦ 孩子 2</div>
+        <div class="form-group">
+          <label class="form-label">📅 出生日期</label>
+          <input type="text" id="fc-dob-2" class="form-input" placeholder="如：9/3/2021（月/日/年）">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🕐 出生時間</label>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="fc-time-h-2" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(2)">
+              <option value="">時</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+            </select>
+            <span style="color:var(--gold); font-size:1.2rem;">:</span>
+            <select id="fc-time-m-2" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(2)">
+              <option value="">分</option>
+              <option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option>
+              <option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+            </select>
+            <select id="fc-time-ampm-2" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(2)">
+              <option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>
+            </select>
+          </div>
+          <input type="hidden" id="fc-time-2" value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">📍 出生地點</label>
+          <input type="text" id="fc-place-2" class="form-input" placeholder="如：台北市，台灣">
+        </div>
+        <div class="form-group">
+          <label class="form-label">👤 性別</label>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="gender-btn" id="fc-g-m-2" onclick="selectFamilyGender(2,'男孩')">男孩</button>
+            <button type="button" class="gender-btn" id="fc-g-f-2" onclick="selectFamilyGender(2,'女孩')">女孩</button>
+            <button type="button" class="gender-btn" id="fc-g-o-2" onclick="selectFamilyGender(2,'其他')">其他</button>
+          </div>
+          <input type="hidden" id="fc-gender-2" value="">
+        </div>
+      </div>
+
+      <!-- Extra children added dynamically -->
+      <div id="family-extra-children"></div>
+    </div>
+
+    <!-- Add Child Button -->
+    <button onclick="addFamilyChild()" id="add-child-btn" style="width:100%; margin-top:20px; padding:12px; background:transparent; border:1px dashed rgba(201,168,76,0.35); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.05)'" onmouseout="this.style.background='transparent'">
+      + 新增孩子（NT$50/月）
+    </button>
+
+    <button class="form-submit" style="margin-top:20px;" onclick="submitFamilyHoroscope()">✦ 確認訂閱</button>
+  </div>
+</div>
 
 <!-- PRIVACY POLICY MODAL -->
 <div class="modal-overlay" id="privacy-modal">
@@ -2621,7 +2901,7 @@
     <button class="modal-close" onclick="closeModal()">✕</button>
 
     <!-- SCREEN 1: CHOOSE PATH -->
-    <div id="screen-choose">
+    <div id="screen-choose" style="display:none;">
       <div class="modal-title">LUMIS</div>
       <div class="modal-subtitle">你的星辰旅程</div>
       <div class="modal-divider">✦ · · · ✦</div>
@@ -2647,7 +2927,6 @@
 
     <!-- SCREEN 2A: NEW USER FORM -->
     <div id="screen-new" style="display:none;">
-      <button class="modal-back" onclick="showScreen('screen-choose')">← 返回</button>
       <div class="modal-title">LUMIS</div>
       <div class="modal-subtitle">告訴星辰你的到來</div>
       <div class="modal-divider">✦ · · · ✦</div>
@@ -2727,7 +3006,6 @@
 
     <!-- SCREEN 2B: RETURNING USER -->
     <div id="screen-returning" style="display:none;">
-      <button class="modal-back" onclick="showScreen('screen-choose')">← 返回</button>
       <div class="modal-title">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:var(--soft-white); text-align:center; margin-bottom:8px; letter-spacing:2px;">
         歡迎回來
@@ -2736,48 +3014,20 @@
         你的星辰一直在等你
       </div>
       <div class="modal-divider">✦ · · · ✦</div>
-
-      <div style="margin-bottom:40px;">
-        <div style="font-size:0.76rem; color:var(--silver); text-align:center; letter-spacing:3px; margin-bottom:20px;">
-          選擇你當初登入的方式
-        </div>
-        <div class="social-login">
-          <button class="social-btn line">
-            💚 使用 LINE 繼續
-          </button>
-          <button class="social-btn">
-            🔴 使用 Google 繼續
-          </button>
-        </div>
-      </div>
-
-      <div style="text-align:center; font-size:0.76rem; color:rgba(168,168,192,0.5); letter-spacing:1px; line-height:1.8;">
-        你所有的篇章、訂閱和配對結果<br>都會在登入後自動出現
-      </div>
+      <button onclick="closeModal(); openAuthModal(null,'歡迎回來','請登入你的帳號');" style="width:100%; padding:16px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; font-weight:bold; margin-top:20px;">
+        ✦ 登入帳號
+      </button>
     </div>
 
-    <!-- SCREEN 3: SUCCESS + SAVE -->
+    <!-- SCREEN 3: SUCCESS -->
     <div class="success-screen" id="screen-success">
       <div class="success-icon">✦</div>
-      <div class="success-title">你的篇章已解鎖</div>
+      <div class="success-title">星辰已記住你</div>
       <div class="success-text">
-        「星辰已記住你的到來<br><br>
-        儲存你的進度<br>
-        下次登入無需重新填寫」
+        你的資料已安全儲存<br>下次登入直接繼續
       </div>
-
-      <div style="margin-bottom:20px;">
-        <div style="font-size:0.76rem; color:var(--silver); text-align:center; letter-spacing:3px; margin-bottom:16px;">
-          選擇儲存方式
-        </div>
-        <div class="social-login">
-          <button class="social-btn line">💚 使用 LINE 儲存</button>
-          <button class="social-btn">🔴 使用 Google 儲存</button>
-        </div>
-      </div>
-
-      <button class="form-submit" style="background:transparent; font-size:0.7rem; opacity:0.6;" onclick="closeModal()">
-        暫時略過，稍後再儲存
+      <button class="form-submit" onclick="closeModal()">
+        ✦ 繼續探索
       </button>
     </div>
 
@@ -3004,6 +3254,7 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
 // =====================
 // GALAXY CANVAS
 // =====================
+try {
 const canvas = document.getElementById('galaxy-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -3095,6 +3346,7 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+} catch(e) { console.warn('Galaxy animation not available:', e.message); }
 
 // =====================
 // CUSTOM CURSOR (desktop only)
@@ -3128,41 +3380,298 @@ if (!isMobile) {
   });
 }
 
+
 // =====================
-// SOULMATE MODAL
+// AUTH & SESSION SYSTEM
+// =====================
+const LUMIS_SESSION_KEY = 'lumis_user';
+const LUMIS_PAID_KEY = 'lumis_paid';
+const lumisUser = { loggedIn: false, email: '', name: '' };
+let pendingAction = null;
+let pendingChapter = 0;
+
+function isLoggedIn() { return lumisUser.loggedIn; }
+
+function saveSession(user) {
+  const session = { ...user, expires: Date.now() + 7 * 24 * 60 * 60 * 1000 };
+  localStorage.setItem(LUMIS_SESSION_KEY, JSON.stringify(session));
+  lumisUser.loggedIn = true;
+  lumisUser.email = user.email || '';
+  lumisUser.name = user.name || '';
+  updateUIForLoggedIn();
+}
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(LUMIS_SESSION_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    if (s.expires < Date.now()) { localStorage.removeItem(LUMIS_SESSION_KEY); return false; }
+    lumisUser.loggedIn = true; lumisUser.email = s.email || ''; lumisUser.name = s.name || '';
+    return true;
+  } catch(e) { return false; }
+}
+
+function getPaidFeatures() { try { return JSON.parse(localStorage.getItem(LUMIS_PAID_KEY) || '[]'); } catch(e) { return []; } }
+function markFeaturePaid(f) { const p = getPaidFeatures(); if (!p.includes(f)) { p.push(f); localStorage.setItem(LUMIS_PAID_KEY, JSON.stringify(p)); } }
+function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
+function updateUIForLoggedIn() {
+  document.querySelectorAll('.nav-cta').forEach(b => {
+    b.textContent = '登出';
+    b.onclick = () => { localStorage.clear(); window.location.reload(); };
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => { if (loadSession()) updateUIForLoggedIn(); });
+
+// =====================
+// AUTH MODAL
+// =====================
+function openAuthModal(action, title, subtitle) {
+  pendingAction = action || null;
+  document.getElementById('auth-title').textContent = title || '開始你的星辰旅程';
+  document.getElementById('auth-subtitle').textContent = subtitle || '請選擇';
+  showAuthStep('who');
+  document.getElementById('auth-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); document.body.style.overflow = ''; }
+document.getElementById('auth-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('auth-modal')) closeAuthModal(); });
+
+function showAuthStep(step) {
+  ['auth-who','auth-login-new','auth-login-returning'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+  const map = { 'who': 'auth-who', 'login-new': 'auth-login-new', 'login-returning': 'auth-login-returning' };
+  const el = document.getElementById(map[step]);
+  if (el) el.style.display = 'block';
+}
+
+function handleGoogleSignup() { completeLogin({ email: 'google@lumis.demo', name: 'Google 用戶' }); }
+function handleGoogleLogin() { completeLogin({ email: 'google@lumis.demo', name: 'Google 用戶' }); }
+function handleEmailSignup() { const e = document.getElementById('new-email').value.trim() || 'user@lumis.demo'; completeLogin({ email: e, name: e.split('@')[0] }); }
+function handleEmailLogin() { const e = document.getElementById('ret-email').value.trim() || 'user@lumis.demo'; completeLogin({ email: e, name: e.split('@')[0] }); }
+function completeLogin(user) { saveSession(user); closeAuthModal(); if (pendingAction) { const a = pendingAction; pendingAction = null; a(); } }
+
+// =====================
+// PAYMENT MODAL
+// =====================
+let paymentCallback = null;
+function openPaymentModal(title, price, desc, successMsg, callback) {
+  document.getElementById('payment-title').textContent = title || '解鎖篇章';
+  document.getElementById('payment-price').textContent = price || 'NT$150';
+  document.getElementById('payment-desc').textContent = desc || '一次解鎖，永久保存';
+  document.getElementById('payment-success-msg').innerHTML = successMsg || '已解鎖！';
+  document.getElementById('payment-step-form').style.display = 'block';
+  document.getElementById('payment-step-success').style.display = 'none';
+  paymentCallback = callback || null;
+  document.getElementById('payment-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closePaymentModal() { document.getElementById('payment-modal').classList.remove('active'); document.body.style.overflow = ''; }
+document.getElementById('payment-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('payment-modal')) closePaymentModal(); });
+function handlePayment() { document.getElementById('payment-step-form').style.display = 'none'; document.getElementById('payment-step-success').style.display = 'block'; }
+function afterPaymentSuccess() { closePaymentModal(); if (paymentCallback) { const cb = paymentCallback; paymentCallback = null; cb(); } }
+
+// =====================
+// CHAPTER FLOW: Auth → Form → Pay(ch2+) → Content
+// =====================
+function openChapter(num) {
+  pendingChapter = num;
+  if (!isLoggedIn()) { openAuthModal(() => afterLoginForChapter(num), num === 1 ? '免費閱讀第一章' : '解鎖第' + ['','一','二','三','四','五'][num] + '章', '請先登入或建立帳號'); return; }
+  afterLoginForChapter(num);
+}
+function afterLoginForChapter(num) { openModal(() => afterFormForChapter(num)); }
+function afterFormForChapter(num) {
+  if (num === 1) { runReading(); return; }
+  if (hasFeaturePaid('chapter' + num)) { runReading(); return; }
+  openPaymentModal('解鎖第' + ['','一','二','三','四','五'][num] + '章', 'NT$150', '一次解鎖，永久保存',
+    '第' + ['','一','二','三','四','五'][num] + '章已解鎖！<br>星辰正在為你準備',
+    () => { markFeaturePaid('chapter' + num); runReading(); });
+}
+function openAllChapters() {
+  if (!isLoggedIn()) { openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
+  openModal(() => {
+    if (hasFeaturePaid('all5chapters')) { runReading(); return; }
+    openPaymentModal('解鎖全部五章', 'NT$600', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); });
+  });
+}
+
+// =====================
+// SOULMATE
 // =====================
 function openSoulmateModal() {
-  document.getElementById('soulmate-modal').classList.add('active');
-  document.body.style.overflow = 'hidden';
+  if (!isLoggedIn()) { openAuthModal(() => openSoulmateModal(), '解鎖靈魂配對', '請先登入或建立帳號'); return; }
+  if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
+  openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); });
+}
+function _openSoulmateForm() {
+  document.getElementById('soulmate-modal').classList.add('active'); document.body.style.overflow = 'hidden';
   document.getElementById('soulmate-form-screen').style.display = 'block';
   document.getElementById('soulmate-loading-screen').style.display = 'none';
   document.getElementById('soulmate-result-screen').style.display = 'none';
 }
-function closeSoulmateModal() {
-  document.getElementById('soulmate-modal').classList.remove('active');
+function closeSoulmateModal() { document.getElementById('soulmate-modal').classList.remove('active'); document.body.style.overflow = ''; }
+document.getElementById('soulmate-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('soulmate-modal')) closeSoulmateModal(); });
+
+// =====================
+// STAR CHILD
+// =====================
+function openStarChildModal() {
+  if (!isLoggedIn()) { openAuthModal(() => openStarChildModal(), '解鎖星童分析', '請先登入或建立帳號'); return; }
+  if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
+  openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); });
+}
+function _openStarChildForm() {
+  document.getElementById('star-child-modal').classList.add('active'); document.body.style.overflow = 'hidden';
+  document.getElementById('ls-form-screen').style.display = 'block';
+  document.getElementById('ls-loading-screen').style.display = 'none';
+  document.getElementById('ls-result-screen').style.display = 'none';
+}
+function closeStarChildModal() { document.getElementById('star-child-modal').classList.remove('active'); document.body.style.overflow = ''; }
+document.getElementById('star-child-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('star-child-modal')) closeStarChildModal(); });
+
+// =====================
+// SUBSCRIPTION
+// =====================
+function requireLoginForSubscription(plan) {
+  if (!isLoggedIn()) {
+    openAuthModal(() => requireLoginForSubscription(plan),
+      plan === 'family' ? '家庭星辰訂閱' : '基礎星辰訂閱', '請先登入或建立帳號');
+    return;
+  }
+  if (plan === 'family') {
+    if (hasFeaturePaid('family-subscription')) { openFamilyModal(); return; }
+    openPaymentModal('家庭訂閱方案', 'NT$300', '每月自動續訂，含2位孩子',
+      '家庭訂閱成功！<br>請填寫孩子的出生資料',
+      () => { markFeaturePaid('family-subscription'); openFamilyModal(); });
+  } else {
+    if (hasFeaturePaid('subscription')) { alert('你已訂閱基礎方案！✦'); return; }
+    openPaymentModal('基礎訂閱方案', 'NT$200', '每月自動續訂，隨時可取消',
+      '訂閱成功！<br>每天早上6點星辰運勢將送達',
+      () => { markFeaturePaid('subscription'); alert('訂閱成功！✦'); });
+  }
+}
+
+// =====================
+// FAMILY HOROSCOPE MODAL
+// =====================
+let familyExtraCount = 0;
+
+function openFamilyModal() {
+  familyExtraCount = 0;
+  document.getElementById('family-extra-children').innerHTML = '';
+  document.getElementById('family-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeFamilyModal() {
+  document.getElementById('family-modal').classList.remove('active');
   document.body.style.overflow = '';
 }
-document.getElementById('soulmate-modal').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('soulmate-modal')) closeSoulmateModal();
+document.getElementById('family-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('family-modal')) closeFamilyModal();
 });
 
+function syncFamilyChildTime(n) {
+  const h = document.getElementById('fc-time-h-' + n)?.value || '';
+  const m = document.getElementById('fc-time-m-' + n)?.value || '';
+  const ampm = document.getElementById('fc-time-ampm-' + n)?.value || '';
+  if (h && m && ampm) {
+    let hNum = parseInt(h);
+    if (ampm === 'AM' && hNum === 12) hNum = 0;
+    if (ampm === 'PM' && hNum !== 12) hNum += 12;
+    const el = document.getElementById('fc-time-' + n);
+    if (el) el.value = String(hNum).padStart(2,'0') + ':' + m;
+  }
+}
+
+function selectFamilyGender(n, val) {
+  const el = document.getElementById('fc-gender-' + n);
+  if (el) el.value = val;
+  ['m','f','o'].forEach(k => {
+    const btn = document.getElementById('fc-g-' + k + '-' + n);
+    if (btn) btn.classList.remove('active');
+  });
+  const map = {'男孩':'m','女孩':'f','其他':'o'};
+  const btn = document.getElementById('fc-g-' + (map[val]||'o') + '-' + n);
+  if (btn) btn.classList.add('active');
+}
+
+function addFamilyChild() {
+  familyExtraCount++;
+  const n = 2 + familyExtraCount;
+  const container = document.getElementById('family-extra-children');
+  const div = document.createElement('div');
+  div.id = 'family-child-' + n;
+  div.style.marginTop = '24px';
+  div.innerHTML = `
+    <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:14px; border-bottom:1px solid rgba(201,168,76,0.15); padding-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+      <span>✦ 孩子 ${n} <span style="font-size:0.65rem; color:rgba(168,168,192,0.5);">+NT$50/月</span></span>
+      <button onclick="removeFamilyChild(${n})" style="background:none; border:none; color:rgba(168,168,192,0.5); cursor:pointer; font-size:0.8rem;">✕ 移除</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📅 出生日期</label>
+      <input type="text" id="fc-dob-${n}" class="form-input" placeholder="如：6/15/2018（月/日/年）">
+    </div>
+    <div class="form-group">
+      <label class="form-label">🕐 出生時間</label>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <select id="fc-time-h-${n}" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(${n})">
+          <option value="">時</option>
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+        </select>
+        <span style="color:var(--gold); font-size:1.2rem;">:</span>
+        <select id="fc-time-m-${n}" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(${n})">
+          <option value="">分</option>
+          <option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option>
+          <option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
+        </select>
+        <select id="fc-time-ampm-${n}" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(${n})">
+          <option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>
+        </select>
+      </div>
+      <input type="hidden" id="fc-time-${n}" value="">
+    </div>
+    <div class="form-group">
+      <label class="form-label">📍 出生地點</label>
+      <input type="text" id="fc-place-${n}" class="form-input" placeholder="如：台北市，台灣">
+    </div>
+    <div class="form-group">
+      <label class="form-label">👤 性別</label>
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="gender-btn" id="fc-g-m-${n}" onclick="selectFamilyGender(${n},'男孩')">男孩</button>
+        <button type="button" class="gender-btn" id="fc-g-f-${n}" onclick="selectFamilyGender(${n},'女孩')">女孩</button>
+        <button type="button" class="gender-btn" id="fc-g-o-${n}" onclick="selectFamilyGender(${n},'其他')">其他</button>
+      </div>
+      <input type="hidden" id="fc-gender-${n}" value="">
+    </div>`;
+  container.appendChild(div);
+}
+
+function removeFamilyChild(n) {
+  const el = document.getElementById('family-child-' + n);
+  if (el) { el.remove(); familyExtraCount = Math.max(0, familyExtraCount - 1); }
+}
+
+function submitFamilyHoroscope() {
+  const child1Dob = document.getElementById('fc-dob-1').value.trim();
+  if (!child1Dob) { alert('請填寫至少孩子1的出生日期'); return; }
+  closeFamilyModal();
+  alert('家庭訂閱資料已儲存！每天早上6點星辰運勢將送達 ✦');
+}
+
+
+
 async function submitSoulmate() {
-  const myDob = document.getElementById('s-my-dob').value.trim();
-  const myTime = document.getElementById('s-my-time').value.trim();
-  const myPlace = document.getElementById('s-my-place').value.trim();
-  const myGender = document.getElementById('s-my-gender').value || '不透露';
   const sDob = document.getElementById('s-dob').value.trim();
   const sTime = document.getElementById('s-time').value.trim();
   const sPlace = document.getElementById('s-place').value.trim();
   const sGender = document.getElementById('s-gender').value || '不透露';
 
-  if (!myDob || !myPlace || !sDob || !sPlace) {
-    alert('請填寫雙方的出生日期和地點');
+  if (!sDob || !sPlace) {
+    alert('請填寫對方的出生日期和地點');
     return;
   }
 
-  // Determine pronouns
-  const myPronoun = myGender === '男性' ? '他' : myGender === '女性' ? '她' : '對方';
   const sPronoun = sGender === '男性' ? '他' : sGender === '女性' ? '她' : '對方';
 
   document.getElementById('soulmate-form-screen').style.display = 'none';
@@ -3182,7 +3691,7 @@ async function submitSoulmate() {
         model: 'claude-opus-4-7',
         max_tokens: 1500,
         system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析配對。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單人話說出深刻真相。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位最多2-3句，簡潔有力。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
-        messages: [{ role: 'user', content: `我：${myDob} ${myTime} ${myPlace} ${myGender}\n對方：${sDob} ${sTime} ${sPlace} ${sGender}` }]
+        messages: [{ role: 'user', content: `對方：${sDob} ${sTime} ${sPlace} ${sGender}` }]
       }));
     });
 
@@ -3225,39 +3734,21 @@ async function submitSoulmate() {
   } catch(err) {
     document.getElementById('soulmate-loading-screen').style.display = 'none';
     document.getElementById('soulmate-result-screen').style.display = 'block';
-    document.getElementById('soulmate-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請重新整理再試。<br><br><button onclick="closeSoulmateModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div>`;
+    document.getElementById('soulmate-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitSoulmate()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeSoulmateModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
   }
 }
 
 // =====================
 // LITTLE STARS MODAL
 // =====================
-function openStarChildModal() {
-  document.getElementById('star-child-modal').classList.add('active');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('ls-form-screen').style.display = 'block';
-  document.getElementById('ls-loading-screen').style.display = 'none';
-  document.getElementById('ls-result-screen').style.display = 'none';
-}
-function closeStarChildModal() {
-  document.getElementById('star-child-modal').classList.remove('active');
-  document.body.style.overflow = '';
-}
-document.getElementById('star-child-modal').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('star-child-modal')) closeStarChildModal();
-});
-
 async function submitStarChild() {
-  const myDob = document.getElementById('ls-my-dob').value.trim();
-  const myTime = document.getElementById('ls-my-time').value.trim();
-  const myPlace = document.getElementById('ls-my-place').value.trim();
   const lsDob = document.getElementById('ls-dob').value.trim();
   const lsTime = document.getElementById('ls-time').value.trim();
   const lsPlace = document.getElementById('ls-place').value.trim();
   const lsGender = document.getElementById('ls-gender').value.trim();
 
-  if (!myDob || !myPlace || !lsDob || !lsPlace) {
-    alert('請填寫你和孩子的出生日期和地點');
+  if (!lsDob || !lsPlace) {
+    alert('請填寫孩子的出生日期和地點');
     return;
   }
 
@@ -3317,7 +3808,7 @@ async function submitStarChild() {
   } catch(err) {
     document.getElementById('ls-loading-screen').style.display = 'none';
     document.getElementById('ls-result-screen').style.display = 'block';
-    document.getElementById('ls-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請重新整理再試。<br><br><button onclick="closeStarChildModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div>`;
+    document.getElementById('ls-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitStarChild()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeStarChildModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
   }
 }
 // =====================
@@ -3376,10 +3867,41 @@ function syncTimePicker() {
     document.getElementById('field-time').value = `${finalH}:${m}`;
   }
 }
-['field-time-h','field-time-m','field-time-ampm'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('change', syncTimePicker);
-});
+function syncPartnerTime() {
+  const h = document.getElementById('s-time-h')?.value || '';
+  const m = document.getElementById('s-time-m')?.value || '';
+  const ampm = document.getElementById('s-time-ampm')?.value || '';
+  if (h && m && ampm) {
+    let hNum = parseInt(h);
+    if (ampm === 'AM' && hNum === 12) hNum = 0;
+    if (ampm === 'PM' && hNum !== 12) hNum += 12;
+    document.getElementById('s-time').value = `${String(hNum).padStart(2,'0')}:${m}`;
+  }
+}
+
+function syncChildTime() {
+  const h = document.getElementById('ls-time-h')?.value || '';
+  const m = document.getElementById('ls-time-m')?.value || '';
+  const ampm = document.getElementById('ls-time-ampm')?.value || '';
+  if (h && m && ampm) {
+    let hNum = parseInt(h);
+    if (ampm === 'AM' && hNum === 12) hNum = 0;
+    if (ampm === 'PM' && hNum !== 12) hNum += 12;
+    document.getElementById('ls-time').value = `${String(hNum).padStart(2,'0')}:${m}`;
+  }
+}
+
+function selectChildGender(val) {
+  document.getElementById('ls-gender').value = val;
+  ['ls-gender-m','ls-gender-f','ls-gender-o'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.classList.remove('active');
+  });
+  const map = {'男孩':'ls-gender-m','女孩':'ls-gender-f','其他':'ls-gender-o'};
+  if (map[val]) document.getElementById(map[val])?.classList.add('active');
+}
+
+
 
 // =====================
 // SCROLL REVEAL
@@ -3568,18 +4090,33 @@ function showScreen(id) {
   }
 }
 
-function openModal() {
+let formCallback = null;
+
+function openModal(callback) {
+  formCallback = callback || null;
   document.getElementById('modal').classList.add('active');
   document.body.style.overflow = 'hidden';
-  showScreen('screen-choose');
+  showScreen('screen-new');
   ['field-dob','field-time','field-place','field-gender'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  ['field-time-h','field-time-m','field-time-ampm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.selectedIndex = 0;
+  });
+  document.getElementById('field-time').value = '';
+  document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
   document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
   const btn = document.getElementById('submit-btn');
   if (btn) { btn.textContent = '✦ 揭示我的星辰圖案'; btn.disabled = false; }
+}
+
+// Called after payment success — continues the reading
+function runReading() {
+  formCallback = null; // clear so submitForm proceeds to reading
+  submitForm();
 }
 
 function closeModal() {
@@ -4093,6 +4630,20 @@ async function submitForm() {
   window.lumisUserPlace = place;
   window.lumisUserGender = gender;
 
+  // If there's a payment/flow callback (e.g. paid chapters), call it before showing reading
+  if (formCallback) {
+    const cb = formCallback;
+    formCallback = null;
+    cb();
+    return;
+  }
+
+  // Store for retry
+  window.lumisUserDob = dob;
+  window.lumisUserTime = time;
+  window.lumisUserPlace = place;
+  window.lumisUserGender = gender;
+
   showScreen('screen-loading');
   const loadingInterval = cycleLoadingText();
 
@@ -4277,7 +4828,7 @@ async function submitForm() {
       document.querySelector('.modal').classList.add('reading-mode');
       document.getElementById('chapter-counter').textContent = '⚠ 連線錯誤';
       const content = document.getElementById('display-ch-content');
-      if (content) content.innerHTML = `<p style="color:rgba(201,168,76,0.8); font-size:1.0rem; line-height:2;">錯誤：${err.message}<br><br>請重新整理再試。</p>`;
+      if (content) content.innerHTML = `<p style="color:rgba(201,168,76,0.8); font-size:1.0rem; line-height:2;">載入失敗，請再試一次。<br><br><button onclick="retryCurrentChapter()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.85rem;">✦ 重試</button></p>`;
     }, 50);
   }
 }
