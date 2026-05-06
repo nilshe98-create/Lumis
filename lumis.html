@@ -3384,6 +3384,7 @@ if (!isMobile) {
 // =====================
 // AUTH & SESSION SYSTEM
 // =====================
+const GOOGLE_CLIENT_ID = '951126793984-q9tb3ln1v7mgabnll7pbj1at6j1g1mog.apps.googleusercontent.com';
 const LUMIS_SESSION_KEY = 'lumis_user';
 const LUMIS_PAID_KEY = 'lumis_paid';
 const lumisUser = { loggedIn: false, email: '', name: '' };
@@ -3418,11 +3419,20 @@ function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
 function updateUIForLoggedIn() {
   document.querySelectorAll('.nav-cta').forEach(b => {
     b.textContent = '登出';
-    b.onclick = () => { localStorage.clear(); window.location.reload(); };
+    b.onclick = () => { localStorage.clear(); window.lumisUserDob = ''; window.location.reload(); };
   });
 }
 
-window.addEventListener('DOMContentLoaded', () => { if (loadSession()) updateUIForLoggedIn(); });
+window.addEventListener('DOMContentLoaded', () => {
+  checkGoogleCallback();
+  if (loadSession()) {
+    updateUIForLoggedIn();
+    try {
+      const birth = JSON.parse(localStorage.getItem('lumis_birth') || '{}');
+      if (birth.dob) { window.lumisUserDob = birth.dob; window.lumisUserTime = birth.time; window.lumisUserPlace = birth.place; window.lumisUserGender = birth.gender; }
+    } catch(e) {}
+  }
+});
 
 // =====================
 // AUTH MODAL
@@ -3445,8 +3455,30 @@ function showAuthStep(step) {
   if (el) el.style.display = 'block';
 }
 
-function handleGoogleSignup() { completeLogin({ email: 'google@lumis.demo', name: 'Google 用戶' }); }
-function handleGoogleLogin() { completeLogin({ email: 'google@lumis.demo', name: 'Google 用戶' }); }
+function handleGoogleSignup() { startGoogleLogin(); }
+function handleGoogleLogin() { startGoogleLogin(); }
+function startGoogleLogin() {
+  const clientId = GOOGLE_CLIENT_ID;
+  const redirectUri = encodeURIComponent('https://lumis-psi.vercel.app/api/auth/callback');
+  const scope = encodeURIComponent('email profile');
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&prompt=select_account`;
+  window.location.href = url;
+}
+
+// Handle Google callback — check URL for google_auth param on page load
+function checkGoogleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const googleAuth = params.get('google_auth');
+  if (googleAuth) {
+    try {
+      const user = JSON.parse(decodeURIComponent(googleAuth));
+      completeLogin({ email: user.email, name: user.name });
+      // Clean URL
+      window.history.replaceState({}, '', '/');
+    } catch(e) {}
+  }
+}
+
 function handleEmailSignup() { const e = document.getElementById('new-email').value.trim() || 'user@lumis.demo'; completeLogin({ email: e, name: e.split('@')[0] }); }
 function handleEmailLogin() { const e = document.getElementById('ret-email').value.trim() || 'user@lumis.demo'; completeLogin({ email: e, name: e.split('@')[0] }); }
 function completeLogin(user) { saveSession(user); closeAuthModal(); if (pendingAction) { const a = pendingAction; pendingAction = null; a(); } }
@@ -3500,6 +3532,14 @@ function openAllChapters() {
 // =====================
 function openSoulmateModal() {
   if (!isLoggedIn()) { openAuthModal(() => openSoulmateModal(), '解鎖靈魂配對', '請先登入或建立帳號'); return; }
+  // New user needs birth form first (no saved data yet)
+  if (!window.lumisUserDob) {
+    openModal(() => {
+      if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
+      openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); });
+    });
+    return;
+  }
   if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
   openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); });
 }
@@ -3517,6 +3557,13 @@ document.getElementById('soulmate-modal').addEventListener('click', (e) => { if 
 // =====================
 function openStarChildModal() {
   if (!isLoggedIn()) { openAuthModal(() => openStarChildModal(), '解鎖星童分析', '請先登入或建立帳號'); return; }
+  if (!window.lumisUserDob) {
+    openModal(() => {
+      if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
+      openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); });
+    });
+    return;
+  }
   if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
   openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); });
 }
@@ -3536,6 +3583,10 @@ function requireLoginForSubscription(plan) {
   if (!isLoggedIn()) {
     openAuthModal(() => requireLoginForSubscription(plan),
       plan === 'family' ? '家庭星辰訂閱' : '基礎星辰訂閱', '請先登入或建立帳號');
+    return;
+  }
+  if (!window.lumisUserDob) {
+    openModal(() => requireLoginForSubscription(plan));
     return;
   }
   if (plan === 'family') {
@@ -4094,6 +4145,16 @@ let formCallback = null;
 
 function openModal(callback) {
   formCallback = callback || null;
+
+  // Returning user — has saved birth data, skip form and go straight to callback
+  if (window.lumisUserDob && window.lumisUserTime && window.lumisUserPlace && formCallback) {
+    const cb = formCallback;
+    formCallback = null;
+    cb();
+    return;
+  }
+
+  // New user — show birth form
   document.getElementById('modal').classList.add('active');
   document.body.style.overflow = 'hidden';
   showScreen('screen-new');
@@ -4113,10 +4174,20 @@ function openModal(callback) {
   if (btn) { btn.textContent = '✦ 揭示我的星辰圖案'; btn.disabled = false; }
 }
 
-// Called after payment success — continues the reading
+// Called after payment success — continues the reading using saved birth data
 function runReading() {
-  formCallback = null; // clear so submitForm proceeds to reading
-  submitForm();
+  formCallback = null;
+  // If we have saved birth data, use it directly without opening form
+  if (window.lumisUserDob) {
+    submitForm();
+  } else {
+    // Show form first
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showScreen('screen-new');
+    const btn = document.getElementById('submit-btn');
+    if (btn) { btn.textContent = '✦ 揭示我的星辰圖案'; btn.disabled = false; }
+  }
 }
 
 function closeModal() {
@@ -4624,11 +4695,12 @@ async function submitForm() {
   const gender = document.getElementById('field-gender').value.trim();
   const userDetails = `出生日期：${dob}\n出生時間：${time}\n出生地點：${place}\n性別認同：${gender}`;
 
-  // Store for retry
+  // Store for retry and persist across sessions
   window.lumisUserDob = dob;
   window.lumisUserTime = time;
   window.lumisUserPlace = place;
   window.lumisUserGender = gender;
+  localStorage.setItem('lumis_birth', JSON.stringify({ dob, time, place, gender }));
 
   // If there's a payment/flow callback (e.g. paid chapters), call it before showing reading
   if (formCallback) {
