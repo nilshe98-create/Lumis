@@ -3530,7 +3530,7 @@ function handleGoogleSignup() { startGoogleLogin(); }
 function handleGoogleLogin() { startGoogleLogin(); }
 function startGoogleLogin() {
   const clientId = GOOGLE_CLIENT_ID;
-  const redirectUri = encodeURIComponent('https://lumis-psi.vercel.app/api/auth/callback');
+  const redirectUri = encodeURIComponent('https://lumisstar.com/api/auth/callback');
   const scope = encodeURIComponent('email profile');
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&prompt=select_account`;
   window.location.href = url;
