@@ -398,6 +398,33 @@
 
   .nav-links a:hover { color: var(--gold); }
 
+  .profile-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: transparent; border: 1px solid rgba(201,168,76,0.35);
+    padding: 7px 14px 7px 8px; cursor: pointer; transition: all 0.3s; position: relative;
+  }
+  .profile-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .profile-symbol {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: #00000A; flex-shrink: 0;
+  }
+  .profile-name { font-family: 'Noto Serif TC',serif; font-size: 0.78rem; letter-spacing: 2px; color: var(--gold); }
+  .profile-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: #050D1F; border: 1px solid rgba(201,168,76,0.3);
+    min-width: 180px; display: none; z-index: 1000;
+  }
+  .profile-dropdown.open { display: block; }
+  .profile-dropdown-item {
+    padding: 12px 16px; font-family: 'Noto Serif TC',serif;
+    font-size: 0.8rem; letter-spacing: 2px; color: var(--silver);
+    cursor: pointer; border-bottom: 1px solid rgba(201,168,76,0.1); transition: all 0.2s;
+  }
+  .profile-dropdown-item:hover { color: var(--gold); background: rgba(201,168,76,0.05); }
+  .profile-dropdown-item:last-child { border-bottom: none; }
+
   .nav-cta {
     background: transparent;
     border: 1px solid var(--gold);
@@ -3416,11 +3443,51 @@ function loadSession() {
 function getPaidFeatures() { try { return JSON.parse(localStorage.getItem(LUMIS_PAID_KEY) || '[]'); } catch(e) { return []; } }
 function markFeaturePaid(f) { const p = getPaidFeatures(); if (!p.includes(f)) { p.push(f); localStorage.setItem(LUMIS_PAID_KEY, JSON.stringify(p)); } }
 function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
+// Ancient symbols — one per user based on email
+const ANCIENT_SYMBOLS = ['𓂀','𓃭','𓅃','𓆣','𓇋','𓈖','𓉐','𓊪','𓋴','𓌀','𓍢','𓎛','𓏏','𓐍','☥','𓁹','𓂋','𓄿','𓅱','𓆑','𓇯','𓈙','𓉔','𓊽','𓋹','𓌙','𓍯','𓎼','𓐀','𓑁'];
+
+function getUserSymbol(email) {
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) hash = ((hash << 5) - hash) + email.charCodeAt(i);
+  return ANCIENT_SYMBOLS[Math.abs(hash) % ANCIENT_SYMBOLS.length];
+}
+
 function updateUIForLoggedIn() {
-  document.querySelectorAll('.nav-cta').forEach(b => {
-    b.textContent = '登出';
-    b.onclick = () => { localStorage.clear(); window.lumisUserDob = ''; window.location.reload(); };
+  const email = lumisUser.email || '';
+  const name = lumisUser.name || email.split('@')[0] || '用戶';
+  const symbol = getUserSymbol(email);
+  const displayName = name.length > 8 ? name.substring(0, 8) + '...' : name;
+
+  document.querySelectorAll('.nav-cta').forEach(btn => {
+    btn.outerHTML = `
+      <div class="profile-btn" onclick="toggleProfileDropdown(event)">
+        <div class="profile-symbol">${symbol}</div>
+        <div class="profile-name">${displayName}</div>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <div class="profile-dropdown-item" style="color:rgba(168,168,192,0.5); font-size:0.72rem; cursor:default;">${email}</div>
+          <div class="profile-dropdown-item" onclick="window.location.href='#chapters'">✦ 我的篇章</div>
+          <div class="profile-dropdown-item" onclick="window.location.href='#pricing'">☽ 我的訂閱</div>
+          <div class="profile-dropdown-item" style="color:rgba(201,168,76,0.5);" onclick="logoutUser()">登出</div>
+        </div>
+      </div>`;
   });
+}
+
+function toggleProfileDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('profile-dropdown');
+  if (dd) dd.classList.toggle('open');
+}
+
+document.addEventListener('click', () => {
+  const dd = document.getElementById('profile-dropdown');
+  if (dd) dd.classList.remove('open');
+});
+
+function logoutUser() {
+  localStorage.clear();
+  window.lumisUserDob = '';
+  window.location.reload();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
