@@ -3394,7 +3394,7 @@ let pendingChapter = 0;
 function isLoggedIn() { return lumisUser.loggedIn; }
 
 function saveSession(user) {
-  const session = { ...user, expires: Date.now() + 7 * 24 * 60 * 60 * 1000 };
+  const session = { ...user, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 };
   localStorage.setItem(LUMIS_SESSION_KEY, JSON.stringify(session));
   lumisUser.loggedIn = true;
   lumisUser.email = user.email || '';
@@ -3441,7 +3441,11 @@ function openAuthModal(action, title, subtitle) {
   pendingAction = action || null;
   document.getElementById('auth-title').textContent = title || '開始你的星辰旅程';
   document.getElementById('auth-subtitle').textContent = subtitle || '請選擇';
-  showAuthStep('who');
+
+  // If user has logged in before (has birth data saved), skip to returning login
+  const hasAccount = localStorage.getItem('lumis_birth') || localStorage.getItem('lumis_paid');
+  showAuthStep(hasAccount ? 'login-returning' : 'who');
+
   document.getElementById('auth-modal').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -3479,8 +3483,42 @@ function checkGoogleCallback() {
   }
 }
 
-function handleEmailSignup() { const e = document.getElementById('new-email').value.trim() || 'user@lumis.demo'; completeLogin({ email: e, name: e.split('@')[0] }); }
-function handleEmailLogin() { const e = document.getElementById('ret-email').value.trim() || 'user@lumis.demo'; completeLogin({ email: e, name: e.split('@')[0] }); }
+async function handleEmailSignup() {
+  const email = document.getElementById('new-email').value.trim();
+  const password = document.getElementById('new-password').value.trim();
+  if (!email || !password) { alert('請輸入電子郵件和密碼'); return; }
+  if (password.length < 6) { alert('密碼至少需要6位'); return; }
+  const btn = document.querySelector('#auth-login-new .form-submit') || document.querySelector('[onclick="handleEmailSignup()"]');
+  if (btn) { btn.textContent = '處理中...'; btn.disabled = true; }
+  try {
+    const res = await fetch('/api/auth/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'signup', email, password })
+    });
+    const data = await res.json();
+    if (data.error) { alert('註冊失敗：' + data.error); if (btn) { btn.textContent = '建立帳號 ✦'; btn.disabled = false; } return; }
+    completeLogin({ email: data.email, name: data.name });
+  } catch(e) { alert('連線失敗，請再試一次'); if (btn) { btn.textContent = '建立帳號 ✦'; btn.disabled = false; } }
+}
+
+async function handleEmailLogin() {
+  const email = document.getElementById('ret-email').value.trim();
+  const password = document.getElementById('ret-password').value.trim();
+  if (!email || !password) { alert('請輸入電子郵件和密碼'); return; }
+  const btn = document.querySelector('[onclick="handleEmailLogin()"]');
+  if (btn) { btn.textContent = '處理中...'; btn.disabled = true; }
+  try {
+    const res = await fetch('/api/auth/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'login', email, password })
+    });
+    const data = await res.json();
+    if (data.error) { alert('登入失敗：' + data.error); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } return; }
+    completeLogin({ email: data.email, name: data.name });
+  } catch(e) { alert('連線失敗，請再試一次'); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } }
+}
 function completeLogin(user) { saveSession(user); closeAuthModal(); if (pendingAction) { const a = pendingAction; pendingAction = null; a(); } }
 
 // =====================
