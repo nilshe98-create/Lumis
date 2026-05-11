@@ -1,9 +1,5 @@
-// api/line-webhook.js
-// Receives LINE follow/unfollow events and stores user IDs in Supabase
-// Set webhook URL in LINE Developers Console to: https://lumisstar.com/api/line-webhook
-
-import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -18,7 +14,7 @@ function verifySignature(body, signature) {
   return hash === signature;
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const signature = req.headers['x-line-signature'];
@@ -49,4 +45,4 @@ export default async function handler(req, res) {
   }
 
   res.status(200).json({ ok: true });
-}
+};
