@@ -1,5 +1,8 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/lumis.html" }
+  "crons": [
+    {
+      "path": "/api/horoscope",
+      "schedule": "0 22 * * *"
+    }
   ]
 }
