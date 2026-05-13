@@ -3417,6 +3417,36 @@ const LUMIS_PAID_KEY = 'lumis_paid';
 let currentPaymentProduct = null; // tracks which product is being purchased
 
 // =====================
+
+// =====================
+// REFERRAL SYSTEM
+// =====================
+function generateRefCode(email) {
+  let hash = 5381;
+  for (let i = 0; i < email.length; i++) hash = ((hash << 5) + hash) + email.charCodeAt(i);
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = ''; let h = Math.abs(hash);
+  for (let i = 0; i < 6; i++) { code += chars[h % chars.length]; h = Math.floor(h / chars.length); }
+  return code;
+}
+function getMyReferralLink() { const email = lumisUser.email; if (!email) return ''; return 'https://lumisstar.com?ref=' + generateRefCode(email); }
+function getReferralCredits() { return parseInt(localStorage.getItem('lumis_ref_credits') || '0'); }
+function captureRefFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (ref && ref.length === 6) { localStorage.setItem('lumis_pending_ref', ref.toUpperCase()); window.history.replaceState({}, '', window.location.pathname); }
+}
+function showReferralInfo() {
+  const link = getMyReferralLink();
+  if (!link) return;
+  if (navigator.clipboard) { navigator.clipboard.writeText(link).then(() => { showToast('✦ 推薦連結已複製！'); }); }
+  else { prompt('複製你的推薦連結：', link); }
+}
+function showToast(msg) {
+  let t = document.getElementById('lumis-toast');
+  if (!t) { t = document.createElement('div'); t.id = 'lumis-toast'; t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(2,8,24,0.95);border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:12px 24px;font-family:"Noto Serif TC",serif;font-size:0.82rem;letter-spacing:2px;z-index:99999;transition:opacity 0.5s;pointer-events:none;'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity = '1'; clearTimeout(t._timer); t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
 // DODO PAYMENTS - Real checkout
 // =====================
 async function handlePayment() {
@@ -3520,6 +3550,7 @@ function updateUIForLoggedIn() {
           <div class="profile-dropdown-item" style="color:rgba(168,168,192,0.5); font-size:0.72rem; cursor:default;">${email}</div>
           <div class="profile-dropdown-item" onclick="window.location.href='#chapters'">✦ 我的篇章</div>
           <div class="profile-dropdown-item" onclick="window.location.href='#pricing'">☽ 我的訂閱</div>
+          <div class="profile-dropdown-item" onclick="showReferralInfo()">🔗 推薦好友 · 得NT$150</div>
           <div class="profile-dropdown-item" style="color:rgba(201,168,76,0.5);" onclick="logoutUser()">登出</div>
         </div>
       </div>`;
@@ -3585,6 +3616,8 @@ function showAuthStep(step) {
 function handleGoogleSignup() { startGoogleLogin(); }
 function handleGoogleLogin() { startGoogleLogin(); }
 function startGoogleLogin() {
+  // Save pending chapter before OAuth redirect (page will reload)
+  if (pendingChapter) localStorage.setItem('lumis_pending_chapter', String(pendingChapter));
   const clientId = GOOGLE_CLIENT_ID;
   const redirectUri = encodeURIComponent('https://lumisstar.com/api/auth/callback');
   const scope = encodeURIComponent('email profile');
@@ -3600,8 +3633,13 @@ function checkGoogleCallback() {
     try {
       const user = JSON.parse(decodeURIComponent(googleAuth));
       completeLogin({ email: user.email, name: user.name });
-      // Clean URL
       window.history.replaceState({}, '', '/');
+      // Restore pending chapter from before OAuth redirect
+      const savedCh = parseInt(localStorage.getItem('lumis_pending_chapter') || '0');
+      if (savedCh) {
+        localStorage.removeItem('lumis_pending_chapter');
+        setTimeout(() => openChapter(savedCh), 600);
+      }
     } catch(e) {}
   }
 }
@@ -3642,7 +3680,25 @@ async function handleEmailLogin() {
     completeLogin({ email: data.email, name: data.name });
   } catch(e) { alert('連線失敗，請再試一次'); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } }
 }
-function completeLogin(user) { saveSession(user); closeAuthModal(); if (pendingAction) { const a = pendingAction; pendingAction = null; a(); } }
+function completeLogin(user) {
+  const isNewUser = !localStorage.getItem('lumis_birth') && !localStorage.getItem('lumis_paid');
+  saveSession(user);
+  closeAuthModal();
+  syncPurchasesFromServer();
+  // REFERRAL: credit referrer when new user signs up via ref link
+  const pendingRef = localStorage.getItem('lumis_pending_ref');
+  const myRef = generateRefCode(user.email);
+  if (isNewUser && pendingRef && pendingRef !== myRef) {
+    const creditedRefs = JSON.parse(localStorage.getItem('lumis_credited_refs') || '[]');
+    if (!creditedRefs.includes(pendingRef)) {
+      creditedRefs.push(pendingRef);
+      localStorage.setItem('lumis_credited_refs', JSON.stringify(creditedRefs));
+    }
+    localStorage.removeItem('lumis_pending_ref');
+    setTimeout(() => { showToast('✦ 歡迎！你的朋友已獲得 NT$150 點數獎勵'); }, 1500);
+  }
+  if (pendingAction) { const a = pendingAction; pendingAction = null; a(); }
+}
 
 // =====================
 // PAYMENT MODAL
