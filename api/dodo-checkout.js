@@ -1,15 +1,6 @@
 // api/dodo-checkout.js
 // Creates a Dodo Payments checkout session
-// Called by LUMIS frontend when user clicks Buy
 
-const DodoPayments = require('dodopayments');
-
-const client = new DodoPayments({
-  bearerToken: process.env.DODO_API_KEY,
-  environment: 'test_mode', // Change to 'live_mode' when Dodo approves your account
-});
-
-// Map product keys to Dodo product IDs
 const PRODUCT_MAP = {
   chapter2: 'pdt_0NeisQEQvTp8XraWPadOS',
   chapter3: 'pdt_0NeisdwJUSDrFgwNoE3M0',
@@ -26,23 +17,22 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const { product, email, name } = req.body;
-
-  if (!product || !email) {
-    return res.status(400).json({ error: 'Missing product or email' });
-  }
+  if (!product || !email) return res.status(400).json({ error: 'Missing product or email' });
 
   const productId = PRODUCT_MAP[product];
-  if (!productId) {
-    return res.status(400).json({ error: 'Invalid product' });
-  }
+  if (!productId) return res.status(400).json({ error: 'Invalid product' });
 
   try {
+    const dodoModule = await import('dodopayments');
+    const DodoPayments = dodoModule.default || dodoModule;
+    const client = new DodoPayments({
+      bearerToken: process.env.DODO_API_KEY,
+      environment: 'test_mode',
+    });
+
     const session = await client.checkoutSessions.create({
       product_cart: [{ product_id: productId, quantity: 1 }],
-      customer: {
-        email: email,
-        name: name || email,
-      },
+      customer: { email, name: name || email },
       billing_address: {
         street: 'N/A',
         city: 'Taipei',
@@ -51,10 +41,7 @@ module.exports = async function handler(req, res) {
         zipcode: '100',
       },
       return_url: `https://www.lumisstar.com?dodo_status=succeeded&product=${product}&email=${encodeURIComponent(email)}`,
-      metadata: {
-        product_key: product,
-        user_email: email,
-      },
+      metadata: { product_key: product, user_email: email },
     });
 
     res.status(200).json({ url: session.url });
