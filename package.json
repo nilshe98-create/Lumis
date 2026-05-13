@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
-    "@anthropic-ai/sdk": "^0.20.0"
+    "@anthropic-ai/sdk": "^0.20.0",
+    "dodopayments": "^1.0.0"
   }
 }
