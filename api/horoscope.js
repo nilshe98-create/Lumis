@@ -1,32 +1,33 @@
 // api/horoscope.js
-// Called by cron every day at 6am Taiwan time
-// Generates a daily horoscope with Claude and pushes to all active LINE subscribers
+// Called by Vercel cron every day at 6am Taiwan time (22:00 UTC)
+// Generates daily horoscope with Claude and pushes to all LINE subscribers
 
-import { createClient } from '@supabase/supabase-js';
-import Anthropic from '@anthropic-ai/sdk';
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const CRON_SECRET = process.env.CRON_SECRET; // add this to Vercel env vars
+const CRON_SECRET = process.env.CRON_SECRET;
 
 async function generateHoroscope() {
   const today = new Date().toLocaleDateString('zh-TW', {
     timeZone: 'Asia/Taipei',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    year: 'numeric', month: 'long', day: 'numeric',
   });
 
-  const message = await anthropic.messages.create({
-    model: 'claude-opus-4-20250514',
-    max_tokens: 400,
-    messages: [
-      {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-6',
+      max_tokens: 400,
+      messages: [{
         role: 'user',
         content: `你是LUMIS星座占星師。今天是${today}。
 請用繁體中文寫一段今日整體運勢，約120字。
@@ -34,11 +35,11 @@ async function generateHoroscope() {
 開頭用「✨ 今日星象｜${today}」
 結尾邀請用戶到 lumisstar.com 查看個人完整命盤。
 不要提具體日期預言，只給能量與方向指引。`,
-      },
-    ],
+      }],
+    }),
   });
-
-  return message.content[0].text;
+  const data = await res.json();
+  return data.content[0].text;
 }
 
 async function pushToUser(userId, text) {
@@ -56,18 +57,15 @@ async function pushToUser(userId, text) {
   return res.ok;
 }
 
-export default async function handler(req, res) {
-  // Security: only allow cron or manual trigger with secret
+module.exports = async function handler(req, res) {
   const authHeader = req.headers['authorization'];
   if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    // Generate horoscope
     const horoscopeText = await generateHoroscope();
 
-    // Fetch all active subscribers
     const { data: subscribers, error } = await supabase
       .from('line_subscribers')
       .select('line_user_id')
@@ -75,22 +73,15 @@ export default async function handler(req, res) {
 
     if (error) throw error;
 
-    // Push to each user
-    let sent = 0;
-    let failed = 0;
+    let sent = 0, failed = 0;
     for (const sub of subscribers) {
       const ok = await pushToUser(sub.line_user_id, horoscopeText);
       ok ? sent++ : failed++;
     }
 
-    res.status(200).json({
-      ok: true,
-      sent,
-      failed,
-      total: subscribers.length,
-    });
+    res.status(200).json({ ok: true, sent, failed, total: subscribers.length });
   } catch (err) {
     console.error('Horoscope error:', err);
     res.status(500).json({ error: err.message });
   }
-}
+};
