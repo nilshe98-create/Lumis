@@ -2186,7 +2186,7 @@
       <li><a href="#" onclick="openTerms()">服務條款</a></li>
     </ul>
     <div class="footer-symbols">☉ · ☽ · ✦ · ♄ · ♀ · ♂ · ♃</div>
-    <div class="footer-copy">© 2026 LUMIS · lumisstar.com · All rights reserved</div>
+    <div class="footer-copy">© 2026 LUMIS · lumis.space · All rights reserved</div>
   </footer>
 
 <!-- SOULMATE MODAL -->
@@ -2678,7 +2678,7 @@
     <button class="modal-close" onclick="closePrivacy()">✕</button>
     <div class="legal-title">LUMIS</div>
     <div class="legal-subtitle">隱私政策</div>
-    <div class="legal-date">最後更新：2026年5月 · lumisstar.com</div>
+    <div class="legal-date">最後更新：2026年5月 · lumis.space</div>
 
     <div class="legal-section">
       <div class="legal-section-title">✦ 前言</div>
@@ -2694,7 +2694,7 @@
         <ul>
           <li><strong>出生資料：</strong>出生日期、出生時間、出生地點</li>
           <li><strong>性別認同：</strong>您自行填寫的性別認同資訊</li>
-          <li><strong>登入資料：</strong>透過 Google 登入時，我們僅接收您的帳號識別碼與基本資料（如顯示名稱）</li>
+          <li><strong>登入資料：</strong>透過 LINE 或 Google 登入時，我們僅接收您的帳號識別碼與基本資料（如顯示名稱）</li>
           <li><strong>付款資料：</strong>所有付款均透過 ECPay 第三方金流處理，本平台不儲存您的信用卡或金融卡資訊</li>
           <li><strong>使用紀錄：</strong>您解鎖的篇章、訂閱狀態、推薦記錄</li>
         </ul>
@@ -2732,7 +2732,7 @@
         <ul>
           <li>您的資料儲存於加密的雲端伺服器，採用業界標準之 SSL/TLS 加密技術</li>
           <li>付款資訊由 ECPay 依 PCI DSS 標準處理，本平台不留存任何金融卡資料</li>
-          <li>Google 及電子郵件登入資料僅用於身份驗證，我們不儲存您的第三方帳號密碼</li>
+          <li>LINE 及 Google 登入資料僅用於身份驗證，我們不儲存您的第三方帳號密碼</li>
           <li>我們定期進行安全性檢查，確保您的資料受到妥善保護</li>
         </ul>
       </div>
@@ -2779,7 +2779,7 @@
     <button class="modal-close" onclick="closeTerms()">✕</button>
     <div class="legal-title">LUMIS</div>
     <div class="legal-subtitle">服務條款</div>
-    <div class="legal-date">最後更新：2026年5月 · lumisstar.com</div>
+    <div class="legal-date">最後更新：2026年5月 · lumis.space</div>
 
     <div class="legal-section">
       <div class="legal-section-title">✦ 服務說明</div>
@@ -2807,7 +2807,7 @@
       <div class="legal-section-title">✦ 帳號與登入</div>
       <div class="legal-text">
         <ul>
-          <li>您可透過 Google 帳號或電子郵件登入本平台</li>
+          <li>您可透過 LINE 或 Google 帳號登入本平台</li>
           <li>您的帳號資料（包含已解鎖篇章、訂閱狀態）將永久保存</li>
           <li>您對您帳號下的所有活動負完全責任</li>
           <li>如發現帳號遭到未授權使用，請立即透過「意見回饋」通知我們</li>
@@ -3196,6 +3196,10 @@
             先登入儲存進度，再選擇解鎖方案
           </div>
 
+          <button style="width:100%; padding:13px; background:transparent; border:1px solid rgba(0,197,96,0.35); color:rgba(0,197,96,0.9); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:3px; cursor:pointer; margin-bottom:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(0,197,96,0.06)'" onmouseout="this.style.background='transparent'">
+            LINE ✦ 登入並解鎖
+          </button>
+
           <button style="width:100%; padding:13px; background:transparent; border:1px solid rgba(201,168,76,0.2); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:3px; cursor:pointer; margin-bottom:16px; transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)';this.style.color='var(--soft-white)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.2)';this.style.color='var(--silver)'">
             Google ✦ 登入並解鎖
           </button>
@@ -3410,6 +3414,59 @@ if (!isMobile) {
 const GOOGLE_CLIENT_ID = '951126793984-q9tb3ln1v7mgabnll7pbj1at6j1g1mog.apps.googleusercontent.com';
 const LUMIS_SESSION_KEY = 'lumis_user';
 const LUMIS_PAID_KEY = 'lumis_paid';
+let currentPaymentProduct = null; // tracks which product is being purchased
+
+// =====================
+// DODO PAYMENTS - Real checkout
+// =====================
+async function handlePayment() {
+  const email = lumisUser?.email;
+  if (!email || !currentPaymentProduct) return;
+  const btn = document.querySelector('#payment-modal button[onclick="handlePayment()"]');
+  if (btn) { btn.textContent = '正在跳轉到付款頁...'; btn.disabled = true; }
+  try {
+    const res = await fetch('/api/dodo-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: currentPaymentProduct, email, name: lumisUser.name || email })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || '付款失敗');
+    }
+  } catch (err) {
+    if (btn) { btn.textContent = '立即付款 ✦'; btn.disabled = false; }
+    showToast('❌ ' + err.message);
+  }
+}
+
+// Handle return from Dodo checkout
+function handleDodoReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('dodo_status');
+  const product = params.get('product');
+  if (status === 'succeeded' && product) {
+    markFeaturePaid(product);
+    if (product === 'bundle') {
+      ['chapter2','chapter3','chapter4','chapter5','soulmate'].forEach(c => markFeaturePaid(c));
+    }
+    window.history.replaceState({}, '', window.location.pathname);
+    setTimeout(() => showToast('✦ 付款成功！內容已解鎖'), 800);
+  }
+}
+
+// Sync purchases from Supabase after login
+async function syncPurchasesFromServer() {
+  try {
+    const email = lumisUser?.email;
+    if (!email) return;
+    const res = await fetch('/api/check-purchases?email=' + encodeURIComponent(email));
+    const data = await res.json();
+    if (data.chapters) data.chapters.forEach(c => markFeaturePaid(c));
+  } catch(e) { /* silent fail */ }
+}
 const lumisUser = { loggedIn: false, email: '', name: '' };
 let pendingAction = null;
 let pendingChapter = 0;
@@ -3463,7 +3520,6 @@ function updateUIForLoggedIn() {
           <div class="profile-dropdown-item" style="color:rgba(168,168,192,0.5); font-size:0.72rem; cursor:default;">${email}</div>
           <div class="profile-dropdown-item" onclick="window.location.href='#chapters'">✦ 我的篇章</div>
           <div class="profile-dropdown-item" onclick="window.location.href='#pricing'">☽ 我的訂閱</div>
-          <div class="profile-dropdown-item" onclick="showReferralInfo()">🔗 推薦好友 · 得NT$150</div>
           <div class="profile-dropdown-item" style="color:rgba(201,168,76,0.5);" onclick="logoutUser()">登出</div>
         </div>
       </div>`;
@@ -3489,9 +3545,11 @@ function logoutUser() {
 
 window.addEventListener('DOMContentLoaded', () => {
   captureRefFromURL();
+  handleDodoReturn();
   checkGoogleCallback();
   if (loadSession()) {
     updateUIForLoggedIn();
+    syncPurchasesFromServer();
     try {
       const birth = JSON.parse(localStorage.getItem('lumis_birth') || '{}');
       if (birth.dob) { window.lumisUserDob = birth.dob; window.lumisUserTime = birth.time; window.lumisUserPlace = birth.place; window.lumisUserGender = birth.gender; }
@@ -3584,105 +3642,14 @@ async function handleEmailLogin() {
     completeLogin({ email: data.email, name: data.name });
   } catch(e) { alert('連線失敗，請再試一次'); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } }
 }
-function completeLogin(user) {
-  const isNewUser = !localStorage.getItem('lumis_birth') && !localStorage.getItem('lumis_paid');
-  saveSession(user);
-  closeAuthModal();
-  // =====================
-  // REFERRAL: credit referrer when new user signs up via ref link
-  // =====================
-  const pendingRef = localStorage.getItem('lumis_pending_ref');
-  const myRef = generateRefCode(user.email);
-  if (isNewUser && pendingRef && pendingRef !== myRef) {
-    // Credit the referrer (store credited refs so we don't double-credit)
-    const creditedRefs = JSON.parse(localStorage.getItem('lumis_credited_refs') || '[]');
-    if (!creditedRefs.includes(pendingRef)) {
-      creditedRefs.push(pendingRef);
-      localStorage.setItem('lumis_credited_refs', JSON.stringify(creditedRefs));
-    }
-    localStorage.removeItem('lumis_pending_ref');
-    // Show welcome bonus message
-    setTimeout(() => {
-      showToast('✦ 歡迎！你的朋友已獲得 NT$150 點數獎勵');
-    }, 1500);
-  }
-  // Credit this user if they are the referrer and someone used their link
-  addReferralCredit(myRef);
-  if (pendingAction) { const a = pendingAction; pendingAction = null; a(); }
-}
-
-// =====================
-// REFERRAL SYSTEM
-// =====================
-function generateRefCode(email) {
-  let hash = 5381;
-  for (let i = 0; i < email.length; i++) hash = ((hash << 5) + hash) + email.charCodeAt(i);
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  let h = Math.abs(hash);
-  for (let i = 0; i < 6; i++) { code += chars[h % chars.length]; h = Math.floor(h / chars.length); }
-  return code;
-}
-
-function getMyReferralLink() {
-  const email = lumisUser.email;
-  if (!email) return '';
-  return 'https://lumisstar.com?ref=' + generateRefCode(email);
-}
-
-function getReferralCredits() {
-  return parseInt(localStorage.getItem('lumis_ref_credits') || '0');
-}
-
-function addReferralCredit(myRefCode) {
-  // Check if anyone credited this user (stored from previous sessions on other devices — localStorage only for now)
-  const credits = getReferralCredits();
-  return credits;
-}
-
-function captureRefFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if (ref && ref.length === 6) {
-    localStorage.setItem('lumis_pending_ref', ref.toUpperCase());
-    // Clean URL
-    window.history.replaceState({}, '', window.location.pathname);
-  }
-}
-
-function showReferralInfo() {
-  const link = getMyReferralLink();
-  if (!link) return;
-  const credits = getReferralCredits();
-  const msg = `✦ 你的推薦連結\n\n${link}\n\n每推薦一位朋友完成登入，你獲得 NT$150 點數（可折抵任何篇章）\n\n目前點數：NT$${credits * 150}`;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => {
-      showToast('✦ 推薦連結已複製！');
-    });
-  } else {
-    prompt('複製你的推薦連結：', link);
-  }
-}
-
-function showToast(msg) {
-  let t = document.getElementById('lumis-toast');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'lumis-toast';
-    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(2,8,24,0.95);border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:12px 24px;font-family:"Noto Serif TC",serif;font-size:0.82rem;letter-spacing:2px;z-index:99999;transition:opacity 0.5s;pointer-events:none;';
-    document.body.appendChild(t);
-  }
-  t.textContent = msg;
-  t.style.opacity = '1';
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
-}
+function completeLogin(user) { saveSession(user); closeAuthModal(); if (pendingAction) { const a = pendingAction; pendingAction = null; a(); } }
 
 // =====================
 // PAYMENT MODAL
 // =====================
 let paymentCallback = null;
-function openPaymentModal(title, price, desc, successMsg, callback) {
+function openPaymentModal(title, price, desc, successMsg, callback, productKey) {
+  currentPaymentProduct = productKey || null;
   document.getElementById('payment-title').textContent = title || '解鎖篇章';
   document.getElementById('payment-price').textContent = price || 'NT$150';
   document.getElementById('payment-desc').textContent = desc || '一次解鎖，永久保存';
@@ -3712,13 +3679,13 @@ function afterFormForChapter(num) {
   if (hasFeaturePaid('chapter' + num)) { runReading(); return; }
   openPaymentModal('解鎖第' + ['','一','二','三','四','五'][num] + '章', 'NT$150', '一次解鎖，永久保存',
     '第' + ['','一','二','三','四','五'][num] + '章已解鎖！<br>星辰正在為你準備',
-    () => { markFeaturePaid('chapter' + num); runReading(); });
+    () => { markFeaturePaid('chapter' + num); runReading(); }, 'chapter' + num);
 }
 function openAllChapters() {
   if (!isLoggedIn()) { openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
   openModal(() => {
     if (hasFeaturePaid('all5chapters')) { runReading(); return; }
-    openPaymentModal('解鎖全部五章', 'NT$600', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); });
+    openPaymentModal('解鎖全部五章', 'NT$600', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); }, 'bundle');
   });
 }
 
@@ -3731,12 +3698,12 @@ function openSoulmateModal() {
   if (!window.lumisUserDob) {
     openModal(() => {
       if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
-      openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); });
+      openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
     });
     return;
   }
   if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
-  openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); });
+  openPaymentModal('解鎖靈魂配對', 'NT$500', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
 }
 function _openSoulmateForm() {
   document.getElementById('soulmate-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -3755,12 +3722,12 @@ function openStarChildModal() {
   if (!window.lumisUserDob) {
     openModal(() => {
       if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
-      openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); });
+      openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
     });
     return;
   }
   if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
-  openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); });
+  openPaymentModal('解鎖星童分析', 'NT$400', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
 }
 function _openStarChildForm() {
   document.getElementById('star-child-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -3788,12 +3755,12 @@ function requireLoginForSubscription(plan) {
     if (hasFeaturePaid('family-subscription')) { openFamilyModal(); return; }
     openPaymentModal('家庭訂閱方案', 'NT$300', '每月自動續訂，含2位孩子',
       '家庭訂閱成功！<br>請填寫孩子的出生資料',
-      () => { markFeaturePaid('family-subscription'); openFamilyModal(); });
+      () => { markFeaturePaid('family-subscription'); openFamilyModal(); }, 'family_sub');
   } else {
     if (hasFeaturePaid('subscription')) { alert('你已訂閱基礎方案！✦'); return; }
     openPaymentModal('基礎訂閱方案', 'NT$200', '每月自動續訂，隨時可取消',
       '訂閱成功！<br>每天早上6點星辰運勢將送達',
-      () => { markFeaturePaid('subscription'); alert('訂閱成功！✦'); });
+      () => { markFeaturePaid('subscription'); alert('訂閱成功！✦'); }, 'basic_sub');
   }
 }
 
@@ -3934,7 +3901,7 @@ async function submitSoulmate() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1500,
         system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析配對。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單人話說出深刻真相。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位最多2-3句，簡潔有力。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
         messages: [{ role: 'user', content: `對方：${sDob} ${sTime} ${sPlace} ${sGender}` }]
@@ -4012,10 +3979,10 @@ async function submitStarChild() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1500,
         system: `你是 LUMIS 星童解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析孩子。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單溫暖的話說出深刻真相。每個欄位最多2-3句，簡潔有力，像一個真正了解這個孩子的人在說話。只回傳純JSON：{"title":"一句話描述這個孩子的靈魂","who":"這個孩子是誰，性格天賦合在一起，2-3句，非常具體，讓父母說這說的就是我的孩子","future":"孩子的未來方向，包含適合的工作環境和天賦發光的時間點，2-3句，具體但不限制","bond":"親子關係，2句，說出父母和孩子之間真實的動力","message":"給父母的話，2句，溫暖有力，讓父母感動"}`,
-        messages: [{ role: 'user', content: `父母：${window.lumisUserDob||''} ${window.lumisUserTime||''} ${window.lumisUserPlace||''}\n孩子：${lsDob} ${lsTime} ${lsPlace} ${lsGender}` }]
+        messages: [{ role: 'user', content: `父母：${myDob} ${myTime} ${myPlace}\n孩子：${lsDob} ${lsTime} ${lsPlace} ${lsGender}` }]
       }));
     });
 
@@ -4076,7 +4043,7 @@ function selectGender(prefix, value) {
 // =====================
 function downloadSoulmateReport(c) {
   const SHARED_CSS = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.25);background:rgba(2,8,24,0.95);padding:60px 52px;position:relative;}.top-line,.bottom-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}.top-line{top:0;}.bottom-line{bottom:0;}.logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}.sym{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}.score{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:#C9A84C;text-align:center;line-height:1;margin-bottom:8px;}.title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:#E8E8F0;text-align:center;margin-bottom:28px;line-height:1.7;}.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);margin:0 0 24px;}.section{padding:16px 20px;margin-bottom:12px;border-left:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.04);}.section-title{font-size:0.55rem;letter-spacing:3px;color:#8B6914;margin-bottom:8px;}.section-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#A8A8C0;line-height:1.9;}.message{padding:20px;border:1px solid rgba(201,168,76,0.2);text-align:center;margin:20px 0;}.message-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.12rem;color:#E8E8F0;line-height:1.9;}.footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);margin-top:28px;}.print-note{text-align:center;font-size:0.76rem;color:rgba(168,168,192,0.4);margin-top:16px;letter-spacing:1px;}@media print{.print-note{display:none;}}`;
-  const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 靈魂配對報告</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>${SHARED_CSS}</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="sym">☽ · · · ☽ · · · ☽</div><div class="score">${c.score}</div><div class="title">${c.title}</div><div class="divider"></div><div class="section"><div class="section-title">✦ 你們是什麼樣的組合</div><div class="section-text">${c.combo}</div></div><div class="section"><div class="section-title">✦ 你們最強的地方</div><div class="section-text">${c.strength}</div></div><div class="section"><div class="section-title">♄ 你們需要注意的事</div><div class="section-text">${c.challenge}</div></div><div class="section"><div class="section-title">♃ 你們的未來</div><div class="section-text">${c.future}</div></div><div class="message"><div class="message-text">${c.message}</div></div><div class="footer">你的光，早已寫在星辰之中 · lumisstar.com</div><div class="print-note">✦ 儲存為PDF：按 Ctrl+P → 選擇「儲存為PDF」</div><div class="bottom-line"></div></div></body></html>`;
+  const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 靈魂配對報告</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>${SHARED_CSS}</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="sym">☽ · · · ☽ · · · ☽</div><div class="score">${c.score}</div><div class="title">${c.title}</div><div class="divider"></div><div class="section"><div class="section-title">✦ 你們是什麼樣的組合</div><div class="section-text">${c.combo}</div></div><div class="section"><div class="section-title">✦ 你們最強的地方</div><div class="section-text">${c.strength}</div></div><div class="section"><div class="section-title">♄ 你們需要注意的事</div><div class="section-text">${c.challenge}</div></div><div class="section"><div class="section-title">♃ 你們的未來</div><div class="section-text">${c.future}</div></div><div class="message"><div class="message-text">${c.message}</div></div><div class="footer">你的光，早已寫在星辰之中 · lumis.space</div><div class="print-note">✦ 儲存為PDF：按 Ctrl+P → 選擇「儲存為PDF」</div><div class="bottom-line"></div></div></body></html>`;
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -4088,7 +4055,7 @@ function downloadSoulmateReport(c) {
 
 function downloadStarChildReport(c) {
   const SHARED_CSS = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.25);background:rgba(2,8,24,0.95);padding:60px 52px;position:relative;}.top-line,.bottom-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}.top-line{top:0;}.bottom-line{bottom:0;}.logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}.sym{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}.title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:#E8E8F0;text-align:center;margin-bottom:28px;line-height:1.7;}.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);margin:0 0 24px;}.section{padding:18px 20px;margin-bottom:12px;border-left:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.04);}.section-title{font-size:0.55rem;letter-spacing:3px;color:#8B6914;margin-bottom:10px;}.section-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#A8A8C0;line-height:2;}.message{padding:20px;border:1px solid rgba(201,168,76,0.2);text-align:center;margin:20px 0;}.message-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.12rem;color:#E8E8F0;line-height:1.9;}.footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);margin-top:28px;}.print-note{text-align:center;font-size:0.76rem;color:rgba(168,168,192,0.4);margin-top:16px;letter-spacing:1px;}@media print{.print-note{display:none;}}`;
-  const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 星童報告</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>${SHARED_CSS}</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="sym">✦ · · · ✦ · · · ✦</div><div class="title">${c.title}</div><div class="divider"></div><div class="section"><div class="section-title">☉ 這個孩子是誰</div><div class="section-text">${c.who}</div></div><div class="section"><div class="section-title">♃ 未來的方向</div><div class="section-text">${c.future}</div></div><div class="section"><div class="section-title">☽ 你們之間</div><div class="section-text">${c.bond}</div></div><div class="message"><div class="message-text">${c.message}</div></div><div class="footer">你的光，早已寫在星辰之中 · lumisstar.com</div><div class="print-note">✦ 儲存為PDF：按 Ctrl+P → 選擇「儲存為PDF」</div><div class="bottom-line"></div></div></body></html>`;
+  const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 星童報告</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>${SHARED_CSS}</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="sym">✦ · · · ✦ · · · ✦</div><div class="title">${c.title}</div><div class="divider"></div><div class="section"><div class="section-title">☉ 這個孩子是誰</div><div class="section-text">${c.who}</div></div><div class="section"><div class="section-title">♃ 未來的方向</div><div class="section-text">${c.future}</div></div><div class="section"><div class="section-title">☽ 你們之間</div><div class="section-text">${c.bond}</div></div><div class="message"><div class="message-text">${c.message}</div></div><div class="footer">你的光，早已寫在星辰之中 · lumis.space</div><div class="print-note">✦ 儲存為PDF：按 Ctrl+P → 選擇「儲存為PDF」</div><div class="bottom-line"></div></div></body></html>`;
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -4188,7 +4155,7 @@ async function testCompatibility() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1000,
         system: `你是 LUMIS 靈魂配對解讀師。根據兩人出生資料生成非常深度的配對分析。
 繁體中文，每行最多10字，用\\n換行，大量留白。
@@ -4247,7 +4214,7 @@ async function testChildren() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1000,
         system: `你是 LUMIS 星童解讀師。根據孩子出生資料生成溫暖的個人分析。
 繁體中文，每行最多12字，用\\n換行。
@@ -4592,7 +4559,7 @@ async function retryCurrentChapter() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1000,
         system: LUMIS_PROMPT,
         messages: [{ role: 'user', content: `${userDetails}\n\n現在只寫第${num}章「${title}」。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
@@ -4649,7 +4616,7 @@ function downloadCurrentChapter() {
 .note{padding:16px 20px;border-left:2px solid #8B6914;background:rgba(201,168,76,0.03);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:#A8A8C0;line-height:1.8;margin-bottom:32px;}
 .footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);}
 .bottom-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);}
-</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="symbol">✦ · · · ✦ · · · ✦</div><div class="ch-num">✦ 第${numChinese}章 ✦</div><div class="ch-title">${title}</div><div class="content">${contentHTML}</div><div class="note">${note}</div><div class="footer">你的光，早已寫在星辰之中 · lumisstar.com</div><div class="bottom-line"></div></div></body></html>`;
+</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="symbol">✦ · · · ✦ · · · ✦</div><div class="ch-num">✦ 第${numChinese}章 ✦</div><div class="ch-title">${title}</div><div class="content">${contentHTML}</div><div class="note">${note}</div><div class="footer">你的光，早已寫在星辰之中 · lumis.space</div><div class="bottom-line"></div></div></body></html>`;
 
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -4860,7 +4827,7 @@ body {
 
   <div class="footer">
     <div class="footer-logo">LUMIS</div>
-    <div class="footer-text">✦ · · · ✦ · lumisstar.com · ✦ · · · ✦</div>
+    <div class="footer-text">✦ · · · ✦ · lumis.space · ✦ · · · ✦</div>
   </div>
 
 </div>
@@ -5030,7 +4997,7 @@ async function submitForm() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1500,
         system: prompt,
         messages: [{ role: 'user', content: userMsg }]
