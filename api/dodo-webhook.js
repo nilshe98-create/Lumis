@@ -1,6 +1,5 @@
 // api/dodo-webhook.js
 // Receives payment webhooks from Dodo Payments
-// Stores purchase in Supabase to unlock content for the user
 
 const { createClient } = require('@supabase/supabase-js');
 
@@ -9,7 +8,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Map product keys to chapter names
 const PRODUCT_CHAPTERS = {
   'pdt_0NeisQEQvTp8XraWPadOS': 'chapter2',
   'pdt_0NeisdwJUSDrFgwNoE3M0': 'chapter3',
@@ -22,6 +20,24 @@ const PRODUCT_CHAPTERS = {
   'pdt_0Neito7jdtmNb7Jt2Qfex': 'family_sub',
 };
 
+async function unlockChapter(email, chapter, paymentId) {
+  if (chapter === 'bundle') {
+    // Bundle unlocks chapters 2-5, soulmate, starchild
+    await supabase.from('purchases').upsert([
+      { user_email: email, chapter: 'chapter2', payment_id: paymentId },
+      { user_email: email, chapter: 'chapter3', payment_id: paymentId },
+      { user_email: email, chapter: 'chapter4', payment_id: paymentId },
+      { user_email: email, chapter: 'chapter5', payment_id: paymentId },
+      { user_email: email, chapter: 'soulmate', payment_id: paymentId },
+      { user_email: email, chapter: 'starchild', payment_id: paymentId },
+    ], { onConflict: 'user_email,chapter' });
+  } else {
+    await supabase.from('purchases').upsert([
+      { user_email: email, chapter, payment_id: paymentId },
+    ], { onConflict: 'user_email,chapter' });
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -29,39 +45,23 @@ module.exports = async function handler(req, res) {
 
   try {
     const eventType = event.type;
+    console.log('Dodo webhook event:', eventType);
 
-    // Handle successful one-time payment
+    // One-time payment succeeded
     if (eventType === 'payment.succeeded') {
       const payment = event.data;
       const email = payment.customer?.email;
       const productId = payment.product_cart?.[0]?.product_id;
       const chapter = PRODUCT_CHAPTERS[productId];
-
-      if (email && chapter) {
-        // If bundle, unlock all chapters
-        if (chapter === 'bundle') {
-          await supabase.from('purchases').upsert([
-            { user_email: email, chapter: 'chapter2', payment_id: payment.payment_id },
-            { user_email: email, chapter: 'chapter3', payment_id: payment.payment_id },
-            { user_email: email, chapter: 'chapter4', payment_id: payment.payment_id },
-            { user_email: email, chapter: 'chapter5', payment_id: payment.payment_id },
-            { user_email: email, chapter: 'soulmate', payment_id: payment.payment_id },
-          ], { onConflict: 'user_email,chapter' });
-        } else {
-          await supabase.from('purchases').upsert([
-            { user_email: email, chapter, payment_id: payment.payment_id },
-          ], { onConflict: 'user_email,chapter' });
-        }
-      }
+      if (email && chapter) await unlockChapter(email, chapter, payment.payment_id);
     }
 
-    // Handle subscription activated
-    if (eventType === 'subscription.active') {
+    // Subscription activated (Dodo uses both names)
+    if (eventType === 'subscription.active' || eventType === 'subscription.activated') {
       const sub = event.data;
       const email = sub.customer?.email;
       const productId = sub.product_id;
       const chapter = PRODUCT_CHAPTERS[productId];
-
       if (email && chapter) {
         await supabase.from('purchases').upsert([
           { user_email: email, chapter, subscription_id: sub.subscription_id },
@@ -69,18 +69,15 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // Handle subscription cancelled
-    if (eventType === 'subscription.cancelled') {
+    // Subscription cancelled
+    if (eventType === 'subscription.cancelled' || eventType === 'subscription.canceled') {
       const sub = event.data;
       const email = sub.customer?.email;
       const productId = sub.product_id;
       const chapter = PRODUCT_CHAPTERS[productId];
-
       if (email && chapter) {
-        await supabase.from('purchases')
-          .delete()
-          .eq('user_email', email)
-          .eq('chapter', chapter);
+        await supabase.from('purchases').delete()
+          .eq('user_email', email).eq('chapter', chapter);
       }
     }
 
