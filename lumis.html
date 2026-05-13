@@ -2969,7 +2969,7 @@
         <label class="form-label">🕐 出生時間</label>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
           <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:200px;">
-            <select id="field-time-h" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;">
+            <select id="field-time-h" class="form-input" onchange="syncTimePicker()" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;">
               <option value="">時</option>
               <option value="1">1</option><option value="2">2</option><option value="3">3</option>
               <option value="4">4</option><option value="5">5</option><option value="6">6</option>
@@ -2977,7 +2977,7 @@
               <option value="10">10</option><option value="11">11</option><option value="12">12</option>
             </select>
             <span style="color:var(--gold); font-size:1.2rem; font-weight:bold;">:</span>
-            <select id="field-time-m" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;">
+            <select id="field-time-m" class="form-input" onchange="syncTimePicker()" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;">
               <option value="">分</option>
               <option value="00">00</option><option value="01">01</option><option value="02">02</option>
               <option value="03">03</option><option value="04">04</option><option value="05">05</option>
@@ -3000,7 +3000,7 @@
               <option value="54">54</option><option value="55">55</option><option value="56">56</option>
               <option value="57">57</option><option value="58">58</option><option value="59">59</option>
             </select>
-            <select id="field-time-ampm" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;">
+            <select id="field-time-ampm" class="form-input" onchange="syncTimePicker()" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;">
               <option value="">上午/下午</option>
               <option value="AM">AM 上午</option>
               <option value="PM">PM 下午</option>
