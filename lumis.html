@@ -1863,7 +1863,7 @@
         <div class="step-number">✦ 第三步 ✦</div>
         <span class="step-icon">🔓</span>
         <div class="step-title">探索更多篇章</div>
-        <div class="step-desc">每章 NT$150<br>或一次解鎖全部五章<br>NT$600</div>
+        <div class="step-desc">每章 NT$150<br>或一次解鎖全部五章<br>NT$500 <span style="text-decoration:line-through; opacity:0.45; font-size:0.85em;">NT$600</span><br><span style="font-size:0.8em; color:var(--gold); letter-spacing:1px;">省下 NT$100</span></div>
       </div>
       <div class="step reveal">
         <div class="step-number">✦ 第四步 ✦</div>
@@ -1943,7 +1943,9 @@
       <div style="font-size:0.7rem; letter-spacing:3px; color:var(--silver); margin-bottom:20px;">或者</div>
       <div style="display:inline-block; border:1px solid rgba(201,168,76,0.3); padding:40px 60px; background:rgba(2,8,24,0.7);">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">一次解鎖全部五章</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:8px;">NT$600</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--silver); text-decoration:line-through; opacity:0.45; margin-bottom:4px;">NT$600</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:6px;">NT$500</div>
+        <div style="display:inline-block; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.35); color:var(--gold); font-size:0.7rem; letter-spacing:3px; padding:4px 14px; margin-bottom:16px;">省下 NT$100</div>
         <div style="font-size:1.05rem; color:var(--silver); margin-bottom:24px; letter-spacing:2px;">你完整的星辰圖案，一次擁有</div>
         <button class="hero-btn" onclick="openAllChapters()"><span>✦ 解鎖完整故事</span></button>
       </div>
@@ -2803,7 +2805,7 @@
       <div class="legal-text">
         <ul>
           <li>單章解鎖：<strong>NT$150</strong> 每章，永久有效</li>
-          <li>全部五章：<strong>NT$600</strong> 一次購買，永久有效</li>
+          <li>全部五章：<strong>NT$500</strong> <span style="text-decoration:line-through; opacity:0.45; font-size:0.9em;">NT$600</span> 一次購買，永久有效（省下 NT$100）</li>
           <li>靈魂配對：<strong>NT$500</strong> 每次，每換新對象需重新購買</li>
           <li>星童完整檔案：<strong>NT$400</strong> 每位孩子，永久有效</li>
           <li>基礎方案訂閱：<strong>NT$200</strong> 每月</li>
@@ -3168,7 +3170,9 @@
             <div style="padding:16px 12px; border:1px solid var(--gold); background:rgba(201,168,76,0.05); position:relative;">
               <div style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--black); font-size:0.55rem; padding:3px 12px; letter-spacing:2px; white-space:nowrap;">最受歡迎</div>
               <div style="font-size:0.82rem; letter-spacing:3px; color:var(--silver); margin-bottom:8px;">全部解鎖</div>
-              <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--gold); margin-bottom:4px;">NT$600</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--silver); text-decoration:line-through; opacity:0.4; line-height:1;">NT$600</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--gold); margin-bottom:2px;">NT$500</div>
+              <div style="font-size:0.65rem; color:var(--gold); letter-spacing:2px; margin-bottom:2px;">省下 NT$100</div>
               <div style="font-size:0.74rem; color:var(--silver); letter-spacing:1px;">全五章</div>
             </div>
           </div>
@@ -3625,8 +3629,8 @@ function checkGoogleCallback() {
 async function handleEmailSignup() {
   const email = document.getElementById('new-email').value.trim();
   const password = document.getElementById('new-password').value.trim();
-  if (!email || !password) { alert('請輸入電子郵件和密碼'); return; }
-  if (password.length < 6) { alert('密碼至少需要6位'); return; }
+  if (!email || !password) { showToast('⚠ 請輸入電子郵件和密碼'); return; }
+  if (password.length < 6) { showToast('⚠ 密碼至少需要6位'); return; }
   const btn = document.querySelector('#auth-login-new .form-submit') || document.querySelector('[onclick="handleEmailSignup()"]');
   if (btn) { btn.textContent = '處理中...'; btn.disabled = true; }
   try {
@@ -3636,15 +3640,15 @@ async function handleEmailSignup() {
       body: JSON.stringify({ type: 'signup', email, password })
     });
     const data = await res.json();
-    if (data.error) { alert('註冊失敗：' + data.error); if (btn) { btn.textContent = '建立帳號 ✦'; btn.disabled = false; } return; }
+    if (data.error) { showToast('⚠ 註冊失敗：' + data.error); if (btn) { btn.textContent = '建立帳號 ✦'; btn.disabled = false; } return; }
     completeLogin({ email: data.email, name: data.name });
-  } catch(e) { alert('連線失敗，請再試一次'); if (btn) { btn.textContent = '建立帳號 ✦'; btn.disabled = false; } }
+  } catch(e) { showToast('⚠ 連線失敗，請再試一次'); if (btn) { btn.textContent = '建立帳號 ✦'; btn.disabled = false; } }
 }
 
 async function handleEmailLogin() {
   const email = document.getElementById('ret-email').value.trim();
   const password = document.getElementById('ret-password').value.trim();
-  if (!email || !password) { alert('請輸入電子郵件和密碼'); return; }
+  if (!email || !password) { showToast('⚠ 請輸入電子郵件和密碼'); return; }
   const btn = document.querySelector('[onclick="handleEmailLogin()"]');
   if (btn) { btn.textContent = '處理中...'; btn.disabled = true; }
   try {
@@ -3654,9 +3658,9 @@ async function handleEmailLogin() {
       body: JSON.stringify({ type: 'login', email, password })
     });
     const data = await res.json();
-    if (data.error) { alert('登入失敗：' + data.error); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } return; }
+    if (data.error) { showToast('⚠ 登入失敗：' + data.error); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } return; }
     completeLogin({ email: data.email, name: data.name });
-  } catch(e) { alert('連線失敗，請再試一次'); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } }
+  } catch(e) { showToast('⚠ 連線失敗，請再試一次'); if (btn) { btn.textContent = '登入 ✦'; btn.disabled = false; } }
 }
 function completeLogin(user) {
   const isNewUser = !localStorage.getItem('lumis_birth') && !localStorage.getItem('lumis_paid');
@@ -3718,7 +3722,7 @@ function openAllChapters() {
   if (!isLoggedIn()) { openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
   openModal(() => {
     if (hasFeaturePaid('all5chapters')) { runReading(); return; }
-    openPaymentModal('解鎖全部五章', 'NT$600', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); }, 'bundle');
+    openPaymentModal('解鎖全部五章', 'NT$500', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); }, 'bundle');
   });
 }
 
@@ -3790,10 +3794,10 @@ function requireLoginForSubscription(plan) {
       '家庭訂閱成功！<br>請填寫孩子的出生資料',
       () => { markFeaturePaid('family-subscription'); openFamilyModal(); }, 'family_sub');
   } else {
-    if (hasFeaturePaid('subscription')) { alert('你已訂閱基礎方案！✦'); return; }
+    if (hasFeaturePaid('subscription')) { showToast('✦ 你已訂閱基礎方案！'); return; }
     openPaymentModal('基礎訂閱方案', 'NT$200', '每月自動續訂，隨時可取消',
       '訂閱成功！<br>每天早上6點星辰運勢將送達',
-      () => { markFeaturePaid('subscription'); alert('訂閱成功！✦'); }, 'basic_sub');
+      () => { markFeaturePaid('subscription'); showToast('✦ 訂閱成功！歡迎加入 LUMIS'); }, 'basic_sub');
   }
 }
 
@@ -3900,9 +3904,9 @@ function removeFamilyChild(n) {
 
 function submitFamilyHoroscope() {
   const child1Dob = document.getElementById('fc-dob-1').value.trim();
-  if (!child1Dob) { alert('請填寫至少孩子1的出生日期'); return; }
+  if (!child1Dob) { showToast('⚠ 請填寫至少孩子1的出生日期'); return; }
   closeFamilyModal();
-  alert('家庭訂閱資料已儲存！每天早上6點星辰運勢將送達 ✦');
+  showToast('✦ 家庭訂閱資料已儲存！每天早上6點星辰運勢將送達你的 LINE');
 }
 
 
@@ -3914,7 +3918,7 @@ async function submitSoulmate() {
   const sGender = document.getElementById('s-gender').value || '不透露';
 
   if (!sDob || !sPlace) {
-    alert('請填寫對方的出生日期和地點');
+    showToast('⚠ 請填寫對方的出生日期和地點');
     return;
   }
 
@@ -3994,7 +3998,7 @@ async function submitStarChild() {
   const lsGender = document.getElementById('ls-gender').value.trim();
 
   if (!lsDob || !lsPlace) {
-    alert('請填寫孩子的出生日期和地點');
+    showToast('⚠ 請填寫孩子的出生日期和地點');
     return;
   }
 
@@ -4539,9 +4543,9 @@ function showChapter(index) {
     preview.style.display = 'none';
   }
 
-  // Show save prompt after chapter 2 - HIDDEN FOR TESTING
+  // Show save prompt after chapter 2
   const savePrompt = document.getElementById('save-after-ch2');
-  if (savePrompt) savePrompt.style.display = 'none';
+  if (savePrompt && index === 1) savePrompt.style.display = 'block';
 
   // Show download button when content loaded, retry when failed
   const dlBtn = document.getElementById('display-download-btn');
@@ -4955,12 +4959,6 @@ async function submitForm() {
     return;
   }
 
-  // Store for retry
-  window.lumisUserDob = dob;
-  window.lumisUserTime = time;
-  window.lumisUserPlace = place;
-  window.lumisUserGender = gender;
-
   showScreen('screen-loading');
   const loadingInterval = cycleLoadingText();
 
@@ -5091,11 +5089,8 @@ async function submitForm() {
   try {
     // STEP 1: Get real chart from VedAstro
     document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
-    console.log('🔍 LUMIS DEBUG: Calling VedAstro with birth:', dob, time, place);
     const vedicChart = await getVedAstroChart(dob, time, place);
-    console.log('✅ LUMIS DEBUG: VedAstro returned real chart data:', vedicChart);
     const chartStr = JSON.stringify(vedicChart.Payload || vedicChart).substring(0, 12000);
-    console.log('📤 LUMIS DEBUG: Sending to Claude ' + chartStr.length + ' chars of chart data');
 
     // STEP 2: Generate chapters using real chart
     const allReadings = {};
