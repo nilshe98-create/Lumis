@@ -3600,6 +3600,8 @@ function handleGoogleLogin() { startGoogleLogin(); }
 function startGoogleLogin() {
   // Save pending chapter before OAuth redirect (page will reload)
   if (pendingChapter) localStorage.setItem('lumis_pending_chapter', String(pendingChapter));
+  // Save non-chapter pending actions (soulmate, starchild, bundle, subscription)
+  if (window._pendingOAuthAction) localStorage.setItem('lumis_pending_action', window._pendingOAuthAction);
   const clientId = GOOGLE_CLIENT_ID;
   const redirectUri = encodeURIComponent('https://lumisstar.com/api/auth/callback');
   const scope = encodeURIComponent('email profile');
@@ -3618,9 +3620,20 @@ function checkGoogleCallback() {
       window.history.replaceState({}, '', '/');
       // Restore pending chapter from before OAuth redirect
       const savedCh = parseInt(localStorage.getItem('lumis_pending_chapter') || '0');
+      const savedAction = localStorage.getItem('lumis_pending_action');
       if (savedCh) {
         localStorage.removeItem('lumis_pending_chapter');
-        setTimeout(() => openChapter(savedCh), 600);
+        setTimeout(() => openChapter(savedCh), 800);
+      } else if (savedAction) {
+        localStorage.removeItem('lumis_pending_action');
+        setTimeout(() => {
+          if (savedAction === 'soulmate') openSoulmateModal();
+          else if (savedAction === 'starchild') openStarChildModal();
+          else if (savedAction === 'bundle') openAllChapters();
+          else if (savedAction === 'subscription') requireLoginForSubscription('basic');
+          else if (savedAction === 'subscription_basic') requireLoginForSubscription('basic');
+          else if (savedAction === 'subscription_family') requireLoginForSubscription('family');
+        }, 800);
       }
     } catch(e) {}
   }
@@ -3719,7 +3732,7 @@ function afterFormForChapter(num) {
     () => { markFeaturePaid('chapter' + num); runReading(); }, 'chapter' + num);
 }
 function openAllChapters() {
-  if (!isLoggedIn()) { openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
+  if (!isLoggedIn()) { window._pendingOAuthAction = 'bundle'; openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
   openModal(() => {
     if (hasFeaturePaid('all5chapters')) { runReading(); return; }
     openPaymentModal('解鎖全部五章', 'NT$500', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); }, 'bundle');
@@ -3730,7 +3743,7 @@ function openAllChapters() {
 // SOULMATE
 // =====================
 function openSoulmateModal() {
-  if (!isLoggedIn()) { openAuthModal(() => openSoulmateModal(), '解鎖靈魂配對', '請先登入或建立帳號'); return; }
+  if (!isLoggedIn()) { window._pendingOAuthAction = 'soulmate'; openAuthModal(() => openSoulmateModal(), '解鎖靈魂配對', '請先登入或建立帳號'); return; }
   // New user needs birth form first (no saved data yet)
   if (!window.lumisUserDob) {
     openModal(() => {
@@ -3755,7 +3768,7 @@ document.getElementById('soulmate-modal').addEventListener('click', (e) => { if 
 // STAR CHILD
 // =====================
 function openStarChildModal() {
-  if (!isLoggedIn()) { openAuthModal(() => openStarChildModal(), '解鎖星童分析', '請先登入或建立帳號'); return; }
+  if (!isLoggedIn()) { window._pendingOAuthAction = 'starchild'; openAuthModal(() => openStarChildModal(), '解鎖星童分析', '請先登入或建立帳號'); return; }
   if (!window.lumisUserDob) {
     openModal(() => {
       if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
@@ -3780,6 +3793,7 @@ document.getElementById('star-child-modal').addEventListener('click', (e) => { i
 // =====================
 function requireLoginForSubscription(plan) {
   if (!isLoggedIn()) {
+    window._pendingOAuthAction = 'subscription_' + plan;
     openAuthModal(() => requireLoginForSubscription(plan),
       plan === 'family' ? '家庭星辰訂閱' : '基礎星辰訂閱', '請先登入或建立帳號');
     return;
