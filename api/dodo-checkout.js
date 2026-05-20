@@ -4,7 +4,7 @@ const PRODUCT_MAP = {
   chapter2:    'pdt_0NeisQEQvTp8XraWPadOS',
   chapter3:    'pdt_0NeisdwJUSDrFgwNoE3M0',
   chapter4:    'pdt_0NeiskUuoq1SbWCBmEVys',
-  chapter5:    'pdt_0NeispMKsK20aoJIlsvHg',
+  chapter5:    'pdt_0NeispMKsK20aoJIIsvHg',
   bundle:      'pdt_0NeisuvP3bDexjKUCYsVN',
   all5chapters:'pdt_0NeisuvP3bDexjKUCYsVN',
   soulmate:    'pdt_0Neit3X8xxYJh1G7m1ztZ',
