@@ -2482,7 +2482,6 @@
 
     <!-- STEP 2B: Returning User Login -->
     <div id="auth-login-returning" style="display:none; padding:40px 36px;">
-      <button onclick="showAuthStep('who')" style="background:none; border:none; color:var(--silver); cursor:pointer; font-size:0.8rem; letter-spacing:2px; margin-bottom:20px; padding:0;">← 返回</button>
       <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--soft-white); text-align:center; margin-bottom:24px;">歡迎回來 ☽</div>
       <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
@@ -2500,6 +2499,10 @@
       <button onclick="handleEmailLogin()" style="width:100%; padding:14px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:3px; cursor:pointer; font-weight:bold;">
         登入 ✦
       </button>
+      <div style="text-align:center; margin-top:18px; font-size:0.78rem; color:rgba(168,168,192,0.5); letter-spacing:1px;">
+        首次使用 LUMIS？
+        <span onclick="showAuthStep('login-new')" style="color:rgba(201,168,76,0.7); cursor:pointer; letter-spacing:1px;">建立帳號 →</span>
+      </div>
     </div>
 
   </div>
@@ -3500,12 +3503,33 @@ function handleDodoReturn() {
   const status = params.get('dodo_status');
   const product = params.get('product');
   if (status === 'succeeded' && product) {
+    // Mark paid
     markFeaturePaid(product);
-    if (product === 'bundle') {
-      ['chapter2','chapter3','chapter4','chapter5','soulmate'].forEach(c => markFeaturePaid(c));
+    if (product === 'bundle' || product === 'all5chapters') {
+      ['chapter2','chapter3','chapter4','chapter5'].forEach(c => markFeaturePaid(c));
     }
     window.history.replaceState({}, '', window.location.pathname);
-    setTimeout(() => showToast('✦ 付款成功！內容已解鎖'), 800);
+
+    // After session loads, route to the correct content
+    setTimeout(() => {
+      showToast('✦ 付款成功！內容已解鎖');
+      if (product.startsWith('chapter')) {
+        // Open the specific chapter they paid for
+        const num = parseInt(product.replace('chapter', ''));
+        if (num && isLoggedIn()) openChapter(num);
+      } else if (product === 'bundle' || product === 'all5chapters') {
+        // Open reading from chapter 1 — all chapters now unlocked
+        if (isLoggedIn()) openChapter(1);
+      } else if (product === 'soulmate') {
+        if (isLoggedIn()) openSoulmateModal();
+      } else if (product === 'starchild') {
+        if (isLoggedIn()) openStarChildModal();
+      } else if (product === 'basic_sub') {
+        showToast('✦ 訂閱成功！每天早上6點星辰運勢將送達你的 LINE');
+      } else if (product === 'family_sub') {
+        showToast('✦ 家庭訂閱成功！每天早上6點星辰運勢將送達');
+      }
+    }, 900);
   }
 }
 
@@ -3629,9 +3653,9 @@ function openAuthModal(action, title, subtitle) {
   document.getElementById('auth-title').textContent = title || '開始你的星辰旅程';
   document.getElementById('auth-subtitle').textContent = subtitle || '請選擇';
 
-  // If user has logged in before (has birth data saved), skip to returning login
-  const hasAccount = localStorage.getItem('lumis_birth') || localStorage.getItem('lumis_paid');
-  showAuthStep(hasAccount ? 'login-returning' : 'who');
+  // Always go to returning login — returning users who signed out won't have localStorage data
+  // New users can switch via the link at the bottom
+  showAuthStep('login-returning');
 
   document.getElementById('auth-modal').classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -3793,20 +3817,20 @@ function openChapter(num) {
   if (!isLoggedIn()) { openAuthModal(() => afterLoginForChapter(num), num === 1 ? '免費閱讀第一章' : '解鎖第' + ['','一','二','三','四','五'][num] + '章', '請先登入或建立帳號'); return; }
   afterLoginForChapter(num);
 }
-function afterLoginForChapter(num) { openModal(() => afterFormForChapter(num)); }
+function afterLoginForChapter(num) { openModal(() => afterFormForChapter(num), 'chapter:' + num); }
 function afterFormForChapter(num) {
-  if (num === 1) { runReading(); return; }
-  if (hasFeaturePaid('chapter' + num)) { runReading(); return; }
+  if (num === 1) { runReading(0); return; }
+  if (hasFeaturePaid('chapter' + num)) { runReading(num - 1); return; }
   openPaymentModal('解鎖第' + ['','一','二','三','四','五'][num] + '章', '$4', '一次解鎖，永久保存',
     '第' + ['','一','二','三','四','五'][num] + '章已解鎖！<br>星辰正在為你準備',
-    () => { markFeaturePaid('chapter' + num); runReading(); }, 'chapter' + num);
+    () => { markFeaturePaid('chapter' + num); runReading(num - 1); }, 'chapter' + num);
 }
 function openAllChapters() {
   if (!isLoggedIn()) { window._pendingOAuthAction = 'bundle'; openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
   openModal(() => {
-    if (hasFeaturePaid('all5chapters')) { runReading(); return; }
-    openPaymentModal('解鎖全部五章', '$15', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(); }, 'bundle');
-  });
+    if (hasFeaturePaid('all5chapters')) { runReading(0); return; }
+    openPaymentModal('解鎖全部五章', '$15', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(0); }, 'bundle');
+  }, 'bundle');
 }
 
 // =====================
@@ -3819,7 +3843,7 @@ function openSoulmateModal() {
     openModal(() => {
       if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
       openPaymentModal('解鎖靈魂配對', '$15', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
-    });
+    }, 'soulmate');
     return;
   }
   if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
@@ -3843,7 +3867,7 @@ function openStarChildModal() {
     openModal(() => {
       if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
       openPaymentModal('解鎖星童分析', '$12', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
-    });
+    }, 'starchild');
     return;
   }
   if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
@@ -3869,7 +3893,7 @@ function requireLoginForSubscription(plan) {
     return;
   }
   if (!window.lumisUserDob) {
-    openModal(() => requireLoginForSubscription(plan));
+    openModal(() => requireLoginForSubscription(plan), 'subscription_' + plan);
     return;
   }
   if (plan === 'family') {
@@ -4425,14 +4449,17 @@ function showScreen(id) {
 }
 
 let formCallback = null;
+let _pendingAfterForm = null; // explicit intent: 'subscription_basic','subscription_family','soulmate','starchild','bundle','chapter:N'
 
-function openModal(callback) {
+function openModal(callback, intent) {
   formCallback = callback || null;
+  if (intent) _pendingAfterForm = intent;
 
   // Returning user — has saved birth data, skip form and go straight to callback
   if (window.lumisUserDob && window.lumisUserTime && window.lumisUserPlace && formCallback) {
     const cb = formCallback;
     formCallback = null;
+    _pendingAfterForm = null;
     cb();
     return;
   }
@@ -4458,13 +4485,24 @@ function openModal(callback) {
 }
 
 // Called after payment success — continues the reading using saved birth data
-function runReading() {
+let _pendingChapterJump = null; // jump to specific chapter after reading generates
+
+function runReading(chapterIndex) {
   formCallback = null;
-  // If we have saved birth data, use it directly without opening form
+  if (chapterIndex !== undefined) _pendingChapterJump = chapterIndex;
   if (window.lumisUserDob) {
+    // Pre-fill form fields from saved data so submitForm() validation passes
+    const fill = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    fill('field-dob',    window.lumisUserDob);
+    fill('field-time',   window.lumisUserTime);
+    fill('field-place',  window.lumisUserPlace);
+    fill('field-gender', window.lumisUserGender);
+    // Also set gender button active state
+    document.querySelectorAll('.gender-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.value === window.lumisUserGender);
+    });
     submitForm();
   } else {
-    // Show form first
     document.getElementById('modal').classList.add('active');
     document.body.style.overflow = 'hidden';
     showScreen('screen-new');
@@ -4558,9 +4596,10 @@ let allReadingsData = null;
 function displayReadings(data) {
   allReadingsData = data;
   window.lumisReadings = data;
-  currentChapterIndex = 0;
-  showChapter(0);
-  // Switch modal to reading mode - wider
+  const jumpTo = (_pendingChapterJump !== null) ? _pendingChapterJump : 0;
+  _pendingChapterJump = null;
+  currentChapterIndex = jumpTo;
+  showChapter(jumpTo);
   document.querySelector('.modal').classList.add('reading-mode');
 }
 
@@ -5039,8 +5078,24 @@ async function submitForm() {
   if (formCallback) {
     const cb = formCallback;
     formCallback = null;
+    _pendingAfterForm = null;
     cb();
     return;
+  }
+
+  // Fallback: use explicit intent if formCallback was lost
+  if (_pendingAfterForm) {
+    const intent = _pendingAfterForm;
+    _pendingAfterForm = null;
+    if (intent === 'soulmate') { openSoulmateModal(); return; }
+    if (intent === 'starchild') { openStarChildModal(); return; }
+    if (intent === 'bundle') { openAllChapters(); return; }
+    if (intent === 'subscription_basic') { requireLoginForSubscription('basic'); return; }
+    if (intent === 'subscription_family') { requireLoginForSubscription('family'); return; }
+    if (intent && intent.startsWith('chapter:')) {
+      const num = parseInt(intent.split(':')[1]);
+      if (num) { afterFormForChapter(num); return; }
+    }
   }
 
   showScreen('screen-loading');
