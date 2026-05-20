@@ -2437,7 +2437,7 @@
     <button class="modal-close" onclick="closeAuthModal()" style="z-index:10;">✕</button>
 
     <!-- STEP 1: New or Returning -->
-    <div id="auth-who" style="padding:48px 36px; text-align:center; display:block;">
+    <div id="auth-who" style="padding:48px 36px; text-align:center; display:none;">
       <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; margin-bottom:8px;">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--soft-white); margin-bottom:6px;" id="auth-title">開始你的星辰旅程</div>
       <div style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--silver); font-size:0.9rem; margin-bottom:28px;" id="auth-subtitle">請選擇</div>
@@ -2454,7 +2454,7 @@
 
     <!-- STEP 2A: New User Login -->
     <div id="auth-login-new" style="display:none; padding:40px 36px;">
-      <button onclick="showAuthStep('who')" style="background:none; border:none; color:var(--silver); cursor:pointer; font-size:0.8rem; letter-spacing:2px; margin-bottom:20px; padding:0;">← 返回</button>
+      <button onclick="showAuthStep('login-returning')" style="background:none; border:none; color:var(--silver); cursor:pointer; font-size:0.8rem; letter-spacing:2px; margin-bottom:20px; padding:0;">← 返回</button>
       <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--soft-white); text-align:center; margin-bottom:24px;">建立你的帳號</div>
       <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
@@ -3615,8 +3615,15 @@ document.addEventListener('click', () => {
 });
 
 function logoutUser() {
-  localStorage.clear();
+  // Keep lumis_birth — returning user shouldn't need to re-enter birth data on same device
+  localStorage.removeItem(LUMIS_SESSION_KEY);
+  localStorage.removeItem(LUMIS_PAID_KEY);
+  localStorage.removeItem('lumis_credited_refs');
+  localStorage.removeItem('lumis_pending_ref');
   window.lumisUserDob = '';
+  window.lumisUserTime = '';
+  window.lumisUserPlace = '';
+  window.lumisUserGender = '';
   window.location.reload();
 }
 
@@ -3754,6 +3761,16 @@ function completeLogin(user) {
   const isNewUser = !localStorage.getItem('lumis_birth') && !localStorage.getItem('lumis_paid');
   saveSession(user);
   closeAuthModal();
+  // Restore birth data immediately so openModal skips form for returning users
+  try {
+    const birth = JSON.parse(localStorage.getItem('lumis_birth') || '{}');
+    if (birth.dob) {
+      window.lumisUserDob = birth.dob;
+      window.lumisUserTime = birth.time || '';
+      window.lumisUserPlace = birth.place || '';
+      window.lumisUserGender = birth.gender || '';
+    }
+  } catch(e) {}
   syncPurchasesFromServer();
   // REFERRAL: credit referrer when new user signs up via ref link
   const pendingRef = localStorage.getItem('lumis_pending_ref');
