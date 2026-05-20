@@ -47,6 +47,7 @@
     z-index: 10000;
     transition: transform 0.1s;
     box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold);
+    opacity: 0;
   }
   .cursor-ring {
     position: fixed;
@@ -56,6 +57,7 @@
     pointer-events: none;
     z-index: 9999;
     transition: all 0.15s ease;
+    opacity: 0;
   }
   @media (hover: none) and (pointer: coarse) {
     .cursor, .cursor-ring { display: none !important; }
@@ -3363,8 +3365,15 @@ window.addEventListener('resize', () => {
 if (!isMobile) {
   const cursor = document.getElementById('cursor');
   const cursorRing = document.getElementById('cursor-ring');
-  let cursorX = 0, cursorY = 0, ringX = 0, ringY = 0;
-  document.addEventListener('mousemove', (e) => { cursorX = e.clientX; cursorY = e.clientY; });
+  let cursorX = 0, cursorY = 0, ringX = 0, ringY = 0, cursorVisible = false;
+  document.addEventListener('mousemove', (e) => {
+    cursorX = e.clientX; cursorY = e.clientY;
+    if (!cursorVisible) {
+      cursorVisible = true;
+      cursor.style.opacity = '1';
+      cursorRing.style.opacity = '1';
+    }
+  });
   function updateCursor() {
     cursor.style.left = cursorX - 4 + 'px';
     cursor.style.top = cursorY - 4 + 'px';
@@ -3424,10 +3433,29 @@ function showReferralInfo() {
   if (navigator.clipboard) { navigator.clipboard.writeText(link).then(() => { showToast('✦ 推薦連結已複製！'); }); }
   else { prompt('複製你的推薦連結：', link); }
 }
+let _toastLastTime = 0;
 function showToast(msg) {
+  // Prevent same toast spamming — 1.5s cooldown
+  const now = Date.now();
+  if (now - _toastLastTime < 1500) return;
+  _toastLastTime = now;
   let t = document.getElementById('lumis-toast');
-  if (!t) { t = document.createElement('div'); t.id = 'lumis-toast'; t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(2,8,24,0.95);border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:12px 24px;font-family:"Noto Serif TC",serif;font-size:0.82rem;letter-spacing:2px;z-index:99999;transition:opacity 0.5s;pointer-events:none;'; document.body.appendChild(t); }
-  t.textContent = msg; t.style.opacity = '1'; clearTimeout(t._timer); t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'lumis-toast';
+    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(2,8,24,0.95);border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:12px 24px;font-family:"Noto Serif TC",serif;font-size:0.82rem;letter-spacing:2px;z-index:99999;transition:opacity 0.5s;pointer-events:none;max-width:90vw;text-align:center;';
+    document.body.appendChild(t);
+  }
+  // Clean up raw API error messages — show friendly version
+  let display = msg;
+  if (msg.includes('deserialize') || msg.includes('missing field')) display = '❌ 付款服務暫時異常，請稍後再試';
+  if (msg.includes('does not exist')) display = '❌ 商品設定錯誤，請聯絡客服';
+  if (msg.includes('Unauthorized') || msg.includes('401')) display = '❌ 付款授權失敗，請稍後再試';
+  if (msg.includes('404')) display = '❌ 商品不存在，請聯絡客服';
+  t.textContent = display;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3500);
 }
 // DODO PAYMENTS - Real checkout
 // =====================
@@ -3436,6 +3464,10 @@ async function handlePayment() {
   if (!email || !currentPaymentProduct) return;
   const btn = document.getElementById('dodo-pay-btn');
   if (btn) { btn.textContent = '正在跳轉到付款頁...'; btn.disabled = true; }
+  // Safety: re-enable button after 8s if redirect never happens
+  const safetyTimer = setTimeout(() => {
+    if (btn) { btn.textContent = '立即付款 ✦'; btn.disabled = false; }
+  }, 8000);
   try {
     const res = await fetch('/api/dodo-checkout', {
       method: 'POST',
@@ -3444,13 +3476,20 @@ async function handlePayment() {
     });
     const data = await res.json();
     if (data.url) {
+      clearTimeout(safetyTimer);
       window.location.href = data.url;
     } else {
       throw new Error(data.error || '付款失敗');
     }
   } catch (err) {
+    clearTimeout(safetyTimer);
     if (btn) { btn.textContent = '立即付款 ✦'; btn.disabled = false; }
-    showToast('❌ ' + err.message);
+    const msg = err.message || '';
+    if (msg.includes('deserialize') || msg.includes('missing field') || msg.includes('does not exist') || msg.includes('404')) {
+      showToast('❌ 付款服務暫時異常，請稍後再試或聯絡客服');
+    } else {
+      showToast('❌ 付款失敗，請稍後再試');
+    }
   }
 }
 
@@ -3734,7 +3773,14 @@ function openPaymentModal(title, price, desc, successMsg, callback, productKey) 
     });
   }
 }
-function closePaymentModal() { document.getElementById('payment-modal').classList.remove('active'); document.body.style.overflow = ''; }
+function closePaymentModal() {
+  document.getElementById('payment-modal').classList.remove('active');
+  document.body.style.overflow = '';
+  // Always reset pay button so next payment starts fresh
+  const btn = document.getElementById('dodo-pay-btn');
+  if (btn) { btn.textContent = '立即付款 ✦'; btn.disabled = false; }
+  currentPaymentProduct = null;
+}
 document.getElementById('payment-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('payment-modal')) closePaymentModal(); });
 function afterPaymentSuccess() { closePaymentModal(); if (paymentCallback) { const cb = paymentCallback; paymentCallback = null; cb(); } }
 
