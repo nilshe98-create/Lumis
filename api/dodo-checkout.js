@@ -1,22 +1,20 @@
 const DodoPayments = require('dodopayments');
 
-// Product key → Dodo product ID mapping
+// Product key → Dodo product ID
 const PRODUCT_MAP = {
-  chapter2:   'pdt_0NeisQEQvTp8XraWPadOS',
-  chapter3:   'pdt_0NeisdwJUSDrFgwNoE3M0',
-  chapter4:   'pdt_0NeiskUuoq1SbWCBmEVys',
-  chapter5:   'pdt_0NeispMKsK20aoJIlsvHg',
-  bundle:     'pdt_0NeisuvP3bDexjKUCYsVN',
+  chapter2:    'pdt_0NeisQEQvTp8XraWPadOS',
+  chapter3:    'pdt_0NeisdwJUSDrFgwNoE3M0',
+  chapter4:    'pdt_0NeiskUuoq1SbWCBmEVys',
+  chapter5:    'pdt_0NeispMKsK20aoJIlsvHg',
+  bundle:      'pdt_0NeisuvP3bDexjKUCYsVN',
   all5chapters:'pdt_0NeisuvP3bDexjKUCYsVN',
-  soulmate:   'pdt_0Neit3X8xxYJh1G7m1ztZ',
-  starchild:  'pdt_0Neit9n3LyCwUsoCRtjiX',
-  basic_sub:  'pdt_0NeitaqBccnHAKvtqDOA1',
-  family_sub: 'pdt_0Neito7jdtmNb7Jt2Qfex',
+  soulmate:    'pdt_0Neit3X8xxYJh1G7m1ztZ',
+  starchild:   'pdt_0Neit9n3LyCwUsoCRtjiX',
+  basic_sub:   'pdt_0NeitaqBccnHAKvtqDOA1',
+  family_sub:  'pdt_0Neito7jdtmNb7Jt2Qfex',
 };
 
-// These products are recurring subscriptions
 const SUBSCRIPTION_PRODUCTS = new Set(['basic_sub', 'family_sub']);
-
 const BASE_URL = 'https://www.lumisstar.com';
 
 module.exports = async function handler(req, res) {
@@ -41,11 +39,14 @@ module.exports = async function handler(req, res) {
   });
 
   const returnUrl = `${BASE_URL}?dodo_status=succeeded&product=${encodeURIComponent(product)}`;
+
+  // create_new_customer: true — creates customer if not exists, finds if exists
   const customer = {
-    create_new_customer: false,
+    create_new_customer: true,
     email: email,
     name: name || email,
   };
+
   const billing = {
     city: 'Taipei',
     country: 'TW',
@@ -55,7 +56,6 @@ module.exports = async function handler(req, res) {
     let checkoutUrl;
 
     if (SUBSCRIPTION_PRODUCTS.has(product)) {
-      // Subscription flow
       const sub = await client.subscriptions.create({
         billing,
         customer,
@@ -65,7 +65,6 @@ module.exports = async function handler(req, res) {
       });
       checkoutUrl = sub.payment_link;
     } else {
-      // One-time payment flow
       const payment = await client.payments.create({
         billing,
         customer,
@@ -77,13 +76,13 @@ module.exports = async function handler(req, res) {
     }
 
     if (!checkoutUrl) {
-      throw new Error('No checkout URL returned from Dodo');
+      throw new Error('No checkout URL from Dodo');
     }
 
     return res.status(200).json({ url: checkoutUrl });
 
   } catch (err) {
-    console.error('Dodo checkout error:', err?.message || err);
+    console.error('Dodo error:', err?.message || err);
     return res.status(500).json({ error: err?.message || 'Payment creation failed' });
   }
 };
