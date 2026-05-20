@@ -60,6 +60,7 @@ module.exports = async function handler(req, res) {
         billing,
         customer,
         product_id: productId,
+        quantity: 1,
         payment_link: true,
         return_url: returnUrl,
       });
