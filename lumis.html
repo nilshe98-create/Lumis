@@ -47,7 +47,7 @@
     z-index: 10000;
     transition: transform 0.1s;
     box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold);
-    display: none;
+    opacity: 0;
   }
   .cursor-ring {
     position: fixed;
@@ -57,7 +57,7 @@
     pointer-events: none;
     z-index: 9999;
     transition: all 0.15s ease;
-    display: none;
+    opacity: 0;
   }
   @media (hover: none) and (pointer: coarse) {
     .cursor, .cursor-ring { display: none !important; }
@@ -3275,25 +3275,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
 
-// Create circular sprite texture — fixes square particle bug
-function makeCircleTexture() {
-  const size = 64;
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const cx = c.getContext('2d');
-  const grad = cx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-  grad.addColorStop(0,   'rgba(255,255,255,1)');
-  grad.addColorStop(0.4, 'rgba(255,255,255,0.8)');
-  grad.addColorStop(1,   'rgba(255,255,255,0)');
-  cx.fillStyle = grad;
-  cx.beginPath();
-  cx.arc(size/2, size/2, size/2, 0, Math.PI*2);
-  cx.fill();
-  return new THREE.CanvasTexture(c);
-}
-const circleTex = makeCircleTexture();
-
-function createStars(count, size, color, spread, opacity) {
+function createStars(count, size, color, spread) {
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
   for (let i = 0; i < count * 3; i++) {
@@ -3301,56 +3283,51 @@ function createStars(count, size, color, spread, opacity) {
   }
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   const material = new THREE.PointsMaterial({
-    color, size,
-    map: circleTex,
-    transparent: true,
-    alphaTest: 0.01,
-    opacity: opacity || 0.7,
-    sizeAttenuation: true,
-    depthWrite: false,
+    color, size, transparent: true,
+    opacity: Math.random() * 0.5 + 0.3,
+    sizeAttenuation: true
   });
   return new THREE.Points(geometry, material);
 }
 
+// Fewer stars on mobile for performance
 const starCount = isMobile ? 0.4 : 1;
-const stars1 = createStars(Math.floor(3000 * starCount), 0.010, 0xFFFFFF, 30, 0.55);
-const stars2 = createStars(Math.floor(1500 * starCount), 0.018, 0xE8F0FF, 20, 0.5);
-const stars3 = createStars(Math.floor(500  * starCount), 0.030, 0xFFD700, 15, 0.6);
-const stars4 = createStars(Math.floor(200  * starCount), 0.045, 0xFFF4E0, 10, 0.7);
+const stars1 = createStars(Math.floor(3000 * starCount), 0.012, 0xFFFFFF, 30);
+const stars2 = createStars(Math.floor(1500 * starCount), 0.02, 0xE8F0FF, 20);
+const stars3 = createStars(Math.floor(500 * starCount), 0.035, 0xFFD700, 15);
+const stars4 = createStars(Math.floor(200 * starCount), 0.05, 0xFFF4E0, 10);
 scene.add(stars1, stars2, stars3, stars4);
 
 let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
 
 document.addEventListener('mousemove', (e) => {
-  mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
-  mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+  mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
 });
 
 window.addEventListener('deviceorientation', (e) => {
   if (e.gamma !== null) {
-    mouseX = (e.gamma / 90) * 0.2;
-    mouseY = (e.beta / 180) * 0.15;
+    mouseX = (e.gamma / 90) * 0.3;
+    mouseY = (e.beta / 180) * 0.2;
   }
 });
 
 let time = 0;
 function animate() {
   requestAnimationFrame(animate);
-  time += 0.00015; // slower = more peaceful
-  targetX += (mouseX - targetX) * 0.012;
-  targetY += (mouseY - targetY) * 0.012;
-  // Gentle, slow rotation
-  stars1.rotation.x = targetY * 0.2 + time * 0.06;
-  stars1.rotation.y = targetX * 0.2 + time * 0.03;
-  stars2.rotation.x = targetY * 0.35 + time * 0.05;
-  stars2.rotation.y = targetX * 0.35 - time * 0.04;
-  stars3.rotation.x = targetY * 0.5 + time * 0.07;
-  stars3.rotation.y = targetX * 0.5 + time * 0.025;
-  stars4.rotation.x = targetY * 0.7 + time * 0.09;
-  stars4.rotation.y = targetX * 0.7 - time * 0.05;
-  // Soft gentle twinkle
-  stars3.material.opacity = 0.5 + Math.sin(time * 8) * 0.15;
-  stars4.material.opacity = 0.6 + Math.sin(time * 12 + 1) * 0.2;
+  time += 0.0003;
+  targetX += (mouseX - targetX) * 0.02;
+  targetY += (mouseY - targetY) * 0.02;
+  stars1.rotation.x = targetY * 0.3 + time * 0.1;
+  stars1.rotation.y = targetX * 0.3 + time * 0.05;
+  stars2.rotation.x = targetY * 0.5 + time * 0.08;
+  stars2.rotation.y = targetX * 0.5 - time * 0.06;
+  stars3.rotation.x = targetY * 0.8 + time * 0.12;
+  stars3.rotation.y = targetX * 0.8 + time * 0.04;
+  stars4.rotation.x = targetY * 1.2 + time * 0.15;
+  stars4.rotation.y = targetX * 1.2 - time * 0.08;
+  stars3.material.opacity = 0.4 + Math.sin(time * 3) * 0.2;
+  stars4.material.opacity = 0.5 + Math.sin(time * 5 + 1) * 0.3;
   renderer.render(scene, camera);
 }
 animate();
@@ -3393,8 +3370,8 @@ if (!isMobile) {
     cursorX = e.clientX; cursorY = e.clientY;
     if (!cursorVisible) {
       cursorVisible = true;
-      cursor.style.display = 'block';
-      cursorRing.style.display = 'block';
+      cursor.style.opacity = '1';
+      cursorRing.style.opacity = '1';
     }
   });
   function updateCursor() {
