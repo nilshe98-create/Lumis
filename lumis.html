@@ -3556,7 +3556,18 @@ function logoutUser() {
   window.location.reload();
 }
 
+window.LUMIS_PRICES = null;
+async function fetchLivePrices() {
+  if (window.LUMIS_PRICES) return; // already loaded
+  try {
+    const res = await fetch('/api/prices');
+    const data = await res.json();
+    if (data.prices) window.LUMIS_PRICES = data.prices;
+  } catch(e) { /* silent — modal will show static fallback prices */ }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+  fetchLivePrices(); // preload live prices for payment modal
   captureRefFromURL();
   handleDodoReturn();
   checkGoogleCallback();
@@ -3702,6 +3713,7 @@ let paymentCallback = null;
 function openPaymentModal(title, price, desc, successMsg, callback, productKey) {
   currentPaymentProduct = productKey || null;
   document.getElementById('payment-title').textContent = title || '解鎖篇章';
+  // Show static price first, then update with live rate
   document.getElementById('payment-price').textContent = price || 'NT$150';
   document.getElementById('payment-desc').textContent = desc || '一次解鎖，永久保存';
   document.getElementById('payment-success-msg').innerHTML = successMsg || '已解鎖！';
@@ -3710,6 +3722,17 @@ function openPaymentModal(title, price, desc, successMsg, callback, productKey) 
   paymentCallback = callback || null;
   document.getElementById('payment-modal').classList.add('active');
   document.body.style.overflow = 'hidden';
+  // Update with live price if available
+  if (productKey && window.LUMIS_PRICES && window.LUMIS_PRICES[productKey]) {
+    document.getElementById('payment-price').textContent = 'NT$' + window.LUMIS_PRICES[productKey];
+  } else if (productKey) {
+    // Fetch live price async
+    fetchLivePrices().then(() => {
+      if (window.LUMIS_PRICES && window.LUMIS_PRICES[productKey]) {
+        document.getElementById('payment-price').textContent = 'NT$' + window.LUMIS_PRICES[productKey];
+      }
+    });
+  }
 }
 function closePaymentModal() { document.getElementById('payment-modal').classList.remove('active'); document.body.style.overflow = ''; }
 document.getElementById('payment-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('payment-modal')) closePaymentModal(); });
