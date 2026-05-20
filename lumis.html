@@ -782,8 +782,9 @@
 
   .chapter-price {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
+    font-size: 1.6rem;
     color: var(--gold);
+    font-weight: 300;
   }
 
   .chapter-btn {
@@ -3420,7 +3421,7 @@ function generateRefCode(email) {
   for (let i = 0; i < 6; i++) { code += chars[h % chars.length]; h = Math.floor(h / chars.length); }
   return code;
 }
-function getMyReferralLink() { const email = lumisUser.email; if (!email) return ''; return 'https://lumisstar.com?ref=' + generateRefCode(email); }
+function getMyReferralLink() { const email = lumisUser?.email; if (!email) return ''; return 'https://lumisstar.com?ref=' + generateRefCode(email); }
 function getReferralCredits() { return parseInt(localStorage.getItem('lumis_ref_credits') || '0'); }
 function captureRefFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -3472,7 +3473,7 @@ async function handlePayment() {
     const res = await fetch('/api/dodo-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product: currentPaymentProduct, email, name: lumisUser.name || email })
+      body: JSON.stringify({ product: currentPaymentProduct, email, name: lumisUser?.name || email })
     });
     const data = await res.json();
     if (data.url) {
@@ -4252,16 +4253,16 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 // TEST COMPATIBILITY
 // =====================
 async function testCompatibility() {
-  const result = document.getElementById('test-result');
+  const result = document.getElementById('soulmate-result-screen');
   result.style.display = 'block';
   result.innerHTML = '<div style="color:var(--silver); font-size:1.05rem; letter-spacing:1px; text-align:center; padding:16px;">💕 星辰正在計算你們的緣分...</div>';
 
-  const myDob = document.getElementById('field-dob')?.value || '';
-  const myTime = document.getElementById('field-time')?.value || '';
-  const myPlace = document.getElementById('field-place')?.value || '';
-  const compatDob = document.getElementById('compat-dob')?.value || '';
-  const compatTime = document.getElementById('compat-time')?.value || '';
-  const compatPlace = document.getElementById('compat-place')?.value || '';
+  const myDob = window.lumisUserDob || '';
+  const myTime = window.lumisUserTime || '';
+  const myPlace = window.lumisUserPlace || '';
+  const compatDob = document.getElementById('s-dob')?.value || '';
+  const compatTime = document.getElementById('s-time')?.value || '';
+  const compatPlace = document.getElementById('s-place')?.value || '';
 
   if (!compatDob || !compatPlace) {
     result.innerHTML = '<div style="color:#FF6B6B; font-size:0.85rem; text-align:center; padding:12px;">⚠ 請填寫對方的出生資料</div>';
@@ -4313,14 +4314,14 @@ async function testCompatibility() {
 // TEST CHILDREN
 // =====================
 async function testChildren() {
-  const result = document.getElementById('test-result');
+  const result = document.getElementById('ls-result-screen');
   result.style.display = 'block';
   result.innerHTML = '<div style="color:var(--silver); font-size:1.05rem; letter-spacing:1px; text-align:center; padding:16px;">👶 星辰正在讀取孩子的光...</div>';
 
-  const childDob = document.getElementById('child-dob')?.value || '';
-  const childTime = document.getElementById('child-time')?.value || '';
-  const childPlace = document.getElementById('child-place')?.value || '';
-  const childGender = document.getElementById('child-gender')?.value || '';
+  const childDob = document.getElementById('ls-dob')?.value || '';
+  const childTime = document.getElementById('ls-time')?.value || '';
+  const childPlace = document.getElementById('ls-place')?.value || '';
+  const childGender = document.getElementById('ls-gender')?.value || '';
 
   if (!childDob || !childPlace) {
     result.innerHTML = '<div style="color:#FF6B6B; font-size:0.85rem; text-align:center; padding:12px;">⚠ 請填寫孩子的出生資料</div>';
