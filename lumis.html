@@ -2509,7 +2509,7 @@
 </div>
 
 <!-- PAYMENT MODAL -->
-<div class="modal-overlay" id="payment-modal">
+<div class="modal-overlay" id="payment-modal" style="z-index:3000;">
   <div class="modal" style="max-width:440px; padding:0; overflow:hidden;">
     <button class="modal-close" onclick="closePaymentModal()" style="z-index:10;">✕</button>
 
@@ -3867,6 +3867,7 @@ function afterLoginForChapter(num) { openModal(() => afterFormForChapter(num), '
 function afterFormForChapter(num) {
   if (num === 1) { runReading(0); return; }
   if (hasFeaturePaid('chapter' + num)) { runReading(num - 1); return; }
+  closeModal(); // Close main modal so payment modal is fully visible
   openPaymentModal('解鎖第' + ['','一','二','三','四','五'][num] + '章', '$4', '一次解鎖，永久保存',
     '第' + ['','一','二','三','四','五'][num] + '章已解鎖！<br>星辰正在為你準備',
     () => { markFeaturePaid('chapter' + num); runReading(num - 1); }, 'chapter' + num);
