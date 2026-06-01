@@ -3868,7 +3868,7 @@ function openAllChapters() {
   openModal(() => {
     if (hasFeaturePaid('all5chapters')) { runReading(0); return; }
     openPaymentModal('解鎖全部五章', '$15', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(0); }, 'bundle');
-  }, 'chapter:bundle');
+  }, 'bundle');
 }
 
 // =====================
@@ -4498,7 +4498,7 @@ function openModal(callback, intent) {
     const cb = formCallback;
     formCallback = null;
     _pendingAfterForm = null;
-    // Only open main modal for chapter reading flows — payment flows use payment-modal instead
+    // Only open main modal for chapter reading flows
     const isReadingFlow = !intent || intent.startsWith('chapter');
     if (isReadingFlow) {
       document.getElementById('modal').classList.add('active');
@@ -4538,7 +4538,7 @@ function runReading(chapterIndex) {
     // Pre-fill form fields from saved data so submitForm() validation passes
     const fill = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
     fill('field-dob',    window.lumisUserDob);
-    fill('field-time',   window.lumisUserTime || '12:00 PM'); // default noon if not set
+    fill('field-time',   window.lumisUserTime || '12:00'); // default noon in 24hr format
     fill('field-place',  window.lumisUserPlace);
     fill('field-gender', window.lumisUserGender || '未填寫');
     // Also set gender button active state
@@ -4558,9 +4558,6 @@ function runReading(chapterIndex) {
 function closeModal() {
   document.getElementById('modal').classList.remove('active');
   document.body.style.overflow = '';
-  // Reset pay button if it was in loading state
-  const btn = document.getElementById('dodo-pay-btn');
-  if (btn) { btn.textContent = '立即付款 ✦'; btn.disabled = false; }
 }
 
 // =====================
@@ -5275,10 +5272,24 @@ async function submitForm() {
   }
 
   try {
-    // STEP 1: Get real chart from VedAstro
+    // STEP 1: Get real chart from VedAstro (with fallback if it fails)
     document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
-    const vedicChart = await getVedAstroChart(dob, time, place);
-    const chartStr = JSON.stringify(vedicChart.Payload || vedicChart).substring(0, 12000);
+    let chartStr = '';
+    try {
+      const vedicChart = await getVedAstroChart(dob, time, place);
+      // Check VedAstro didn't return an error status
+      const payload = vedicChart.Payload || vedicChart;
+      const payloadStr = JSON.stringify(payload);
+      if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
+        chartStr = payloadStr.substring(0, 12000);
+      }
+    } catch(vedaErr) {
+      // VedAstro failed — continue without chart data
+    }
+    // If no chart data, use birth details directly
+    const chartContext = chartStr
+      ? `真實印度吠陀星盤計算結果：\n${chartStr}`
+      : `（星盤計算服務暫時不可用，請根據出生資料直接分析）`;
 
     // STEP 2: Generate chapters using real chart
     const allReadings = {};
@@ -5287,7 +5298,7 @@ async function submitForm() {
     document.getElementById('loading-text').textContent = '正在解讀第一章...';
     const ch1Result = await callAPI(
       LUMIS_PROMPT,
-      `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n真實印度吠陀星盤計算結果：\n${chartStr}\n\n現在只寫第一章「你是誰」。根據真實星盤，用簡單人話描述這個人的核心本質。\n只回傳純JSON：{"chapter1":{"title":"你是誰","content":"內容"}}`
+      `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第一章「你是誰」。根據真實星盤，用簡單人話描述這個人的核心本質。\n只回傳純JSON：{"chapter1":{"title":"你是誰","content":"內容"}}`
     );
     const ch1Text = ch1Result.content[0].text.replace(/```json|```/g,'').trim();
     const ch1Data = JSON.parse(ch1Text.substring(ch1Text.indexOf('{'), ch1Text.lastIndexOf('}')+1));
@@ -5309,7 +5320,7 @@ async function submitForm() {
       try {
         const result = await callAPI(
           LUMIS_PROMPT,
-          `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n真實印度吠陀星盤計算結果：\n${chartStr}\n\n現在只寫第${ch.num}章「${ch.title}」。\n重點：${ch.focus}\n只回傳純JSON：{"${ch.key}":{"title":"${ch.title}","content":"內容"}}`
+          `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第${ch.num}章「${ch.title}」。\n重點：${ch.focus}\n只回傳純JSON：{"${ch.key}":{"title":"${ch.title}","content":"內容"}}`
         );
         const text = result.content[0].text.replace(/```json|```/g,'').trim();
         const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
