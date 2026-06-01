@@ -3534,6 +3534,18 @@ function handleDodoReturn() {
 }
 
 // Sync purchases from Supabase after login
+async function saveBirthToServer(dob, time, place, gender) {
+  try {
+    const email = lumisUser?.email;
+    if (!email) return;
+    await fetch('/api/check-purchases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, action: 'save_birth', dob, time, place, gender })
+    });
+  } catch(e) { /* silent — localStorage is the fallback */ }
+}
+
 async function syncPurchasesFromServer() {
   try {
     const email = lumisUser?.email;
@@ -3541,6 +3553,15 @@ async function syncPurchasesFromServer() {
     const res = await fetch('/api/check-purchases?email=' + encodeURIComponent(email));
     const data = await res.json();
     if (data.chapters) data.chapters.forEach(c => markFeaturePaid(c));
+    // Restore birth data from server if not already in localStorage
+    if (data.birth && !localStorage.getItem('lumis_birth')) {
+      const b = data.birth;
+      localStorage.setItem('lumis_birth', JSON.stringify(b));
+      window.lumisUserDob = b.dob || '';
+      window.lumisUserTime = b.time || '';
+      window.lumisUserPlace = b.place || '';
+      window.lumisUserGender = b.gender || '';
+    }
   } catch(e) { /* silent fail */ }
 }
 const lumisUser = { loggedIn: false, email: '', name: '' };
@@ -4511,9 +4532,9 @@ function runReading(chapterIndex) {
     // Pre-fill form fields from saved data so submitForm() validation passes
     const fill = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
     fill('field-dob',    window.lumisUserDob);
-    fill('field-time',   window.lumisUserTime);
+    fill('field-time',   window.lumisUserTime || '12:00 PM'); // default noon if not set
     fill('field-place',  window.lumisUserPlace);
-    fill('field-gender', window.lumisUserGender);
+    fill('field-gender', window.lumisUserGender || '未填寫');
     // Also set gender button active state
     document.querySelectorAll('.gender-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.value === window.lumisUserGender);
@@ -5090,6 +5111,8 @@ async function submitForm() {
   window.lumisUserPlace = place;
   window.lumisUserGender = gender;
   localStorage.setItem('lumis_birth', JSON.stringify({ dob, time, place, gender }));
+  // Save to Supabase so birth data persists across devices and logout/login
+  saveBirthToServer(dob, time, place, gender);
 
   // If there's a payment/flow callback (e.g. paid chapters), call it before showing reading
   if (formCallback) {
