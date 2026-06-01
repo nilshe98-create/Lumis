@@ -5272,15 +5272,24 @@ async function submitForm() {
   }
 
   // Extract text from any API response format
-  function extractText(result) {
-    if (!result) throw new Error('Empty API response');
-    if (result.content && Array.isArray(result.content) && result.content[0] && extractText(result))
-      return extractText(result);
-    if (result.content && typeof result.content === 'string') return result.content;
-    if (result.text) return result.text;
-    if (typeof result === 'string') return result;
-    if (result.error) throw new Error('API: ' + result.error);
-    throw new Error('Unexpected format: ' + JSON.stringify(result).substring(0, 120));
+  function extractText(r) {
+    if (!r) throw new Error('Empty API response');
+    // Standard Anthropic: { content: [{type:'text', text:'...'}] }
+    if (r.content && Array.isArray(r.content) && r.content[0] && r.content[0].text)
+      return r.content[0].text;
+    // String content
+    if (r.content && typeof r.content === 'string') return r.content;
+    // Simple text wrapper
+    if (r.text) return r.text;
+    // Raw string
+    if (typeof r === 'string') return r;
+    // Error object
+    if (r.error) {
+      const e = r.error;
+      const msg = typeof e === 'string' ? e : (e.message || e.type || JSON.stringify(e).substring(0, 200));
+      throw new Error(msg);
+    }
+    throw new Error('Format: ' + JSON.stringify(r).substring(0, 200));
   }
 
   try {
