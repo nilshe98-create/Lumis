@@ -5337,9 +5337,9 @@ async function submitForm() {
     showScreen('screen-reading');
     setTimeout(() => {
       document.querySelector('.modal').classList.add('reading-mode');
-      document.getElementById('chapter-counter').textContent = '⚠ 連線錯誤';
+      document.getElementById('chapter-counter').textContent = '⚠ 錯誤：' + (err.message || '連線失敗');
       const content = document.getElementById('display-ch-content');
-      if (content) content.innerHTML = `<p style="color:rgba(201,168,76,0.8); font-size:1.0rem; line-height:2;">載入失敗，請再試一次。<br><br><button onclick="retryCurrentChapter()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.85rem;">✦ 重試</button></p>`;
+      if (content) content.innerHTML = `<p style="color:rgba(201,168,76,0.8); font-size:0.9rem; line-height:2; word-break:break-all;">${err.message || '載入失敗'}<br><br><button onclick="retryCurrentChapter()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.85rem;">✦ 重試</button></p>`;
     }, 50);
   }
 }
