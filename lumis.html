@@ -3510,15 +3510,23 @@ function handleDodoReturn() {
     }
     window.history.replaceState({}, '', window.location.pathname);
 
-    // After session loads, route to the correct content
+    // After session + birth data loads, route to the correct content
     setTimeout(() => {
       showToast('✦ 付款成功！內容已解鎖');
+      // Restore birth data from localStorage in case not loaded yet
+      try {
+        const birth = JSON.parse(localStorage.getItem('lumis_birth') || '{}');
+        if (birth.dob && !window.lumisUserDob) {
+          window.lumisUserDob = birth.dob;
+          window.lumisUserTime = birth.time || '';
+          window.lumisUserPlace = birth.place || '';
+          window.lumisUserGender = birth.gender || '';
+        }
+      } catch(e) {}
       if (product.startsWith('chapter')) {
-        // Open the specific chapter they paid for
         const num = parseInt(product.replace('chapter', ''));
         if (num && isLoggedIn()) openChapter(num);
       } else if (product === 'bundle' || product === 'all5chapters') {
-        // Open reading from chapter 1 — all chapters now unlocked
         if (isLoggedIn()) openChapter(1);
       } else if (product === 'soulmate') {
         if (isLoggedIn()) openSoulmateModal();
@@ -3529,7 +3537,7 @@ function handleDodoReturn() {
       } else if (product === 'family_sub') {
         showToast('✦ 家庭訂閱成功！每天早上6點星辰運勢將送達');
       }
-    }, 900);
+    }, 1500);
   }
 }
 
@@ -4084,7 +4092,7 @@ async function submitSoulmate() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
         system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析配對。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單人話說出深刻真相。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位最多2-3句，簡潔有力。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
         messages: [{ role: 'user', content: `對方：${sDob} ${sTime} ${sPlace} ${sGender}` }]
@@ -4162,7 +4170,7 @@ async function submitStarChild() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
         system: `你是 LUMIS 星童解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析孩子。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單溫暖的話說出深刻真相。每個欄位最多2-3句，簡潔有力，像一個真正了解這個孩子的人在說話。只回傳純JSON：{"title":"一句話描述這個孩子的靈魂","who":"這個孩子是誰，性格天賦合在一起，2-3句，非常具體，讓父母說這說的就是我的孩子","future":"孩子的未來方向，包含適合的工作環境和天賦發光的時間點，2-3句，具體但不限制","bond":"親子關係，2句，說出父母和孩子之間真實的動力","message":"給父母的話，2句，溫暖有力，讓父母感動"}`,
         messages: [{ role: 'user', content: `父母：${myDob} ${myTime} ${myPlace}\n孩子：${lsDob} ${lsTime} ${lsPlace} ${lsGender}` }]
@@ -4338,7 +4346,7 @@ async function testCompatibility() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: `你是 LUMIS 靈魂配對解讀師。根據兩人出生資料生成非常深度的配對分析。
 繁體中文，每行最多10字，用\\n換行，大量留白。
@@ -4397,7 +4405,7 @@ async function testChildren() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: `你是 LUMIS 星童解讀師。根據孩子出生資料生成溫暖的個人分析。
 繁體中文，每行最多12字，用\\n換行。
@@ -4772,7 +4780,7 @@ async function retryCurrentChapter() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: LUMIS_PROMPT,
         messages: [{ role: 'user', content: `${userDetails}\n\n現在只寫第${num}章「${title}」。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
@@ -5263,7 +5271,7 @@ async function submitForm() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-opus-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
         system: prompt,
         messages: [{ role: 'user', content: userMsg }]
