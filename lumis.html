@@ -3868,7 +3868,7 @@ function openAllChapters() {
   openModal(() => {
     if (hasFeaturePaid('all5chapters')) { runReading(0); return; }
     openPaymentModal('解鎖全部五章', '$15', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(0); }, 'bundle');
-  }, 'bundle');
+  }, 'chapter:bundle');
 }
 
 // =====================
@@ -4498,6 +4498,12 @@ function openModal(callback, intent) {
     const cb = formCallback;
     formCallback = null;
     _pendingAfterForm = null;
+    // Only open main modal for chapter reading flows — payment flows use payment-modal instead
+    const isReadingFlow = !intent || intent.startsWith('chapter');
+    if (isReadingFlow) {
+      document.getElementById('modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
     cb();
     return;
   }
@@ -4552,6 +4558,9 @@ function runReading(chapterIndex) {
 function closeModal() {
   document.getElementById('modal').classList.remove('active');
   document.body.style.overflow = '';
+  // Reset pay button if it was in loading state
+  const btn = document.getElementById('dodo-pay-btn');
+  if (btn) { btn.textContent = '立即付款 ✦'; btn.disabled = false; }
 }
 
 // =====================
