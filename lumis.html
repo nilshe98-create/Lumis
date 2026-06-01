@@ -4091,7 +4091,7 @@ async function submitSoulmate() {
       }));
     });
 
-    const text = result.content[0].text.replace(/```json|```/g,'').trim();
+    const text = extractText(result).replace(/```json|```/g,'').trim();
     const c = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
 
     document.getElementById('soulmate-loading-screen').style.display = 'none';
@@ -4169,7 +4169,7 @@ async function submitStarChild() {
       }));
     });
 
-    const text = result.content[0].text.replace(/```json|```/g,'').trim();
+    const text = extractText(result).replace(/```json|```/g,'').trim();
     const c = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
 
     document.getElementById('ls-loading-screen').style.display = 'none';
@@ -4352,7 +4352,7 @@ async function testCompatibility() {
       })
     });
     const data = await res.json();
-    const text = data.content[0].text.replace(/```json|```/g,'').trim();
+    const text = extractText(data).replace(/```json|```/g,'').trim();
     const reading = JSON.parse(text);
     const c = reading.compatibility;
     result.innerHTML = `
@@ -4410,7 +4410,7 @@ async function testChildren() {
       })
     });
     const data = await res.json();
-    const text = data.content[0].text.replace(/```json|```/g,'').trim();
+    const text = extractText(data).replace(/```json|```/g,'').trim();
     const reading = JSON.parse(text);
     const c = reading.child;
     result.innerHTML = `
@@ -4778,7 +4778,7 @@ async function retryCurrentChapter() {
         messages: [{ role: 'user', content: `${userDetails}\n\n現在只寫第${num}章「${title}」。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
       }));
     });
-    const text = result.content[0].text.replace(/```json|```/g,'').trim();
+    const text = extractText(result).replace(/```json|```/g,'').trim();
     const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
     Object.assign(allReadingsData, data);
     showChapter(index);
@@ -5271,6 +5271,18 @@ async function submitForm() {
     });
   }
 
+  // Extract text from any API response format
+  function extractText(result) {
+    if (!result) throw new Error('Empty API response');
+    if (result.content && Array.isArray(result.content) && result.content[0] && extractText(result))
+      return extractText(result);
+    if (result.content && typeof result.content === 'string') return result.content;
+    if (result.text) return result.text;
+    if (typeof result === 'string') return result;
+    if (result.error) throw new Error('API: ' + result.error);
+    throw new Error('Unexpected format: ' + JSON.stringify(result).substring(0, 120));
+  }
+
   try {
     // STEP 1: Get real chart from VedAstro (with fallback if it fails)
     document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
@@ -5300,7 +5312,7 @@ async function submitForm() {
       LUMIS_PROMPT,
       `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第一章「你是誰」。根據真實星盤，用簡單人話描述這個人的核心本質。\n只回傳純JSON：{"chapter1":{"title":"你是誰","content":"內容"}}`
     );
-    const ch1Text = ch1Result.content[0].text.replace(/```json|```/g,'').trim();
+    const ch1Text = extractText(ch1Result).replace(/```json|```/g,'').trim();
     const ch1Data = JSON.parse(ch1Text.substring(ch1Text.indexOf('{'), ch1Text.lastIndexOf('}')+1));
     Object.assign(allReadings, ch1Data);
 
@@ -5322,7 +5334,7 @@ async function submitForm() {
           LUMIS_PROMPT,
           `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第${ch.num}章「${ch.title}」。\n重點：${ch.focus}\n只回傳純JSON：{"${ch.key}":{"title":"${ch.title}","content":"內容"}}`
         );
-        const text = result.content[0].text.replace(/```json|```/g,'').trim();
+        const text = extractText(result).replace(/```json|```/g,'').trim();
         const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
         Object.assign(allReadings, data);
         if (currentChapterIndex === ch.num - 1) showChapter(ch.num - 1);
