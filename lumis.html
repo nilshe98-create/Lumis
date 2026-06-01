@@ -4472,8 +4472,8 @@ function openModal(callback, intent) {
   formCallback = callback || null;
   if (intent) _pendingAfterForm = intent;
 
-  // Returning user — has saved birth data, skip form and go straight to callback
-  if (window.lumisUserDob && window.lumisUserTime && window.lumisUserPlace && formCallback) {
+  // Returning user — has birth date saved, skip form and go straight to callback
+  if (window.lumisUserDob && formCallback) {
     const cb = formCallback;
     formCallback = null;
     _pendingAfterForm = null;
