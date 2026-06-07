@@ -1957,17 +1957,37 @@
 
     <!-- Referral -->
     <div style="text-align:center; margin-top:40px; padding:28px 32px; border:1px solid rgba(201,168,76,0.2); background:rgba(201,168,76,0.03); max-width:580px; margin:40px auto 0;" class="reveal">
-      <div style="font-size:0.76rem; letter-spacing:4px; color:var(--gold); margin-bottom:14px;">✦ 介紹朋友 · 一章免費 ✦</div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:1.08rem; color:var(--soft-white); line-height:2; margin-bottom:12px;">
-        把 LUMIS 分享給朋友<br>
-        當他們登入帳號，你立刻獲得
-        <span style="color:var(--gold); font-size:1.3rem;"> $4 </span>
-        點數
+      <div style="font-size:0.76rem; letter-spacing:4px; color:var(--gold); margin-bottom:12px;">✦ 介紹朋友 · 各得一章免費 ✦</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--silver); margin-bottom:20px;">
+        分享你的專屬連結，朋友登入後你們各得 <span style="color:var(--gold);">$4</span> 點數
       </div>
-      <div style="font-size:0.82rem; color:var(--silver); line-height:1.8; margin-bottom:10px;">
-        不需要對方購買 — 登入就算 ✦ 等同一章完全免費
+
+      <!-- Referral link box -->
+      <div id="ref-link-box" style="display:none; margin-bottom:16px;">
+        <div style="display:flex; gap:8px; align-items:center; background:rgba(0,0,10,0.5); border:1px solid rgba(201,168,76,0.2); padding:10px 14px; border-radius:2px;">
+          <div id="ref-link-text" style="flex:1; font-size:0.78rem; color:var(--silver); letter-spacing:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left;"></div>
+          <button onclick="copyReferralLink()" style="background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:6px 14px; font-size:0.72rem; letter-spacing:2px; cursor:pointer; white-space:nowrap; font-family:'Noto Serif TC',serif;">
+            複製
+          </button>
+        </div>
       </div>
-      <div style="font-size:0.74rem; color:rgba(168,168,192,0.4); letter-spacing:1px;">點數永不過期 · 可用於任何篇章解鎖</div>
+
+      <!-- Share buttons -->
+      <div id="ref-share-btns" style="display:none; display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
+        <button onclick="shareOnLine()" style="flex:1; max-width:160px; padding:11px; background:#06C755; border:none; color:#fff; font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif;">
+          LINE 分享
+        </button>
+        <button onclick="copyReferralLink()" style="flex:1; max-width:160px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif;">
+          複製連結
+        </button>
+      </div>
+
+      <!-- Login prompt for non-logged in users -->
+      <div id="ref-login-prompt" style="display:block;">
+        <button onclick="openAuthModal(null,'介紹朋友','登入後取得你的專屬連結')" style="padding:11px 28px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:3px; cursor:pointer;">
+          登入取得連結
+        </button>
+      </div>
     </div>
   </section>
 
@@ -3399,6 +3419,26 @@ function generateRefCode(email) {
   return code;
 }
 function getMyReferralLink() { const email = lumisUser?.email; if (!email) return ''; return 'https://lumisstar.com?ref=' + generateRefCode(email); }
+
+function showReferralUI() {
+  const link = getMyReferralLink();
+  if (!link) return;
+  const linkText = document.getElementById('ref-link-text');
+  const linkBox = document.getElementById('ref-link-box');
+  const shareBtns = document.getElementById('ref-share-btns');
+  const loginPrompt = document.getElementById('ref-login-prompt');
+  if (linkText) linkText.textContent = link;
+  if (linkBox) linkBox.style.display = 'block';
+  if (shareBtns) shareBtns.style.display = 'flex';
+  if (loginPrompt) loginPrompt.style.display = 'none';
+}
+
+function shareOnLine() {
+  const link = getMyReferralLink();
+  if (!link) return;
+  const msg = encodeURIComponent('我在 LUMIS 發現了我的星辰圖案，你也來看看吧！' + link);
+  window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(link) + '&text=' + msg, '_blank');
+}
 function getReferralCredits() { return parseInt(localStorage.getItem('lumis_ref_credits') || '0'); }
 function captureRefFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -3410,6 +3450,16 @@ function showReferralInfo() {
   if (!link) return;
   if (navigator.clipboard) { navigator.clipboard.writeText(link).then(() => { showToast('✦ 推薦連結已複製！'); }); }
   else { prompt('複製你的推薦連結：', link); }
+}
+
+function copyReferralLink() {
+  const link = getMyReferralLink();
+  if (!link) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(() => { showToast('✦ 推薦連結已複製！'); });
+  } else {
+    prompt('複製你的推薦連結：', link);
+  }
 }
 let _toastLastTime = 0;
 function showToast(msg) {
@@ -3592,6 +3642,8 @@ function updateUIForLoggedIn() {
                    hasFeaturePaid('chapter4') || hasFeaturePaid('chapter5');
     if (hasAny) bundleSection.style.display = 'none';
   }
+  // Show referral link and share buttons
+  showReferralUI();
   const email = lumisUser.email || '';
   const name = lumisUser.name || email.split('@')[0] || '用戶';
   const symbol = getUserSymbol(email);
