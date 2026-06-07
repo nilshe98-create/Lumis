@@ -45,6 +45,7 @@
     font-family: 'Noto Serif TC', serif;
     overflow-x: hidden;
     cursor: none;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.7);
   }
 
   /* CUSTOM CURSOR - desktop only */
@@ -666,8 +667,8 @@
     border: 1px solid rgba(201,168,76,0.15);
     position: relative;
     transition: all 0.4s;
-    background: rgba(2,8,24,0.6);
-    backdrop-filter: blur(10px);
+    background: rgba(2,8,24,0.12);
+    backdrop-filter: blur(4px);
   }
 
   .step:hover {
@@ -717,8 +718,8 @@
   .chapter-card {
     border: 1px solid rgba(201,168,76,0.15);
     padding: 32px 24px;
-    background: rgba(2,8,24,0.7);
-    backdrop-filter: blur(10px);
+    background: rgba(2,8,24,0.12);
+    backdrop-filter: blur(4px);
     transition: all 0.4s;
     position: relative;
     overflow: hidden;
@@ -826,8 +827,8 @@
   .pricing-card {
     border: 1px solid rgba(201,168,76,0.2);
     padding: 48px 36px;
-    background: rgba(2,8,24,0.8);
-    backdrop-filter: blur(10px);
+    background: rgba(2,8,24,0.12);
+    backdrop-filter: blur(4px);
     text-align: center;
     position: relative;
     transition: all 0.4s;
@@ -1032,8 +1033,8 @@
   .testimonial {
     padding: 36px 28px;
     border: 1px solid rgba(201,168,76,0.1);
-    background: rgba(2,8,24,0.6);
-    backdrop-filter: blur(10px);
+    background: rgba(2,8,24,0.12);
+    backdrop-filter: blur(4px);
     transition: all 0.4s;
   }
 
@@ -1269,7 +1270,7 @@
   /* READING SCREENS */
   .reading-chapter {
     border:1px solid rgba(201,168,76,0.2);
-    background:rgba(2,8,24,0.6);
+    background:rgba(2,8,24,0.10);
     padding:28px;
   }
   .reading-ch-header {
@@ -1755,11 +1756,11 @@
 
   /* BACKGROUND SECTION TINT */
   .section-dark {
-    background: rgba(13,6,40,0.3);
+    background: transparent;
   }
 
   .section-teal {
-    background: rgba(0,20,30,0.3);
+    background: transparent;
   }
 
   /* GLOW EFFECT */
@@ -1954,7 +1955,7 @@
     <!-- Buy all option -->
     <div id="bundle-section" style="text-align:center; margin-top:60px;" class="reveal">
       <div style="font-size:0.7rem; letter-spacing:3px; color:var(--silver); margin-bottom:20px;">或者</div>
-      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.3); padding:40px 60px; background:rgba(2,8,24,0.7);">
+      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.3); padding:40px 60px; background:rgba(2,8,24,0.12);">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">一次解鎖全部五章</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--silver); text-decoration:line-through; opacity:0.45; margin-bottom:4px;">$16</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:6px;">$15</div>
@@ -1974,7 +1975,7 @@
 
       <!-- Referral link box -->
       <div id="ref-link-box" style="display:none; margin-bottom:16px;">
-        <div style="background:rgba(0,0,10,0.5); border:1px solid rgba(201,168,76,0.2); padding:10px 14px; border-radius:2px;">
+        <div style="background:rgba(0,0,10,0.15); border:1px solid rgba(201,168,76,0.2); padding:10px 14px; border-radius:2px;">
           <div id="ref-link-text" style="font-size:0.78rem; color:var(--silver); letter-spacing:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left;"></div>
         </div>
       </div>
@@ -2093,7 +2094,7 @@
         了解孩子的天賦<br>
         才能給他真正需要的愛」
       </div>
-      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.2); padding:40px 60px; background:rgba(2,8,24,0.6); margin-bottom:36px;">
+      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.2); padding:40px 60px; background:rgba(2,8,24,0.10); margin-bottom:36px;">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">✦ 星童完整檔案 ✦</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:8px;">$12</div>
         <div style="font-size:1.05rem; color:var(--silver); letter-spacing:2px;">每位孩子 · 一次購買 · 永久保存</div>
@@ -3182,7 +3183,7 @@
       </div>
 
       <!-- After chapter 2: Unlock prompt -->
-      <div id="save-after-ch2" style="display:none; margin-top:24px; border:1px solid rgba(201,168,76,0.25); background:rgba(2,8,24,0.7);">
+      <div id="save-after-ch2" style="display:none; margin-top:24px; border:1px solid rgba(201,168,76,0.25); background:rgba(2,8,24,0.12);">
         <div style="height:1px; background:linear-gradient(to right, transparent, var(--gold), transparent);"></div>
         <div style="padding:28px; text-align:center;">
           <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--soft-white); margin-bottom:6px; letter-spacing:1px;">還有 4 個篇章等待你</div>
@@ -3202,7 +3203,7 @@
       </div>
 
       <!-- Download all - shown after last chapter -->
-      <div id="download-all-section" style="display:none; margin-top:24px; padding:28px; border:1px solid rgba(201,168,76,0.2); background:rgba(2,8,24,0.6); text-align:center;">
+      <div id="download-all-section" style="display:none; margin-top:24px; padding:28px; border:1px solid rgba(201,168,76,0.2); background:rgba(2,8,24,0.10); text-align:center;">
         <div style="font-size:0.82rem; letter-spacing:4px; color:var(--gold-deep); margin-bottom:12px;">✦ · · · ✦</div>
         <div style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--soft-white); margin-bottom:6px; font-size:1rem;">你已閱讀完所有篇章</div>
         <div style="font-size:1.05rem; color:var(--silver); letter-spacing:1px; margin-bottom:20px;">你的光，早已寫在星辰之中</div>
@@ -5091,7 +5092,7 @@ body {
   padding: 48px 52px;
   margin-bottom: 48px;
   border: 1px solid rgba(201,168,76,0.18);
-  background: rgba(2,8,24,0.6);
+  background: rgba(2,8,24,0.10);
 }
 .block-top-line {
   position: absolute;
