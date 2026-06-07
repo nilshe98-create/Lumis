@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUMIS ✦ 你的光，早已寫在星辰之中</title>
+
+<!-- Open Graph for LINE / Facebook / social preview -->
+<meta property="og:title" content="LUMIS ✦ 你的星辰圖案">
+<meta property="og:description" content="你出生那一刻，星辰已寫下你的故事。免費探索你的人生第一章。">
+<meta property="og:url" content="https://www.lumisstar.com">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.lumisstar.com/og-image.jpg">
+<meta property="og:site_name" content="LUMIS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="你出生那一刻，星辰已寫下你的故事。免費探索你的人生第一章。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1964,20 +1974,17 @@
 
       <!-- Referral link box -->
       <div id="ref-link-box" style="display:none; margin-bottom:16px;">
-        <div style="display:flex; gap:8px; align-items:center; background:rgba(0,0,10,0.5); border:1px solid rgba(201,168,76,0.2); padding:10px 14px; border-radius:2px;">
-          <div id="ref-link-text" style="flex:1; font-size:0.78rem; color:var(--silver); letter-spacing:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left;"></div>
-          <button onclick="copyReferralLink()" style="background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:6px 14px; font-size:0.72rem; letter-spacing:2px; cursor:pointer; white-space:nowrap; font-family:'Noto Serif TC',serif;">
-            複製
-          </button>
+        <div style="background:rgba(0,0,10,0.5); border:1px solid rgba(201,168,76,0.2); padding:10px 14px; border-radius:2px;">
+          <div id="ref-link-text" style="font-size:0.78rem; color:var(--silver); letter-spacing:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left;"></div>
         </div>
       </div>
 
       <!-- Share buttons -->
       <div id="ref-share-btns" style="display:none; display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
-        <button onclick="shareOnLine()" style="flex:1; max-width:160px; padding:11px; background:#06C755; border:none; color:#fff; font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif;">
-          LINE 分享
+        <button onclick="shareOnLine()" style="flex:1; max-width:160px; padding:11px; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.5); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.18)'" onmouseout="this.style.background='rgba(201,168,76,0.08)'">
+          ✦ LINE
         </button>
-        <button onclick="copyReferralLink()" style="flex:1; max-width:160px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif;">
+        <button onclick="copyReferralLink()" style="flex:1; max-width:160px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
           複製連結
         </button>
       </div>
@@ -3436,8 +3443,15 @@ function showReferralUI() {
 function shareOnLine() {
   const link = getMyReferralLink();
   if (!link) return;
-  const msg = encodeURIComponent('我在 LUMIS 發現了我的星辰圖案，你也來看看吧！' + link);
-  window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(link) + '&text=' + msg, '_blank');
+  const msg = '我在 LUMIS 發現了我的星辰圖案，你也來看看吧！\n' + link;
+  const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobileDevice) {
+    // Opens LINE app directly to contact selection — no intermediate page
+    window.location.href = 'line://msg/text/' + encodeURIComponent(msg);
+  } else {
+    // Desktop — LINE web share (two-step, unavoidable on desktop)
+    window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(link), '_blank');
+  }
 }
 function getReferralCredits() { return parseInt(localStorage.getItem('lumis_ref_credits') || '0'); }
 function captureRefFromURL() {
@@ -3658,7 +3672,7 @@ function updateUIForLoggedIn() {
           <div class="profile-dropdown-item" style="color:rgba(168,168,192,0.5); font-size:0.72rem; cursor:default;">${email}</div>
           <div class="profile-dropdown-item" onclick="window.location.href='#chapters'">✦ 我的篇章</div>
           <div class="profile-dropdown-item" onclick="window.location.href='#pricing'">☽ 我的訂閱</div>
-          <div class="profile-dropdown-item" onclick="showReferralInfo()">🔗 推薦好友 · 得$4</div>
+
           <div class="profile-dropdown-item" style="color:rgba(201,168,76,0.5);" onclick="logoutUser()">登出</div>
         </div>
       </div>`;
