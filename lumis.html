@@ -99,7 +99,7 @@
     position: fixed;
     top: 0; right: -100%;
     width: 280px; height: 100vh;
-    background: rgba(2,8,24,0.98);
+    background: transparent;
     backdrop-filter: blur(20px);
     border-left: 1px solid rgba(201,168,76,0.2);
     z-index: 999;
@@ -190,7 +190,7 @@
     width: 100%;
     padding: 20px 24px;
     background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(201,168,76,0.25);
+    border: 1px solid rgba(201,168,76,0.4);
     color: var(--soft-white);
     cursor: pointer;
     transition: all 0.3s;
@@ -202,7 +202,7 @@
   }
   .choose-btn:hover {
     border-color: var(--gold);
-    background: rgba(201,168,76,0.06);
+    background: transparent;
     transform: translateX(4px);
   }
   .choose-icon {
@@ -245,9 +245,9 @@
   .legal-modal {
     max-width: 720px;
     width: 100%;
-    border: 1px solid rgba(201,168,76,0.3);
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 60px 52px;
-    background: rgba(2,8,24,0.98);
+    background: transparent;
     position: relative;
     transform: translateY(30px);
     transition: transform 0.4s;
@@ -314,8 +314,8 @@
     font-size: 0.5rem;
   }
   .legal-highlight {
-    background: rgba(201,168,76,0.06);
-    border: 1px solid rgba(201,168,76,0.15);
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 16px 20px;
     margin: 12px 0;
     font-size: 0.75rem;
@@ -381,7 +381,7 @@
     align-items: center;
     justify-content: space-between;
     background: linear-gradient(to bottom, rgba(0,0,10,0.9) 0%, transparent 100%);
-    backdrop-filter: blur(10px);
+    
   }
 
   .nav-logo {
@@ -412,10 +412,10 @@
 
   .profile-btn {
     display: flex; align-items: center; gap: 10px;
-    background: transparent; border: 1px solid rgba(201,168,76,0.35);
+    background: transparent; border: 1px solid rgba(201,168,76,0.4);
     padding: 7px 14px 7px 8px; cursor: pointer; transition: all 0.3s; position: relative;
   }
-  .profile-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .profile-btn:hover { border-color: var(--gold); background: transparent; }
   .profile-symbol {
     width: 32px; height: 32px;
     background: linear-gradient(135deg, var(--gold-deep), var(--gold));
@@ -425,7 +425,7 @@
   .profile-name { font-family: 'Noto Serif TC',serif; font-size: 0.78rem; letter-spacing: 2px; color: var(--gold); }
   .profile-dropdown {
     position: absolute; top: calc(100% + 8px); right: 0;
-    background: #050D1F; border: 1px solid rgba(201,168,76,0.3);
+    background: rgba(2,8,24,0.97); border: 1px solid rgba(201,168,76,0.4);
     min-width: 180px; display: none; z-index: 1000;
   }
   .profile-dropdown.open { display: block; }
@@ -434,7 +434,7 @@
     font-size: 0.8rem; letter-spacing: 2px; color: var(--silver);
     cursor: pointer; border-bottom: 1px solid rgba(201,168,76,0.1); transition: all 0.2s;
   }
-  .profile-dropdown-item:hover { color: var(--gold); background: rgba(201,168,76,0.05); }
+  .profile-dropdown-item:hover { color: var(--gold); background: transparent; }
   .profile-dropdown-item:last-child { border-bottom: none; }
 
   .nav-cta {
@@ -734,10 +734,10 @@
   }
 
   .chapter-card {
-    border: 1px solid rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 32px 24px;
-    background: rgba(2,8,24,0.7);
-    backdrop-filter: blur(10px);
+    background: transparent;
+    
     transition: all 0.4s;
     position: relative;
     overflow: hidden;
@@ -818,7 +818,7 @@
 
   .chapter-btn {
     background: transparent;
-    border: 1px solid rgba(201,168,76,0.3);
+    border: 1px solid rgba(201,168,76,0.4);
     color: var(--gold);
     padding: 6px 16px;
     font-size: 0.65rem;
@@ -843,10 +843,10 @@
   }
 
   .pricing-card {
-    border: 1px solid rgba(201,168,76,0.2);
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 36px 32px;
-    background: rgba(2,8,24,0.12);
-    backdrop-filter: blur(4px);
+    background: transparent;
+    
     text-align: center;
     position: relative;
     transition: all 0.4s;
@@ -979,7 +979,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 2rem;
     color: var(--gold);
-    background: rgba(201,168,76,0.05);
+    background: transparent;
     animation: orb-pulse 3s ease-in-out infinite;
     box-shadow: 0 0 30px rgba(201,168,76,0.1);
   }
@@ -988,7 +988,7 @@
     animation-delay: 1.5s;
     border-color: var(--pink);
     color: var(--pink);
-    background: rgba(255,107,157,0.05);
+    background: transparent;
     box-shadow: 0 0 30px rgba(255,107,157,0.1);
   }
 
@@ -1019,7 +1019,7 @@
 
   .compat-price {
     display: inline-block;
-    border: 1px solid rgba(201,168,76,0.3);
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 20px 48px;
     margin-bottom: 32px;
   }
@@ -1056,9 +1056,9 @@
 
   .testimonial {
     padding: 36px 28px;
-    border: 1px solid rgba(201,168,76,0.1);
-    background: rgba(2,8,24,0.6);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201,168,76,0.4);
+    background: transparent;
+    
     transition: all 0.4s;
   }
 
@@ -1197,7 +1197,7 @@
     margin-top: 24px;
     padding: 16px 20px;
     border-left: 2px solid var(--gold-deep);
-    background: rgba(201,168,76,0.04);
+    background: transparent;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 0.9rem;
@@ -1243,7 +1243,7 @@
     flex: 1;
     padding: 10px 8px;
     background: transparent;
-    border: 1px solid rgba(201,168,76,0.25);
+    border: 1px solid rgba(201,168,76,0.4);
     color: var(--silver);
     font-family: 'Noto Serif TC', serif;
     font-size: 0.78rem;
@@ -1293,8 +1293,8 @@
 
   /* READING SCREENS */
   .reading-chapter {
-    border:1px solid rgba(201,168,76,0.2);
-    background:rgba(2,8,24,0.6);
+    border:1px solid rgba(201,168,76,0.4);
+    background:transparent;
     padding:28px;
   }
   .reading-ch-header {
@@ -1360,7 +1360,7 @@
     margin-top:20px;
     padding:10px 20px;
     background:transparent;
-    border:1px solid rgba(201,168,76,0.3);
+    border:1px solid rgba(201,168,76,0.4);
     color:var(--gold);
     font-family:'Noto Serif TC',serif;
     font-size:0.7rem;
@@ -1385,7 +1385,7 @@
   }
   .locked-preview {
     padding:8px 10px;
-    border:1px solid rgba(201,168,76,0.1);
+    border:1px solid rgba(201,168,76,0.4);
     font-size:1.05rem;
     color:var(--silver);
     letter-spacing:1px;
@@ -1396,7 +1396,7 @@
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,10,0.95);
+    background: rgba(0,0,10,0.92);
     z-index: 2000;
     display: flex;
     align-items: center;
@@ -1416,9 +1416,9 @@
   .modal {
     max-width: 560px;
     width: 100%;
-    border: 1px solid rgba(201,168,76,0.3);
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 60px 48px;
-    background: rgba(2,8,24,0.98);
+    background: rgba(2,8,24,0.97);
     position: relative;
     transform: translateY(30px);
     transition: transform 0.4s;
@@ -1519,7 +1519,7 @@
 
   .form-input:focus {
     border-bottom-color: var(--gold);
-    background: rgba(201,168,76,0.06);
+    background: transparent;
     -webkit-text-fill-color: #FFFFFF;
     color: #FFFFFF;
   }
@@ -1572,8 +1572,8 @@
   }
 
   .form-warning {
-    background: rgba(201,168,76,0.05);
-    border: 1px solid rgba(201,168,76,0.2);
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.4);
     padding: 16px;
     margin-top: 12px;
     font-size: 0.68rem;
@@ -1649,7 +1649,7 @@
 
   .social-btn:hover {
     border-color: rgba(201,168,76,0.3);
-    background: rgba(201,168,76,0.05);
+    background: transparent;
   }
 
   .social-btn.line { border-color: rgba(0,197,96,0.3); }
@@ -1780,11 +1780,11 @@
 
   /* BACKGROUND SECTION TINT */
   .section-dark {
-    background: rgba(13,6,40,0.3);
+    background: transparent;
   }
 
   .section-teal {
-    background: rgba(0,20,30,0.3);
+    background: transparent;
   }
 
   /* GLOW EFFECT */
@@ -1979,11 +1979,11 @@
     <!-- Buy all option -->
     <div id="bundle-section" style="text-align:center; margin-top:60px;" class="reveal">
       <div style="font-size:0.7rem; letter-spacing:3px; color:var(--silver); margin-bottom:20px;">或者</div>
-      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.3); padding:40px 60px; background:rgba(2,8,24,0.7);">
+      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.4); padding:40px 60px; background:transparent;">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">一次解鎖全部五章</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--silver); text-decoration:line-through; opacity:0.45; margin-bottom:4px;">$16</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:6px;">$15</div>
-        <div style="display:inline-block; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.35); color:var(--gold); font-size:0.7rem; letter-spacing:3px; padding:4px 14px; margin-bottom:16px;">Save $1</div>
+        <div style="display:inline-block; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-size:0.7rem; letter-spacing:3px; padding:4px 14px; margin-bottom:16px;">Save $1</div>
         <div style="font-size:1.05rem; color:var(--silver); margin-bottom:8px; letter-spacing:2px;">你完整的星辰圖案，一次擁有</div>
         <div style="font-size:0.72rem; color:rgba(168,168,192,0.4); letter-spacing:1px; margin-bottom:20px;">最佳在購買單章前使用</div>
         <button class="hero-btn" onclick="openAllChapters()"><span>✦ 解鎖完整故事</span></button>
@@ -1991,7 +1991,7 @@
     </div>
 
     <!-- Referral -->
-    <div style="text-align:center; margin-top:40px; padding:28px 32px; border:1px solid rgba(201,168,76,0.2); background:rgba(201,168,76,0.03); max-width:580px; margin:40px auto 0;" class="reveal">
+    <div style="text-align:center; margin-top:40px; padding:28px 32px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); max-width:580px; margin:40px auto 0;" class="reveal">
       <div style="font-size:0.76rem; letter-spacing:4px; color:var(--gold); margin-bottom:12px;">✦ 介紹朋友 · 各得一章免費 ✦</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--silver); margin-bottom:20px;">
         分享你的專屬連結，朋友登入後你們各得 <span style="color:var(--gold);">$4</span> 點數
@@ -1999,7 +1999,7 @@
 
       <!-- Referral link box -->
       <div id="ref-link-box" style="display:none; margin-bottom:16px;">
-        <div style="background:rgba(0,0,10,0.5); border:1px solid rgba(201,168,76,0.2); padding:10px 14px; border-radius:2px;">
+        <div style="background:transparent; border:1px solid rgba(201,168,76,0.4); padding:10px 14px; border-radius:2px;">
           <div id="ref-link-text" style="font-size:0.78rem; color:var(--silver); letter-spacing:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left;"></div>
         </div>
       </div>
@@ -2009,14 +2009,14 @@
         <button onclick="shareOnLine()" style="flex:1; max-width:160px; padding:11px; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.5); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.18)'" onmouseout="this.style.background='rgba(201,168,76,0.08)'">
           ✦ LINE
         </button>
-        <button onclick="copyReferralLink()" style="flex:1; max-width:160px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
+        <button onclick="copyReferralLink()" style="flex:1; max-width:160px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-size:0.82rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
           複製連結
         </button>
       </div>
 
       <!-- Login prompt for non-logged in users -->
       <div id="ref-login-prompt" style="display:block;">
-        <button onclick="openAuthModal(null,'介紹朋友','登入後取得你的專屬連結')" style="padding:11px 28px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:3px; cursor:pointer;">
+        <button onclick="openAuthModal(null,'介紹朋友','登入後取得你的專屬連結')" style="padding:11px 28px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:3px; cursor:pointer;">
           登入取得連結
         </button>
       </div>
@@ -2115,21 +2115,21 @@
         了解孩子的天賦<br>
         才能給他真正需要的愛」
       </div>
-      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.2); padding:40px 60px; background:rgba(2,8,24,0.6); margin-bottom:36px;">
+      <div style="display:inline-block; border:1px solid rgba(201,168,76,0.4); padding:40px 60px; background:transparent; margin-bottom:36px;">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">✦ 星童完整檔案 ✦</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:8px;">$12</div>
         <div style="font-size:1.05rem; color:var(--silver); letter-spacing:2px;">每位孩子 · 一次購買 · 永久保存</div>
       </div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; max-width:700px; margin:0 auto 40px;">
-        <div style="padding:24px 20px; border:1px solid rgba(201,168,76,0.15); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--soft-white); letter-spacing:1px; line-height:2;">
+        <div style="padding:24px 20px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--soft-white); letter-spacing:1px; line-height:2;">
           ✦ 這個孩子天生是什麼樣的人<br>
           <span style="font-size:0.78rem; color:var(--silver);">性格、天賦、內在世界</span>
         </div>
-        <div style="padding:24px 20px; border:1px solid rgba(201,168,76,0.15); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--soft-white); letter-spacing:1px; line-height:2;">
+        <div style="padding:24px 20px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--soft-white); letter-spacing:1px; line-height:2;">
           ✦ 他的未來最適合什麼方向<br>
           <span style="font-size:0.78rem; color:var(--silver);">職業潛力、天賦發光的時機</span>
         </div>
-        <div style="padding:24px 20px; border:1px solid rgba(201,168,76,0.15); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--soft-white); letter-spacing:1px; line-height:2;">
+        <div style="padding:24px 20px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--soft-white); letter-spacing:1px; line-height:2;">
           ✦ 你和孩子之間的真實連結<br>
           <span style="font-size:0.78rem; color:var(--silver);">如何給他真正需要的愛</span>
         </div>
@@ -2496,7 +2496,7 @@
         <button onclick="showAuthStep('login-new')" style="padding:18px; background:rgba(201,168,76,0.08); border:1px solid var(--gold); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.15)'" onmouseout="this.style.background='rgba(201,168,76,0.08)'">
           ✦ 我是新用戶
         </button>
-        <button onclick="showAuthStep('login-returning')" style="padding:18px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.05)'" onmouseout="this.style.background='transparent'">
+        <button onclick="showAuthStep('login-returning')" style="padding:18px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:1rem; letter-spacing:3px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.05)'" onmouseout="this.style.background='transparent'">
           ☽ 我已有帳號
         </button>
       </div>
@@ -3155,7 +3155,7 @@
       <div class="chapter-counter" id="chapter-counter">✦ 第 1 章 · 共 5 章 ✦</div>
 
       <!-- Single chapter display -->
-      <div id="single-chapter-display" style="border:1px solid rgba(201,168,76,0.2); background:rgba(2,8,24,0.5); position:relative; overflow:hidden;">
+      <div id="single-chapter-display" style="border:1px solid rgba(201,168,76,0.4); background:transparent; position:relative; overflow:hidden;">
         <!-- Gold top line accent -->
         <div style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(to right, transparent, var(--gold), transparent);"></div>
 
@@ -3173,7 +3173,7 @@
         <div id="display-positive-note" style="display:none; margin:20px 28px 0; padding:14px 18px; border-left:2px solid var(--gold-deep); background:rgba(201,168,76,0.03); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--silver); letter-spacing:1px; line-height:1.8;"></div>
 
         <!-- Next chapter preview -->
-        <div id="next-ch-preview" style="display:none; margin:20px 28px 0; padding:16px 20px; background:rgba(201,168,76,0.04); border:1px solid rgba(201,168,76,0.12);">
+        <div id="next-ch-preview" style="display:none; margin:20px 28px 0; padding:16px 20px; background:rgba(201,168,76,0.04); border:1px solid rgba(201,168,76,0.4);">
           <div style="font-size:0.82rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:8px;">下一章預覽</div>
           <div style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--soft-white); letter-spacing:1px;" id="next-ch-preview-title"></div>
           <div style="font-size:0.85rem; color:var(--silver); margin-top:6px; line-height:1.7;" id="next-ch-preview-text"></div>
@@ -3185,13 +3185,13 @@
 
       <!-- Download + Retry + Regenerate buttons -->
       <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
-        <button id="display-download-btn" onclick="downloadCurrentChapter()" style="flex:1; min-width:140px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.25); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:1.05rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s; display:none;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
+        <button id="display-download-btn" onclick="downloadCurrentChapter()" style="flex:1; min-width:140px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:1.05rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s; display:none;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
           ✦ 下載此篇章
         </button>
-        <button id="retry-chapter-btn" onclick="retryCurrentChapter()" style="flex:1; min-width:140px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.15); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:1.05rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s; display:none;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)';this.style.color='var(--soft-white)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='var(--silver)'">
+        <button id="retry-chapter-btn" onclick="retryCurrentChapter()" style="flex:1; min-width:140px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:1.05rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s; display:none;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)';this.style.color='var(--soft-white)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='var(--silver)'">
           ↺ 重新載入此章
         </button>
-        <button id="regen-chapter-btn" onclick="regenerateCurrentChapter()" style="flex:1; min-width:140px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.15); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s; display:none;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)';this.style.color='var(--soft-white)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='var(--silver)'">
+        <button id="regen-chapter-btn" onclick="regenerateCurrentChapter()" style="flex:1; min-width:140px; padding:11px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s; display:none;" onmouseover="this.style.borderColor='rgba(201,168,76,0.4)';this.style.color='var(--soft-white)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.15)';this.style.color='var(--silver)'">
           ↻ 重新生成
         </button>
       </div>
@@ -3204,7 +3204,7 @@
       </div>
 
       <!-- After chapter 2: Unlock prompt -->
-      <div id="save-after-ch2" style="display:none; margin-top:24px; border:1px solid rgba(201,168,76,0.25); background:rgba(2,8,24,0.7);">
+      <div id="save-after-ch2" style="display:none; margin-top:24px; border:1px solid rgba(201,168,76,0.4); background:transparent;">
         <div style="height:1px; background:linear-gradient(to right, transparent, var(--gold), transparent);"></div>
         <div style="padding:28px; text-align:center;">
           <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--soft-white); margin-bottom:6px; letter-spacing:1px;">還有 4 個篇章等待你</div>
@@ -3224,7 +3224,7 @@
       </div>
 
       <!-- Download all - shown after last chapter -->
-      <div id="download-all-section" style="display:none; margin-top:24px; padding:28px; border:1px solid rgba(201,168,76,0.2); background:rgba(2,8,24,0.6); text-align:center;">
+      <div id="download-all-section" style="display:none; margin-top:24px; padding:28px; border:1px solid rgba(201,168,76,0.4); background:transparent; text-align:center;">
         <div style="font-size:0.82rem; letter-spacing:4px; color:var(--gold-deep); margin-bottom:12px;">✦ · · · ✦</div>
         <div style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--soft-white); margin-bottom:6px; font-size:1rem;">你已閱讀完所有篇章</div>
         <div style="font-size:1.05rem; color:var(--silver); letter-spacing:1px; margin-bottom:20px;">你的光，早已寫在星辰之中</div>
@@ -3507,7 +3507,7 @@ function showToast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'lumis-toast';
-    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(2,8,24,0.95);border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:12px 24px;font-family:"Noto Serif TC",serif;font-size:0.82rem;letter-spacing:2px;z-index:99999;transition:opacity 0.5s;pointer-events:none;max-width:90vw;text-align:center;';
+    t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(2,8,24,0.97);border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:12px 24px;font-family:"Noto Serif TC",serif;font-size:0.82rem;letter-spacing:2px;z-index:99999;transition:opacity 0.5s;pointer-events:none;max-width:90vw;text-align:center;';
     document.body.appendChild(t);
   }
   // Clean up raw API error messages — show friendly version
@@ -4201,17 +4201,17 @@ async function submitSoulmate() {
         <div style="font-size:0.55rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:8px;">♃ 你們的未來</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--silver); line-height:1.9;">${c.future}</div>
       </div>
-      <div style="padding:18px 20px; border:1px solid rgba(201,168,76,0.2); background:rgba(201,168,76,0.03); margin-bottom:20px; text-align:center;">
+      <div style="padding:18px 20px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); margin-bottom:20px; text-align:center;">
         <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--soft-white); line-height:1.8;">${c.message}</div>
       </div>
       <div style="display:flex; gap:10px;">
         <button onclick="downloadSoulmateReport(${JSON.stringify(c).replace(/"/g,'&quot;')})" style="flex:1; padding:12px; background:transparent; border:1px solid var(--gold); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--black)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">✦ 下載報告</button>
-        <button onclick="closeSoulmateModal()" style="flex:1; padding:12px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:2px; cursor:pointer;">關閉</button>
+        <button onclick="closeSoulmateModal()" style="flex:1; padding:12px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:2px; cursor:pointer;">關閉</button>
       </div>`;
   } catch(err) {
     document.getElementById('soulmate-loading-screen').style.display = 'none';
     document.getElementById('soulmate-result-screen').style.display = 'block';
-    document.getElementById('soulmate-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitSoulmate()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeSoulmateModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
+    document.getElementById('soulmate-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitSoulmate()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeSoulmateModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
   }
 }
 
@@ -4274,18 +4274,18 @@ async function submitStarChild() {
         <div style="font-size:0.55rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:10px;">☽ 你們之間</div>
         <div style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--silver); line-height:2;">${c.bond}</div>
       </div>
-      <div style="padding:20px; border:1px solid rgba(201,168,76,0.2); background:rgba(201,168,76,0.03); margin-bottom:20px; text-align:center;">
+      <div style="padding:20px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); margin-bottom:20px; text-align:center;">
         <div style="font-size:0.55rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:10px;">✦ 給你的話</div>
         <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.12rem; color:var(--soft-white); line-height:1.9;">${c.message}</div>
       </div>
       <div style="display:flex; gap:10px;">
         <button onclick="downloadStarChildReport(${JSON.stringify(c).replace(/"/g,'&quot;')})" style="flex:1; padding:12px; background:transparent; border:1px solid var(--gold); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--black)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">✦ 下載報告</button>
-        <button onclick="closeStarChildModal()" style="flex:1; padding:12px; background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:2px; cursor:pointer;">關閉</button>
+        <button onclick="closeStarChildModal()" style="flex:1; padding:12px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); font-family:'Noto Serif TC',serif; font-size:0.82rem; letter-spacing:2px; cursor:pointer;">關閉</button>
       </div>`;
   } catch(err) {
     document.getElementById('ls-loading-screen').style.display = 'none';
     document.getElementById('ls-result-screen').style.display = 'block';
-    document.getElementById('ls-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitStarChild()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeStarChildModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
+    document.getElementById('ls-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitStarChild()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeStarChildModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
   }
 }
 // =====================
@@ -4306,7 +4306,7 @@ function selectGender(prefix, value) {
 // DOWNLOAD REPORTS
 // =====================
 function downloadSoulmateReport(c) {
-  const SHARED_CSS = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.25);background:rgba(2,8,24,0.95);padding:60px 52px;position:relative;}.top-line,.bottom-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}.top-line{top:0;}.bottom-line{bottom:0;}.logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}.sym{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}.score{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:#C9A84C;text-align:center;line-height:1;margin-bottom:8px;}.title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:#E8E8F0;text-align:center;margin-bottom:28px;line-height:1.7;}.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);margin:0 0 24px;}.section{padding:16px 20px;margin-bottom:12px;border-left:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.04);}.section-title{font-size:0.55rem;letter-spacing:3px;color:#8B6914;margin-bottom:8px;}.section-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#A8A8C0;line-height:1.9;}.message{padding:20px;border:1px solid rgba(201,168,76,0.2);text-align:center;margin:20px 0;}.message-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.12rem;color:#E8E8F0;line-height:1.9;}.footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);margin-top:28px;}.print-note{text-align:center;font-size:0.76rem;color:rgba(168,168,192,0.4);margin-top:16px;letter-spacing:1px;}@media print{.print-note{display:none;}}`;
+  const SHARED_CSS = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.4);background:transparent;padding:60px 52px;position:relative;}.top-line,.bottom-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}.top-line{top:0;}.bottom-line{bottom:0;}.logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}.sym{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}.score{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:#C9A84C;text-align:center;line-height:1;margin-bottom:8px;}.title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:#E8E8F0;text-align:center;margin-bottom:28px;line-height:1.7;}.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);margin:0 0 24px;}.section{padding:16px 20px;margin-bottom:12px;border-left:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.04);}.section-title{font-size:0.55rem;letter-spacing:3px;color:#8B6914;margin-bottom:8px;}.section-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#A8A8C0;line-height:1.9;}.message{padding:20px;border:1px solid rgba(201,168,76,0.4);text-align:center;margin:20px 0;}.message-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.12rem;color:#E8E8F0;line-height:1.9;}.footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);margin-top:28px;}.print-note{text-align:center;font-size:0.76rem;color:rgba(168,168,192,0.4);margin-top:16px;letter-spacing:1px;}@media print{.print-note{display:none;}}`;
   const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 靈魂配對報告</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>${SHARED_CSS}</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="sym">☽ · · · ☽ · · · ☽</div><div class="score">${c.score}</div><div class="title">${c.title}</div><div class="divider"></div><div class="section"><div class="section-title">✦ 你們是什麼樣的組合</div><div class="section-text">${c.combo}</div></div><div class="section"><div class="section-title">✦ 你們最強的地方</div><div class="section-text">${c.strength}</div></div><div class="section"><div class="section-title">♄ 你們需要注意的事</div><div class="section-text">${c.challenge}</div></div><div class="section"><div class="section-title">♃ 你們的未來</div><div class="section-text">${c.future}</div></div><div class="message"><div class="message-text">${c.message}</div></div><div class="footer">你的光，早已寫在星辰之中 · lumisstar.com</div><div class="print-note">✦ 儲存為PDF：按 Ctrl+P → 選擇「儲存為PDF」</div><div class="bottom-line"></div></div></body></html>`;
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -4318,7 +4318,7 @@ function downloadSoulmateReport(c) {
 }
 
 function downloadStarChildReport(c) {
-  const SHARED_CSS = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.25);background:rgba(2,8,24,0.95);padding:60px 52px;position:relative;}.top-line,.bottom-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}.top-line{top:0;}.bottom-line{bottom:0;}.logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}.sym{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}.title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:#E8E8F0;text-align:center;margin-bottom:28px;line-height:1.7;}.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);margin:0 0 24px;}.section{padding:18px 20px;margin-bottom:12px;border-left:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.04);}.section-title{font-size:0.55rem;letter-spacing:3px;color:#8B6914;margin-bottom:10px;}.section-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#A8A8C0;line-height:2;}.message{padding:20px;border:1px solid rgba(201,168,76,0.2);text-align:center;margin:20px 0;}.message-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.12rem;color:#E8E8F0;line-height:1.9;}.footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);margin-top:28px;}.print-note{text-align:center;font-size:0.76rem;color:rgba(168,168,192,0.4);margin-top:16px;letter-spacing:1px;}@media print{.print-note{display:none;}}`;
+  const SHARED_CSS = `*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.4);background:transparent;padding:60px 52px;position:relative;}.top-line,.bottom-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}.top-line{top:0;}.bottom-line{bottom:0;}.logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}.sym{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}.title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:#E8E8F0;text-align:center;margin-bottom:28px;line-height:1.7;}.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.3),transparent);margin:0 0 24px;}.section{padding:18px 20px;margin-bottom:12px;border-left:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.04);}.section-title{font-size:0.55rem;letter-spacing:3px;color:#8B6914;margin-bottom:10px;}.section-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#A8A8C0;line-height:2;}.message{padding:20px;border:1px solid rgba(201,168,76,0.4);text-align:center;margin:20px 0;}.message-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.12rem;color:#E8E8F0;line-height:1.9;}.footer{text-align:center;font-size:0.82rem;color:#8B6914;letter-spacing:4px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.1);margin-top:28px;}.print-note{text-align:center;font-size:0.76rem;color:rgba(168,168,192,0.4);margin-top:16px;letter-spacing:1px;}@media print{.print-note{display:none;}}`;
   const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 星童報告</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>${SHARED_CSS}</style></head><body><div class="card"><div class="top-line"></div><div class="logo">LUMIS</div><div class="sym">✦ · · · ✦ · · · ✦</div><div class="title">${c.title}</div><div class="divider"></div><div class="section"><div class="section-title">☉ 這個孩子是誰</div><div class="section-text">${c.who}</div></div><div class="section"><div class="section-title">♃ 未來的方向</div><div class="section-text">${c.future}</div></div><div class="section"><div class="section-title">☽ 你們之間</div><div class="section-text">${c.bond}</div></div><div class="message"><div class="message-text">${c.message}</div></div><div class="footer">你的光，早已寫在星辰之中 · lumisstar.com</div><div class="print-note">✦ 儲存為PDF：按 Ctrl+P → 選擇「儲存為PDF」</div><div class="bottom-line"></div></div></body></html>`;
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -4993,7 +4993,7 @@ function downloadCurrentChapter() {
   const contentHTML = toHTML(content);
 
   const html = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LUMIS · 第${numChinese}章 · ${title}</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+TC:wght@200;300;400&family=Cinzel+Decorative:wght@400&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#00000A;color:#E8E8F0;font-family:'Noto Serif TC',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.25);background:rgba(2,8,24,0.95);padding:60px 52px;position:relative;}
+.card{max-width:640px;width:100%;border:1px solid rgba(201,168,76,0.4);background:transparent;padding:60px 52px;position:relative;}
 .top-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A84C,transparent);}
 .logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:#C9A84C;letter-spacing:8px;text-align:center;margin-bottom:8px;}
 .symbol{text-align:center;color:#8B6914;font-size:0.82rem;letter-spacing:6px;margin-bottom:32px;}
@@ -5112,8 +5112,8 @@ body {
   position: relative;
   padding: 48px 52px;
   margin-bottom: 48px;
-  border: 1px solid rgba(201,168,76,0.18);
-  background: rgba(2,8,24,0.6);
+  border: 1px solid rgba(201,168,76,0.4);
+  background: transparent;
 }
 .block-top-line {
   position: absolute;
@@ -5162,7 +5162,7 @@ body {
 .note {
   padding: 18px 22px;
   border-left: 2px solid #8B6914;
-  background: rgba(201,168,76,0.03);
+  background: transparent;
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
   font-size: 1.1rem;
