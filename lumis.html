@@ -2032,9 +2032,10 @@
       <span class="divider-symbol">✦</span>
       <div class="divider-line"></div>
     </div>
-    <div class="pricing-grid">
-      <div class="pricing-card reveal">
-        <div class="pricing-plan">✦ 基礎方案 ✦</div>
+    <div class="pricing-grid" style="display:flex; justify-content:center;">
+      <div class="pricing-card featured reveal" style="max-width:420px; margin:0 auto; width:100%;">
+        <div class="pricing-badge">✦ 每日星辰指引 ✦</div>
+        <div class="pricing-plan">✦ 星辰訂閱 ✦</div>
         <div class="pricing-price"><span>$</span>6</div>
         <div class="pricing-period">每月</div>
         <ul class="pricing-features">
@@ -2045,20 +2046,6 @@
           <li>7天免費體驗</li>
         </ul>
         <button class="pricing-btn" onclick="requireLoginForSubscription('basic')">開始體驗</button>
-      </div>
-      <div class="pricing-card featured reveal">
-        <div class="pricing-badge">✦ 最受歡迎 ✦</div>
-        <div class="pricing-plan">✦ 家庭方案 ✦</div>
-        <div class="pricing-price"><span>$</span>9</div>
-        <div class="pricing-period">每月</div>
-        <ul class="pricing-features">
-          <li>包含所有基礎方案內容</li>
-          <li>最多兩位孩子的每日星座運勢</li>
-          <li>孩子的每週及每月星座運勢</li>
-          <li>第三位孩子起 $1.5/月</li>
-          <li>7天免費體驗</li>
-        </ul>
-        <button class="pricing-btn" onclick="requireLoginForSubscription('family')">開始體驗</button>
       </div>
     </div>
   </section>
@@ -2602,115 +2589,6 @@
 </div>
 
 <!-- LOGIN GATE MODAL -->
-<!-- FAMILY HOROSCOPE MODAL -->
-<div class="modal-overlay" id="family-modal">
-  <div class="modal" style="max-width:560px;">
-    <button class="modal-close" onclick="closeFamilyModal()">✕</button>
-    <div class="modal-title">LUMIS</div>
-    <div class="modal-subtitle">家庭星辰訂閱</div>
-    <div class="modal-divider">✦ · · · ✦</div>
-
-    <div style="font-size:0.78rem; color:rgba(201,168,76,0.7); text-align:center; margin-bottom:24px; padding:12px 16px; border:1px dashed rgba(201,168,76,0.25); letter-spacing:1px; line-height:1.8;">
-      ✦ 你的星辰資料已儲存
-    </div>
-
-    <div id="family-children-container">
-      <!-- Child 1 - always shown -->
-      <div class="family-child-block" id="family-child-1">
-        <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:14px; border-bottom:1px solid rgba(201,168,76,0.15); padding-bottom:10px;">✦ 孩子 1</div>
-        <div class="form-group">
-          <label class="form-label">📅 出生日期</label>
-          <input type="text" id="fc-dob-1" class="form-input" placeholder="如：6/15/2018（月/日/年）">
-        </div>
-        <div class="form-group">
-          <label class="form-label">🕐 出生時間</label>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <select id="fc-time-h-1" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(1)">
-              <option value="">時</option>
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
-              <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-            </select>
-            <span style="color:var(--gold); font-size:1.2rem;">:</span>
-            <select id="fc-time-m-1" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(1)">
-              <option value="">分</option>
-              <option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option>
-              <option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
-            </select>
-            <select id="fc-time-ampm-1" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(1)">
-              <option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>
-            </select>
-          </div>
-          <input type="hidden" id="fc-time-1" value="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">📍 出生地點</label>
-          <input type="text" id="fc-place-1" class="form-input" placeholder="如：台北市，台灣">
-        </div>
-        <div class="form-group">
-          <label class="form-label">👤 性別</label>
-          <div style="display:flex; gap:10px;">
-            <button type="button" class="gender-btn" id="fc-g-m-1" onclick="selectFamilyGender(1,'男孩')">男孩</button>
-            <button type="button" class="gender-btn" id="fc-g-f-1" onclick="selectFamilyGender(1,'女孩')">女孩</button>
-            <button type="button" class="gender-btn" id="fc-g-o-1" onclick="selectFamilyGender(1,'其他')">其他</button>
-          </div>
-          <input type="hidden" id="fc-gender-1" value="">
-        </div>
-      </div>
-
-      <!-- Child 2 - always shown -->
-      <div class="family-child-block" id="family-child-2" style="margin-top:24px;">
-        <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:14px; border-bottom:1px solid rgba(201,168,76,0.15); padding-bottom:10px;">✦ 孩子 2</div>
-        <div class="form-group">
-          <label class="form-label">📅 出生日期</label>
-          <input type="text" id="fc-dob-2" class="form-input" placeholder="如：9/3/2021（月/日/年）">
-        </div>
-        <div class="form-group">
-          <label class="form-label">🕐 出生時間</label>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <select id="fc-time-h-2" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(2)">
-              <option value="">時</option>
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
-              <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-            </select>
-            <span style="color:var(--gold); font-size:1.2rem;">:</span>
-            <select id="fc-time-m-2" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(2)">
-              <option value="">分</option>
-              <option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option>
-              <option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
-            </select>
-            <select id="fc-time-ampm-2" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(2)">
-              <option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>
-            </select>
-          </div>
-          <input type="hidden" id="fc-time-2" value="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">📍 出生地點</label>
-          <input type="text" id="fc-place-2" class="form-input" placeholder="如：台北市，台灣">
-        </div>
-        <div class="form-group">
-          <label class="form-label">👤 性別</label>
-          <div style="display:flex; gap:10px;">
-            <button type="button" class="gender-btn" id="fc-g-m-2" onclick="selectFamilyGender(2,'男孩')">男孩</button>
-            <button type="button" class="gender-btn" id="fc-g-f-2" onclick="selectFamilyGender(2,'女孩')">女孩</button>
-            <button type="button" class="gender-btn" id="fc-g-o-2" onclick="selectFamilyGender(2,'其他')">其他</button>
-          </div>
-          <input type="hidden" id="fc-gender-2" value="">
-        </div>
-      </div>
-
-      <!-- Extra children added dynamically -->
-      <div id="family-extra-children"></div>
-    </div>
-
-    <!-- Add Child Button -->
-    <button onclick="addFamilyChild()" id="add-child-btn" style="width:100%; margin-top:20px; padding:12px; background:transparent; border:1px dashed rgba(201,168,76,0.35); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.05)'" onmouseout="this.style.background='transparent'">
-      + 新增孩子（$1.5/月）
-    </button>
-
-    <button class="form-submit" style="margin-top:20px;" onclick="submitFamilyHoroscope()">✦ 確認訂閱</button>
-  </div>
-</div>
 
 <!-- PRIVACY POLICY MODAL -->
 <div class="modal-overlay" id="privacy-modal">
@@ -2864,8 +2742,8 @@
           <li>全部五章：<strong>$15</strong> <span style="text-decoration:line-through; opacity:0.45; font-size:0.9em;">$16</span> 一次購買，永久有效（Save $1）</li>
           <li>靈魂配對：<strong>$15</strong> 每次，每換新對象需重新購買</li>
           <li>星童完整檔案：<strong>$12</strong> 每位孩子，永久有效</li>
-          <li>基礎方案訂閱：<strong>$6</strong> 每月</li>
-          <li>家庭方案訂閱：<strong>$9</strong> 每月（含最多兩位孩子，第三位起 $1.5/月）</li>
+          <li>星辰訂閱：<strong>$6</strong> 每月</li>
+
         </ul>
         所有付款透過 ECPay 安全處理。支援 LINE Pay 及信用卡（Visa、Mastercard、JCB）。
       </div>
@@ -3594,8 +3472,6 @@ function handleDodoReturn() {
         if (isLoggedIn()) openStarChildModal();
       } else if (product === 'basic_sub') {
         showToast('✦ 訂閱成功！每天早上6點星辰運勢將送達你的 LINE');
-      } else if (product === 'family_sub') {
-        showToast('✦ 家庭訂閱成功！每天早上6點星辰運勢將送達');
       }
     }, 1500);
   }
@@ -3812,7 +3688,7 @@ function checkGoogleCallback() {
           else if (savedAction === 'bundle') openAllChapters();
           else if (savedAction === 'subscription') requireLoginForSubscription('basic');
           else if (savedAction === 'subscription_basic') requireLoginForSubscription('basic');
-          else if (savedAction === 'subscription_family') requireLoginForSubscription('family');
+
         }, 800);
       }
     } catch(e) {}
@@ -4006,136 +3882,19 @@ document.getElementById('star-child-modal').addEventListener('click', (e) => { i
 // =====================
 function requireLoginForSubscription(plan) {
   if (!isLoggedIn()) {
-    window._pendingOAuthAction = 'subscription_' + plan;
-    openAuthModal(() => requireLoginForSubscription(plan),
-      plan === 'family' ? '家庭星辰訂閱' : '基礎星辰訂閱', '請先登入或建立帳號');
+    window._pendingOAuthAction = 'subscription_basic';
+    openAuthModal(() => requireLoginForSubscription('basic'), '星辰訂閱', '請先登入或建立帳號');
     return;
   }
   if (!window.lumisUserDob) {
-    openModal(() => requireLoginForSubscription(plan), 'subscription_' + plan);
+    openModal(() => requireLoginForSubscription('basic'), 'subscription_basic');
     return;
   }
-  if (plan === 'family') {
-    if (hasFeaturePaid('family-subscription')) { openFamilyModal(); return; }
-    openPaymentModal('家庭訂閱方案', '$9', '每月自動續訂，含2位孩子',
-      '家庭訂閱成功！<br>請填寫孩子的出生資料',
-      () => { markFeaturePaid('family-subscription'); openFamilyModal(); }, 'family_sub');
-  } else {
-    if (hasFeaturePaid('subscription')) { showToast('✦ 你已訂閱基礎方案！'); return; }
-    openPaymentModal('基礎訂閱方案', '$6', '每月自動續訂，隨時可取消',
-      '訂閱成功！<br>每天早上6點星辰運勢將送達',
-      () => { markFeaturePaid('subscription'); showToast('✦ 訂閱成功！歡迎加入 LUMIS'); }, 'basic_sub');
-  }
+  if (hasFeaturePaid('subscription')) { showToast('✦ 你已訂閱星辰方案！'); return; }
+  openPaymentModal('星辰訂閱', '$6', '每月自動續訂，隨時可取消',
+    '訂閱成功！<br>每天早上6點星辰運勢將送達',
+    () => { markFeaturePaid('subscription'); showToast('✦ 訂閱成功！歡迎加入 LUMIS'); }, 'basic_sub');
 }
-
-// =====================
-// FAMILY HOROSCOPE MODAL
-// =====================
-let familyExtraCount = 0;
-
-function openFamilyModal() {
-  familyExtraCount = 0;
-  document.getElementById('family-extra-children').innerHTML = '';
-  document.getElementById('family-modal').classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closeFamilyModal() {
-  document.getElementById('family-modal').classList.remove('active');
-  document.body.style.overflow = '';
-}
-document.getElementById('family-modal').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('family-modal')) closeFamilyModal();
-});
-
-function syncFamilyChildTime(n) {
-  const h = document.getElementById('fc-time-h-' + n)?.value || '';
-  const m = document.getElementById('fc-time-m-' + n)?.value || '';
-  const ampm = document.getElementById('fc-time-ampm-' + n)?.value || '';
-  if (h && m && ampm) {
-    let hNum = parseInt(h);
-    if (ampm === 'AM' && hNum === 12) hNum = 0;
-    if (ampm === 'PM' && hNum !== 12) hNum += 12;
-    const el = document.getElementById('fc-time-' + n);
-    if (el) el.value = String(hNum).padStart(2,'0') + ':' + m;
-  }
-}
-
-function selectFamilyGender(n, val) {
-  const el = document.getElementById('fc-gender-' + n);
-  if (el) el.value = val;
-  ['m','f','o'].forEach(k => {
-    const btn = document.getElementById('fc-g-' + k + '-' + n);
-    if (btn) btn.classList.remove('active');
-  });
-  const map = {'男孩':'m','女孩':'f','其他':'o'};
-  const btn = document.getElementById('fc-g-' + (map[val]||'o') + '-' + n);
-  if (btn) btn.classList.add('active');
-}
-
-function addFamilyChild() {
-  familyExtraCount++;
-  const n = 2 + familyExtraCount;
-  const container = document.getElementById('family-extra-children');
-  const div = document.createElement('div');
-  div.id = 'family-child-' + n;
-  div.style.marginTop = '24px';
-  div.innerHTML = `
-    <div style="font-size:0.74rem; letter-spacing:3px; color:var(--gold-deep); margin-bottom:14px; border-bottom:1px solid rgba(201,168,76,0.15); padding-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-      <span>✦ 孩子 ${n} <span style="font-size:0.65rem; color:rgba(168,168,192,0.5);">+$1.5/月</span></span>
-      <button onclick="removeFamilyChild(${n})" style="background:none; border:none; color:rgba(168,168,192,0.5); cursor:pointer; font-size:0.8rem;">✕ 移除</button>
-    </div>
-    <div class="form-group">
-      <label class="form-label">📅 出生日期</label>
-      <input type="text" id="fc-dob-${n}" class="form-input" placeholder="如：6/15/2018（月/日/年）">
-    </div>
-    <div class="form-group">
-      <label class="form-label">🕐 出生時間</label>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <select id="fc-time-h-${n}" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(${n})">
-          <option value="">時</option>
-          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
-          <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-        </select>
-        <span style="color:var(--gold); font-size:1.2rem;">:</span>
-        <select id="fc-time-m-${n}" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(${n})">
-          <option value="">分</option>
-          <option value="00">00</option><option value="05">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option>
-          <option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option>
-        </select>
-        <select id="fc-time-ampm-${n}" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;" onchange="syncFamilyChildTime(${n})">
-          <option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>
-        </select>
-      </div>
-      <input type="hidden" id="fc-time-${n}" value="">
-    </div>
-    <div class="form-group">
-      <label class="form-label">📍 出生地點</label>
-      <input type="text" id="fc-place-${n}" class="form-input" placeholder="如：台北市，台灣">
-    </div>
-    <div class="form-group">
-      <label class="form-label">👤 性別</label>
-      <div style="display:flex; gap:10px;">
-        <button type="button" class="gender-btn" id="fc-g-m-${n}" onclick="selectFamilyGender(${n},'男孩')">男孩</button>
-        <button type="button" class="gender-btn" id="fc-g-f-${n}" onclick="selectFamilyGender(${n},'女孩')">女孩</button>
-        <button type="button" class="gender-btn" id="fc-g-o-${n}" onclick="selectFamilyGender(${n},'其他')">其他</button>
-      </div>
-      <input type="hidden" id="fc-gender-${n}" value="">
-    </div>`;
-  container.appendChild(div);
-}
-
-function removeFamilyChild(n) {
-  const el = document.getElementById('family-child-' + n);
-  if (el) { el.remove(); familyExtraCount = Math.max(0, familyExtraCount - 1); }
-}
-
-function submitFamilyHoroscope() {
-  const child1Dob = document.getElementById('fc-dob-1').value.trim();
-  if (!child1Dob) { showToast('⚠ 請填寫至少孩子1的出生日期'); return; }
-  closeFamilyModal();
-  showToast('✦ 家庭訂閱資料已儲存！每天早上6點星辰運勢將送達你的 LINE');
-}
-
 
 
 async function submitSoulmate() {
@@ -4568,7 +4327,7 @@ function showScreen(id) {
 }
 
 let formCallback = null;
-let _pendingAfterForm = null; // explicit intent: 'subscription_basic','subscription_family','soulmate','starchild','bundle','chapter:N'
+let _pendingAfterForm = null; // explicit intent: 'subscription_basic','soulmate','starchild','bundle','chapter:N'
 
 function openModal(callback, intent) {
   formCallback = callback || null;
@@ -4926,8 +4685,6 @@ function isChapterUnlocked(index) {
   const chKey = 'chapter' + (index + 1);
   return hasFeaturePaid(chKey) ||
          hasFeaturePaid('bundle') ||
-         hasFeaturePaid('basic_sub') ||
-         hasFeaturePaid('family_sub') ||
          hasFeaturePaid('all5chapters');
 }
 
@@ -5270,7 +5027,7 @@ async function submitForm() {
     if (intent === 'starchild') { openStarChildModal(); return; }
     if (intent === 'bundle') { openAllChapters(); return; }
     if (intent === 'subscription_basic') { requireLoginForSubscription('basic'); return; }
-    if (intent === 'subscription_family') { requireLoginForSubscription('family'); return; }
+
     if (intent && intent.startsWith('chapter:')) {
       const num = parseInt(intent.split(':')[1]);
       if (num) { afterFormForChapter(num); return; }
