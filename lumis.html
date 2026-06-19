@@ -816,6 +816,17 @@
     font-weight: 300;
   }
 
+  /* Consistent USD prefix — small, elegant, sits before the big number */
+  .usd {
+    font-size: 0.42em;
+    font-weight: 400;
+    letter-spacing: 2px;
+    vertical-align: middle;
+    opacity: 0.75;
+    margin-right: 0.25em;
+    font-family: 'Noto Serif TC', serif;
+  }
+
   .chapter-btn {
     background: transparent;
     border: 1px solid rgba(201,168,76,0.4);
@@ -1938,7 +1949,7 @@
         <div class="step-number">✦ 第三步 ✦</div>
         <span class="step-icon">🔓</span>
         <div class="step-title">探索更多篇章</div>
-        <div class="step-desc">每章 USD 4<br>或一次解鎖全部五章<br>USD 15 <span style="text-decoration:line-through; opacity:0.45; font-size:0.85em;">USD 16</span><br><span style="font-size:0.8em; color:var(--gold); letter-spacing:1px;">省 USD 1</span></div>
+        <div class="step-desc">每章 USD $4<br>或一次解鎖全部五章<br>USD $15 <span style="text-decoration:line-through; opacity:0.45; font-size:0.85em;">USD $16</span><br><span style="font-size:0.8em; color:var(--gold); letter-spacing:1px;">省 USD $1</span></div>
       </div>
       <div class="step reveal">
         <div class="step-number">✦ 第四步 ✦</div>
@@ -1976,7 +1987,7 @@
         <div class="chapter-title">愛情與關係</div>
         <div class="chapter-preview">「你在感情裡的模式<br>比你以為的<br>更有規律」</div>
         <div class="chapter-lock">
-          <div class="chapter-price">USD 4</div>
+          <div class="chapter-price"><span class="usd">USD</span>$4</div>
           <button class="chapter-btn" onclick="openChapter(2)">查看</button>
         </div>
       </div>
@@ -1986,7 +1997,7 @@
         <div class="chapter-title">事業與財富</div>
         <div class="chapter-preview">「你天生適合的方向<br>可能不是你現在走的路<br>但你心裡一直有感覺」</div>
         <div class="chapter-lock">
-          <div class="chapter-price">USD 4</div>
+          <div class="chapter-price"><span class="usd">USD</span>$4</div>
           <button class="chapter-btn" onclick="openChapter(3)">查看</button>
         </div>
       </div>
@@ -1996,7 +2007,7 @@
         <div class="chapter-title">陰影與成長</div>
         <div class="chapter-preview">「每個人都有一個<br>不斷重複的模式<br>你的是什麼？」</div>
         <div class="chapter-lock">
-          <div class="chapter-price">USD 4</div>
+          <div class="chapter-price"><span class="usd">USD</span>$4</div>
           <button class="chapter-btn" onclick="openChapter(4)">查看</button>
         </div>
       </div>
@@ -2006,7 +2017,7 @@
         <div class="chapter-title">你的人生之路</div>
         <div class="chapter-preview">「你走過的路<br>和將要走的路<br>其實是同一條」</div>
         <div class="chapter-lock">
-          <div class="chapter-price">USD 4</div>
+          <div class="chapter-price"><span class="usd">USD</span>$4</div>
           <button class="chapter-btn" onclick="openChapter(5)">查看</button>
         </div>
       </div>
@@ -2018,9 +2029,9 @@
       <div style="font-size:0.7rem; letter-spacing:3px; color:var(--silver); margin-bottom:20px;">或者</div>
       <div style="display:inline-block; border:1px solid rgba(201,168,76,0.4); padding:40px 60px; background:transparent;">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">一次解鎖全部五章</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--silver); text-decoration:line-through; opacity:0.45; margin-bottom:4px;">USD 16</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:6px;">USD 15</div>
-        <div style="display:inline-block; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-size:0.7rem; letter-spacing:3px; padding:4px 14px; margin-bottom:16px;">省 USD 1</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--silver); text-decoration:line-through; opacity:0.45; margin-bottom:4px;"><span class="usd">USD</span>$16</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:6px;"><span class="usd">USD</span>$15</div>
+        <div style="display:inline-block; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-size:0.7rem; letter-spacing:3px; padding:4px 14px; margin-bottom:16px;">省 USD $1</div>
         <div style="font-size:1.05rem; color:var(--silver); margin-bottom:8px; letter-spacing:2px;">你完整的星辰圖案，一次擁有</div>
         <div style="font-size:0.72rem; color:rgba(168,168,192,0.4); letter-spacing:1px; margin-bottom:20px;">最佳在購買單章前使用</div>
         <button class="hero-btn" onclick="openAllChapters()"><span>✦ 解鎖完整故事</span></button>
@@ -2031,7 +2042,7 @@
     <div style="text-align:center; margin-top:40px; padding:28px 32px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); max-width:580px; margin:40px auto 0;" class="reveal">
       <div style="font-size:0.76rem; letter-spacing:4px; color:var(--gold); margin-bottom:12px;">✦ 介紹朋友 · 各得一章免費 ✦</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--silver); margin-bottom:20px;">
-        分享你的專屬連結，朋友登入後你們各得 <span style="color:var(--gold);">USD 4</span> 點數
+        分享你的專屬連結，朋友登入後你們各得 <span style="color:var(--gold);">USD $4</span> 點數
       </div>
 
       <!-- Referral link box -->
@@ -2073,7 +2084,7 @@
       <div class="pricing-card featured reveal" style="max-width:420px; margin:0 auto; width:100%;">
         <div class="pricing-badge">✦ 每日星辰指引 ✦</div>
         <div class="pricing-plan">✦ 星辰訂閱 ✦</div>
-        <div class="pricing-price"><span style="font-size:0.4em; vertical-align:middle; letter-spacing:1px; margin-right:4px;">USD</span>6</div>
+        <div class="pricing-price"><span class="usd">USD</span>$6</div>
         <div class="pricing-period">每月</div>
         <ul class="pricing-features">
           <li>每日星座運勢 — 每天早上6時</li>
@@ -2113,11 +2124,11 @@
       </div>
       <div class="compat-price">
         <div class="compat-price-label">✦ 每次配對 ✦</div>
-        <div class="compat-price-amount">USD 15</div>
+        <div class="compat-price-amount"><span class="usd">USD</span>$15</div>
       </div>
       <div style="font-size:0.82rem; color:var(--silver); margin-bottom:36px; line-height:2; letter-spacing:1px;">
         輸入對方出生資料 · 完全私密 · 對方永遠不會知道<br>
-        每換一個新對象 · 重新配對 USD 15
+        每換一個新對象 · 重新配對 USD $15
       </div>
       <button class="hero-btn" onclick="openSoulmateModal()"><span>☽ 開始配對</span></button>
     </div>
@@ -2141,7 +2152,7 @@
       </div>
       <div style="display:inline-block; border:1px solid rgba(201,168,76,0.4); padding:40px 60px; background:transparent; margin-bottom:36px;">
         <div style="font-size:0.76rem; letter-spacing:4px; color:var(--silver); margin-bottom:12px;">✦ 星童完整檔案 ✦</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:8px;">USD 12</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; color:var(--gold); margin-bottom:8px;"><span class="usd">USD</span>$12</div>
         <div style="font-size:1.05rem; color:var(--silver); letter-spacing:2px;">每位孩子 · 一次購買 · 永久保存</div>
       </div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; max-width:700px; margin:0 auto 40px;">
@@ -2591,7 +2602,7 @@
     <div id="payment-step-form" style="padding:40px 36px;">
       <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--soft-white); text-align:center; margin-bottom:4px;" id="payment-title">解鎖篇章</div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); text-align:center; margin-bottom:4px;" id="payment-price">USD 4</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); text-align:center; margin-bottom:4px;" id="payment-price"><span class="usd">USD</span>$4</div>
       <div style="font-size:0.72rem; color:rgba(168,168,192,0.5); text-align:center; letter-spacing:2px; margin-bottom:24px;" id="payment-desc">一次解鎖，永久保存</div>
       <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:32px;"></div>
 
@@ -2665,7 +2676,7 @@
           <li>每日、每週、每月星座運勢之寄送</li>
           <li>帳號識別與登入驗證</li>
           <li>處理付款與訂閱管理</li>
-          <li>推薦計畫點數計算（朋友登入後自動發放 USD 4 點數）</li>
+          <li>推薦計畫點數計算（朋友登入後自動發放 USD $4 點數）</li>
           <li>平台功能改善與問題排查</li>
         </ul>
         <div class="legal-highlight">
@@ -2775,11 +2786,11 @@
       <div class="legal-section-title">✦ 付款條款</div>
       <div class="legal-text">
         <ul>
-          <li>單章解鎖：<strong>USD 4</strong> 每章，永久有效</li>
-          <li>全部五章：<strong>USD 15</strong> <span style="text-decoration:line-through; opacity:0.45; font-size:0.9em;">USD 16</span> 一次購買，永久有效（省 USD 1）</li>
-          <li>靈魂配對：<strong>USD 15</strong> 每次，每換新對象需重新購買</li>
-          <li>星童完整檔案：<strong>USD 12</strong> 每位孩子，永久有效</li>
-          <li>星辰訂閱：<strong>USD 6</strong> 每月</li>
+          <li>單章解鎖：<strong>USD $4</strong> 每章，永久有效</li>
+          <li>全部五章：<strong>USD $15</strong> <span style="text-decoration:line-through; opacity:0.45; font-size:0.9em;">USD $16</span> 一次購買，永久有效（省 USD $1）</li>
+          <li>靈魂配對：<strong>USD $15</strong> 每次，每換新對象需重新購買</li>
+          <li>星童完整檔案：<strong>USD $12</strong> 每位孩子，永久有效</li>
+          <li>星辰訂閱：<strong>USD $6</strong> 每月</li>
 
         </ul>
         所有付款透過 ECPay 安全處理。支援 LINE Pay 及信用卡（Visa、Mastercard、JCB）。
@@ -2806,7 +2817,7 @@
       <div class="legal-section-title">✦ 推薦計畫</div>
       <div class="legal-text">
         <ul>
-          <li>將 LUMIS 分享給朋友，當朋友成功完成帳號登入，您立刻獲得 <strong>USD 4</strong> 平台點數（等同一章免費）</li>
+          <li>將 LUMIS 分享給朋友，當朋友成功完成帳號登入，您立刻獲得 <strong>USD $4</strong> 平台點數（等同一章免費）</li>
           <li>朋友不需購買任何方案，完成登入即計算推薦成功</li>
           <li>點數永不過期，可用於解鎖任何人生篇章</li>
           <li>點數不可兌換現金，亦不可轉讓給他人</li>
@@ -3126,10 +3137,10 @@
           <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.95rem; color:var(--silver); margin-bottom:24px;">解鎖完整的星辰圖案</div>
 
           <button onclick="openChapter(2)" style="width:100%; padding:13px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:3px; cursor:pointer; font-weight:bold; margin-bottom:10px;">
-            解鎖下一章 · USD 4
+            解鎖下一章 · USD $4
           </button>
           <button onclick="openAllChapters()" style="width:100%; padding:13px; background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--gold); font-family:'Noto Serif TC',serif; font-size:0.85rem; letter-spacing:3px; cursor:pointer; margin-bottom:12px;">
-            解鎖全部五章 · USD 15 <span style="text-decoration:line-through; opacity:0.5; font-size:0.8em;">USD 16</span>
+            解鎖全部五章 · USD $15 <span style="text-decoration:line-through; opacity:0.5; font-size:0.8em;">USD $16</span>
           </button>
           <button onclick="document.getElementById('save-after-ch2').style.display='none'" style="background:transparent; border:none; color:rgba(168,168,192,0.35); font-size:0.78rem; letter-spacing:2px; cursor:pointer; font-family:'Noto Serif TC',serif;">
             稍後再說
@@ -3782,7 +3793,7 @@ function completeLogin(user) {
       localStorage.setItem('lumis_credited_refs', JSON.stringify(creditedRefs));
     }
     localStorage.removeItem('lumis_pending_ref');
-    setTimeout(() => { showToast('✦ 歡迎！你的朋友已獲得 USD 4 點數獎勵'); }, 1500);
+    setTimeout(() => { showToast('✦ 歡迎！你的朋友已獲得 USD $4 點數獎勵'); }, 1500);
   }
   if (pendingAction) { const a = pendingAction; pendingAction = null; a(); }
 }
@@ -3794,7 +3805,10 @@ let paymentCallback = null;
 function openPaymentModal(title, price, desc, successMsg, callback, productKey) {
   currentPaymentProduct = productKey || null;
   document.getElementById('payment-title').textContent = title || '解鎖篇章';
-  document.getElementById('payment-price').textContent = price || 'USD 4';
+  // Render price with small USD prefix — price comes as "USD $4", convert to styled span
+  const priceStr = price || 'USD $4';
+  const priceNum = priceStr.replace(/USD\s*/i, '');
+  document.getElementById('payment-price').innerHTML = '<span class="usd">USD</span>' + priceNum;
   document.getElementById('payment-desc').textContent = desc || '一次解鎖，永久保存';
   document.getElementById('payment-success-msg').innerHTML = successMsg || '已解鎖！';
   document.getElementById('payment-step-form').style.display = 'block';
@@ -3827,7 +3841,7 @@ function afterFormForChapter(num) {
   if (num === 1) { runReading(0); return; }
   if (hasFeaturePaid('chapter' + num)) { runReading(num - 1); return; }
   closeModal(); // Close main modal so payment modal is fully visible
-  openPaymentModal('解鎖第' + ['','一','二','三','四','五'][num] + '章', 'USD 4', '一次解鎖，永久保存',
+  openPaymentModal('解鎖第' + ['','一','二','三','四','五'][num] + '章', 'USD $4', '一次解鎖，永久保存',
     '第' + ['','一','二','三','四','五'][num] + '章已解鎖！<br>星辰正在為你準備',
     () => { markFeaturePaid('chapter' + num); runReading(num - 1); }, 'chapter' + num);
 }
@@ -3835,10 +3849,10 @@ function openAllChapters() {
   if (!isLoggedIn()) { window._pendingOAuthAction = 'bundle'; openAuthModal(() => openAllChapters(), '解鎖全部五章', '請先登入或建立帳號'); return; }
   // Block if user already purchased any individual chapter — avoid double charging
   const hasAny = hasFeaturePaid('chapter2') || hasFeaturePaid('chapter3') || hasFeaturePaid('chapter4') || hasFeaturePaid('chapter5');
-  if (hasAny) { showToast('你已購買單章，請繼續解鎖下一章 USD 4'); return; }
+  if (hasAny) { showToast('你已購買單章，請繼續解鎖下一章 USD $4'); return; }
   openModal(() => {
     if (hasFeaturePaid('all5chapters')) { runReading(0); return; }
-    openPaymentModal('解鎖全部五章', 'USD 15', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(0); }, 'bundle');
+    openPaymentModal('解鎖全部五章', 'USD $15', '一次擁有完整星辰圖案', '五章全部解鎖！<br>星辰正在為你準備', () => { markFeaturePaid('all5chapters'); runReading(0); }, 'bundle');
   }, 'chapter:bundle');
 }
 
@@ -3851,12 +3865,12 @@ function openSoulmateModal() {
   if (!window.lumisUserDob) {
     openModal(() => {
       if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
-      openPaymentModal('解鎖靈魂配對', 'USD 15', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
+      openPaymentModal('解鎖靈魂配對', 'USD $15', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
     }, 'soulmate');
     return;
   }
   if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
-  openPaymentModal('解鎖靈魂配對', 'USD 15', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
+  openPaymentModal('解鎖靈魂配對', 'USD $15', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
 }
 function _openSoulmateForm() {
   document.getElementById('soulmate-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -3875,12 +3889,12 @@ function openStarChildModal() {
   if (!window.lumisUserDob) {
     openModal(() => {
       if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
-      openPaymentModal('解鎖星童分析', 'USD 12', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
+      openPaymentModal('解鎖星童分析', 'USD $12', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
     }, 'starchild');
     return;
   }
   if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
-  openPaymentModal('解鎖星童分析', 'USD 12', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
+  openPaymentModal('解鎖星童分析', 'USD $12', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
 }
 function _openStarChildForm() {
   document.getElementById('star-child-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -3905,7 +3919,7 @@ function requireLoginForSubscription(plan) {
     return;
   }
   if (hasFeaturePaid('subscription')) { showToast('✦ 你已訂閱星辰方案！'); return; }
-  openPaymentModal('星辰訂閱', 'USD 6', '每月自動續訂，隨時可取消',
+  openPaymentModal('星辰訂閱', 'USD $6', '每月自動續訂，隨時可取消',
     '訂閱成功！<br>每天早上6點星辰運勢將送達',
     () => { markFeaturePaid('subscription'); showToast('✦ 訂閱成功！歡迎加入 LUMIS'); }, 'basic_sub');
 }
@@ -4716,7 +4730,7 @@ function showLockedChapter(index) {
       </p>
       <p style="font-size:0.82rem;color:var(--silver);letter-spacing:2px;margin-bottom:32px;">${CHAPTER_TITLES[index]}</p>
       <button onclick="closeModal(); openChapter(${index + 1});" style="padding:14px 36px;background:linear-gradient(135deg,var(--gold-deep),var(--gold));border:none;color:#00000A;font-family:'Noto Serif TC',serif;font-size:0.9rem;letter-spacing:3px;cursor:pointer;font-weight:bold;margin-bottom:12px;display:block;width:100%;max-width:280px;margin:0 auto 12px;">
-        解鎖第${CHAPTER_NUMS[index]}章 · USD 4
+        解鎖第${CHAPTER_NUMS[index]}章 · USD $4
       </button>
     </div>
   `;
