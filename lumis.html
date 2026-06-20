@@ -2040,9 +2040,9 @@
 
     <!-- Referral -->
     <div style="text-align:center; margin-top:40px; padding:28px 32px; border:1px solid rgba(201,168,76,0.4); background:rgba(201,168,76,0.03); max-width:580px; margin:40px auto 0;" class="reveal">
-      <div style="font-size:0.76rem; letter-spacing:4px; color:var(--gold); margin-bottom:12px;">✦ 介紹朋友 · 各得一章免費 ✦</div>
+      <div style="font-size:0.76rem; letter-spacing:4px; color:var(--gold); margin-bottom:12px;">✦ 介紹朋友 · 獲得一章免費 ✦</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--silver); margin-bottom:20px;">
-        分享你的專屬連結，朋友登入後你們各得 <span style="color:var(--gold);">USD $4</span> 點數
+        邀請朋友加入 LUMIS，當第一位朋友成功登入，你就獲得<span style="color:var(--gold);">一個免費篇章</span> 🎁
       </div>
 
       <!-- Referral link box -->
@@ -2689,7 +2689,7 @@
           <li>每日、每週、每月星座運勢之寄送</li>
           <li>帳號識別與登入驗證</li>
           <li>處理付款與訂閱管理</li>
-          <li>推薦計畫點數計算（朋友登入後自動發放 USD $4 點數）</li>
+          <li>推薦計畫：成功推薦第一位朋友後，獲得一個免費篇章（每位用戶限一章）</li>
           <li>平台功能改善與問題排查</li>
         </ul>
         <div class="legal-highlight">
@@ -3542,7 +3542,8 @@ function handleDodoReturn() {
       } else if (product === 'starchild') {
         if (isLoggedIn()) openStarChildModal();
       } else if (product === 'basic_sub') {
-        showToast('✦ 訂閱成功！每天早上6點星辰運勢將送達你的 LINE');
+        markFeaturePaid('subscription');
+        if (isLoggedIn()) showLineConnectScreen();
       }
     }, 1500);
   }
@@ -3806,17 +3807,21 @@ function completeLogin(user) {
     }
   } catch(e) {}
   syncPurchasesFromServer();
-  // REFERRAL: credit referrer when new user signs up via ref link
+  // REFERRAL: credit the referrer server-side when a new user signs up via ref link
   const pendingRef = localStorage.getItem('lumis_pending_ref');
-  const myRef = generateRefCode(user.email);
-  if (isNewUser && pendingRef && pendingRef !== myRef) {
-    const creditedRefs = JSON.parse(localStorage.getItem('lumis_credited_refs') || '[]');
-    if (!creditedRefs.includes(pendingRef)) {
-      creditedRefs.push(pendingRef);
-      localStorage.setItem('lumis_credited_refs', JSON.stringify(creditedRefs));
-    }
+  if (isNewUser && pendingRef && pendingRef.length === 6) {
     localStorage.removeItem('lumis_pending_ref');
-    setTimeout(() => { showToast('✦ 歡迎！你的朋友已獲得 USD $4 點數獎勵'); }, 1500);
+    fetch('/api/referral', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newUserEmail: user.email, refCode: pendingRef })
+    }).then(r => r.json()).then(data => {
+      if (data.ok && data.rewarded) {
+        setTimeout(() => { showToast('✦ 歡迎加入 LUMIS！你的朋友獲得了一個免費篇章 🎁'); }, 1500);
+      } else {
+        setTimeout(() => { showToast('✦ 歡迎加入 LUMIS ✦'); }, 1500);
+      }
+    }).catch(() => {});
   }
   if (pendingAction) { const a = pendingAction; pendingAction = null; a(); }
 }
@@ -3861,6 +3866,26 @@ function closePaymentModal() {
 }
 document.getElementById('payment-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('payment-modal')) closePaymentModal(); });
 function afterPaymentSuccess() { closePaymentModal(); if (paymentCallback) { const cb = paymentCallback; paymentCallback = null; cb(); } }
+
+// Show the LINE connection screen after a subscription is purchased (incl. after Dodo redirect)
+function showLineConnectScreen() {
+  document.getElementById('payment-title').textContent = '星辰訂閱';
+  document.getElementById('payment-price').innerHTML = '<span class="usd">USD</span>$6';
+  document.getElementById('payment-desc').textContent = '7天免費試用 · 隨時可取消';
+  document.getElementById('payment-success-msg').innerHTML = '訂閱成功！🎉<br>7天內完全免費';
+  document.getElementById('payment-step-form').style.display = 'none';
+  document.getElementById('payment-step-success').style.display = 'block';
+  // Show LINE section with the user's email filled in
+  const lineSection = document.getElementById('payment-line-section');
+  if (lineSection) {
+    lineSection.style.display = 'block';
+    const emailDisplay = document.getElementById('payment-line-email');
+    if (emailDisplay) emailDisplay.textContent = (lumisUser?.email) || '';
+  }
+  paymentCallback = null;
+  document.getElementById('payment-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
 
 // =====================
 // CHAPTER FLOW: Auth → Form → Pay(ch2+) → Content
@@ -5368,45 +5393,3 @@ function validateField(fieldId, errorId) {
     error.classList.add('show');
     return false;
   }
-  field.classList.remove('error');
-  error.classList.remove('show');
-  return true;
-}
-
-// Clear error on input
-['field-dob','field-time','field-place','field-gender'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener('input', () => {
-      el.classList.remove('error');
-      const errId = 'err-' + id.replace('field-', '');
-      const err = document.getElementById(errId);
-      if (err) err.classList.remove('show');
-    });
-  }
-});
-
-// =====================
-// STAR RATING
-// =====================
-function setRating(clickedStar) {
-  const stars = clickedStar.parentElement.querySelectorAll('span');
-  const index = Array.from(stars).indexOf(clickedStar);
-  stars.forEach((star, i) => {
-    star.style.opacity = i <= index ? '1' : '0.3';
-    star.style.transform = i <= index ? 'scale(1.2)' : 'scale(1)';
-  });
-}
-
-// Feedback submit
-const feedbackSubmit = document.querySelector('#feedback-modal .form-submit');
-if (feedbackSubmit) {
-  feedbackSubmit.addEventListener('click', () => {
-    feedbackSubmit.textContent = '✦ 已送出 — 謝謝你 ✨';
-    feedbackSubmit.style.background = 'rgba(201,168,76,0.2)';
-    setTimeout(() => closeFeedback(), 1500);
-  });
-}
-</script>
-</body>
-</html>
