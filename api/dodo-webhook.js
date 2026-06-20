@@ -12,24 +12,21 @@ const PRODUCT_CHAPTERS = {
   'pdt_0NeisQEQvTp8XraWPadOS': 'chapter2',
   'pdt_0NeisdwJUSDrFgwNoE3M0': 'chapter3',
   'pdt_0NeiskUuoq1SbWCBmEVys': 'chapter4',
-  'pdt_0NeispMKsK20aoJIlsvHg': 'chapter5',
+  'pdt_0NeispMKsK20aoJIIsvHg': 'chapter5',
   'pdt_0NeisuvP3bDexjKUCYsVN': 'bundle',
   'pdt_0Neit3X8xxYJh1G7m1ztZ': 'soulmate',
   'pdt_0Neit9n3LyCwUsoCRtjiX': 'starchild',
   'pdt_0NeitaqBccnHAKvtqDOA1': 'basic_sub',
-  'pdt_0Neito7jdtmNb7Jt2Qfex': 'family_sub',
 };
 
 async function unlockChapter(email, chapter, paymentId) {
   if (chapter === 'bundle') {
-    // Bundle unlocks chapters 2-5, soulmate, starchild
+    // Bundle unlocks chapters 2-5 only (matches frontend USD $15 pricing)
     await supabase.from('purchases').upsert([
       { user_email: email, chapter: 'chapter2', payment_id: paymentId },
       { user_email: email, chapter: 'chapter3', payment_id: paymentId },
       { user_email: email, chapter: 'chapter4', payment_id: paymentId },
       { user_email: email, chapter: 'chapter5', payment_id: paymentId },
-      { user_email: email, chapter: 'soulmate', payment_id: paymentId },
-      { user_email: email, chapter: 'starchild', payment_id: paymentId },
     ], { onConflict: 'user_email,chapter' });
   } else {
     await supabase.from('purchases').upsert([
@@ -57,27 +54,31 @@ module.exports = async function handler(req, res) {
     }
 
     // Subscription activated (Dodo uses both names)
+    // Trial also fires this — user gets access during the 7-day trial
     if (eventType === 'subscription.active' || eventType === 'subscription.activated') {
       const sub = event.data;
       const email = sub.customer?.email;
       const productId = sub.product_id;
-      const chapter = PRODUCT_CHAPTERS[productId];
-      if (email && chapter) {
+      // Only our basic subscription product grants daily horoscope
+      if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
         await supabase.from('purchases').upsert([
-          { user_email: email, chapter, subscription_id: sub.subscription_id },
+          { user_email: email, chapter: 'subscription', subscription_id: sub.subscription_id },
         ], { onConflict: 'user_email,chapter' });
       }
     }
 
-    // Subscription cancelled
+    // Subscription cancelled — remove access AND stop their daily LINE messages
     if (eventType === 'subscription.cancelled' || eventType === 'subscription.canceled') {
       const sub = event.data;
       const email = sub.customer?.email;
       const productId = sub.product_id;
-      const chapter = PRODUCT_CHAPTERS[productId];
-      if (email && chapter) {
+      if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
+        // Remove subscription record
         await supabase.from('purchases').delete()
-          .eq('user_email', email).eq('chapter', chapter);
+          .eq('user_email', email).eq('chapter', 'subscription');
+        // Deactivate their LINE delivery
+        await supabase.from('line_subscribers')
+          .update({ active: false }).eq('email', email);
       }
     }
 
