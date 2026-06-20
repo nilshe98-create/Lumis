@@ -2629,17 +2629,13 @@
         你的篇章已解鎖<br>星辰正在為你準備
       </div>
       <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
-      <!-- LINE connection — only shown for subscription purchases -->
+      <!-- LINE connection — only shown for subscription purchases. One-tap LIFF magic link, zero typing. -->
       <div id="payment-line-section" style="display:none;">
-        <div style="font-size:0.78rem; color:var(--silver); letter-spacing:1px; margin-bottom:14px; line-height:1.8;">
-          最後一步：加入 LINE 好友，並傳送下方的 email 給我們
+        <div style="font-size:0.78rem; color:var(--silver); letter-spacing:1px; margin-bottom:18px; line-height:1.8;">
+          最後一步：一鍵連結 LINE，開始接收每日星辰訊息
         </div>
-        <div style="display:flex; gap:8px; align-items:center; background:rgba(0,0,10,0.4); border:1px solid rgba(201,168,76,0.3); padding:10px 14px; margin-bottom:14px;">
-          <div id="payment-line-email" style="flex:1; font-size:0.82rem; color:var(--gold); letter-spacing:0.5px; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
-          <button onclick="copyPaymentEmail()" style="background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:6px 12px; font-size:0.7rem; letter-spacing:1px; cursor:pointer; white-space:nowrap; font-family:'Noto Serif TC',serif;">複製</button>
-        </div>
-        <a id="payment-line-btn" href="https://line.me/R/ti/p/@921tnpwp" target="_blank" style="display:block; width:100%; padding:14px; background:#06C755; border:none; color:#fff; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:2px; cursor:pointer; font-weight:bold; text-decoration:none; box-sizing:border-box; margin-bottom:12px; text-align:center;">
-          加入 LINE 好友 →
+        <a id="payment-line-btn" href="javascript:void(0)" style="display:block; width:100%; padding:14px; background:#06C755; border:none; color:#fff; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:2px; cursor:pointer; font-weight:bold; text-decoration:none; box-sizing:border-box; margin-bottom:12px; text-align:center; opacity:0.6;">
+          正在準備連結...
         </a>
       </div>
       <button onclick="afterPaymentSuccess()" style="width:100%; padding:14px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:3px; cursor:pointer; font-weight:bold;">
@@ -3371,6 +3367,7 @@ if (!isMobile) {
 const GOOGLE_CLIENT_ID = '951126793984-q9tb3ln1v7mgabnll7pbj1at6j1g1mog.apps.googleusercontent.com';
 const LUMIS_SESSION_KEY = 'lumis_user';
 const LUMIS_PAID_KEY = 'lumis_paid';
+const LIFF_ID = '2010456983-KoYPa3ey'; // LUMIS Connect LIFF app
 let currentPaymentProduct = null; // tracks which product is being purchased
 
 // =====================
@@ -3882,9 +3879,42 @@ function showLineConnectScreen() {
     const emailDisplay = document.getElementById('payment-line-email');
     if (emailDisplay) emailDisplay.textContent = (lumisUser?.email) || '';
   }
+  setupLineConnectButton();
   paymentCallback = null;
   document.getElementById('payment-modal').classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+// Generate a secure single-use token for this email and turn the LINE button into a
+// LIFF magic link: https://liff.line.me/{LIFF_ID}?token={token}
+// Tapping it inside LINE auto-grabs the user's real LINE user ID — zero typing required.
+async function setupLineConnectButton() {
+  const btn = document.getElementById('payment-line-btn');
+  if (!btn) return;
+  const email = lumisUser?.email || '';
+  if (!email) return;
+  btn.textContent = '正在準備連結...';
+  btn.style.opacity = '0.6';
+  btn.href = 'javascript:void(0)';
+  try {
+    const res = await fetch('/api/gen-line-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.token) {
+      btn.href = `https://liff.line.me/${LIFF_ID}?token=${data.token}`;
+      btn.textContent = '✦ 一鍵連結 LINE 接收每日訊息';
+      btn.style.opacity = '1';
+    } else {
+      btn.textContent = '連結失敗，請重新進入此頁';
+      btn.style.opacity = '1';
+    }
+  } catch (e) {
+    btn.textContent = '連結失敗，請重新進入此頁';
+    btn.style.opacity = '1';
+  }
 }
 
 // =====================
