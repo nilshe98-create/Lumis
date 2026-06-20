@@ -2628,7 +2628,20 @@
       <div style="font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--silver); font-size:1rem; line-height:1.8; margin-bottom:32px;" id="payment-success-msg">
         你的篇章已解鎖<br>星辰正在為你準備
       </div>
-      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:28px;"></div>
+      <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
+      <!-- LINE connection — only shown for subscription purchases -->
+      <div id="payment-line-section" style="display:none;">
+        <div style="font-size:0.78rem; color:var(--silver); letter-spacing:1px; margin-bottom:14px; line-height:1.8;">
+          最後一步：加入 LINE 好友，並傳送下方的 email 給我們
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; background:rgba(0,0,10,0.4); border:1px solid rgba(201,168,76,0.3); padding:10px 14px; margin-bottom:14px;">
+          <div id="payment-line-email" style="flex:1; font-size:0.82rem; color:var(--gold); letter-spacing:0.5px; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
+          <button onclick="copyPaymentEmail()" style="background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:6px 12px; font-size:0.7rem; letter-spacing:1px; cursor:pointer; white-space:nowrap; font-family:'Noto Serif TC',serif;">複製</button>
+        </div>
+        <a id="payment-line-btn" href="https://line.me/R/ti/p/@921tnpwp" target="_blank" style="display:block; width:100%; padding:14px; background:#06C755; border:none; color:#fff; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:2px; cursor:pointer; font-weight:bold; text-decoration:none; box-sizing:border-box; margin-bottom:12px; text-align:center;">
+          加入 LINE 好友 →
+        </a>
+      </div>
       <button onclick="afterPaymentSuccess()" style="width:100%; padding:14px; background:linear-gradient(135deg,var(--gold-deep),var(--gold)); border:none; color:#00000A; font-family:'Noto Serif TC',serif; font-size:0.95rem; letter-spacing:3px; cursor:pointer; font-weight:bold;">
         開始閱讀 ✦
       </button>
@@ -3414,6 +3427,16 @@ function showReferralInfo() {
   else { prompt('複製你的推薦連結：', link); }
 }
 
+function copyPaymentEmail() {
+  const email = document.getElementById('payment-line-email')?.textContent;
+  if (!email) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(email).then(() => { showToast('✦ Email 已複製！貼到 LINE 對話框送出'); });
+  } else {
+    prompt('複製你的 email：', email);
+  }
+}
+
 function copyReferralLink() {
   const link = getMyReferralLink();
   if (!link) return;
@@ -3813,6 +3836,17 @@ function openPaymentModal(title, price, desc, successMsg, callback, productKey) 
   document.getElementById('payment-success-msg').innerHTML = successMsg || '已解鎖！';
   document.getElementById('payment-step-form').style.display = 'block';
   document.getElementById('payment-step-success').style.display = 'none';
+  // Show LINE add-friend button only for subscription
+  // Show LINE connection section only for subscription, with their email filled in
+  const lineSection = document.getElementById('payment-line-section');
+  if (lineSection) {
+    const isSubscription = (productKey === 'basic_sub');
+    lineSection.style.display = isSubscription ? 'block' : 'none';
+    if (isSubscription) {
+      const emailDisplay = document.getElementById('payment-line-email');
+      if (emailDisplay) emailDisplay.textContent = (lumisUser?.email) || '';
+    }
+  }
   paymentCallback = callback || null;
   document.getElementById('payment-modal').classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -3919,9 +3953,9 @@ function requireLoginForSubscription(plan) {
     return;
   }
   if (hasFeaturePaid('subscription')) { showToast('✦ 你已訂閱星辰方案！'); return; }
-  openPaymentModal('星辰訂閱', 'USD $6', '每月自動續訂，隨時可取消',
-    '訂閱成功！<br>每天早上6點星辰運勢將送達',
-    () => { markFeaturePaid('subscription'); showToast('✦ 訂閱成功！歡迎加入 LUMIS'); }, 'basic_sub');
+  openPaymentModal('星辰訂閱', 'USD $6', '7天免費試用 · 第8天起每月 USD $6 · 隨時可取消',
+    '訂閱成功！🎉<br>7天內完全免費',
+    () => { markFeaturePaid('subscription'); showToast('✦ 訂閱成功！加入 LINE 並傳送 email 即可接收每日訊息'); }, 'basic_sub');
 }
 
 
