@@ -89,15 +89,30 @@ module.exports = async function handler(req, res) {
 
     if (error) throw error;
 
-    // Get the set of emails that currently have an active subscription
+    // Get the set of emails that currently have an active paid subscription
+    // (chapter='subscription' AND, if paid_until was recorded, it's still in the future —
+    // legacy rows without that metadata are treated as valid, i.e. fail open)
     const { data: activeSubs, error: subErr } = await supabase
       .from('purchases')
-      .select('user_email')
+      .select('user_email, payment_id')
       .eq('chapter', 'subscription');
 
     if (subErr) throw subErr;
 
-    const paidEmails = new Set((activeSubs || []).map(r => r.user_email));
+    const now = Date.now();
+    const paidEmails = new Set();
+    for (const row of (activeSubs || [])) {
+      let stillValid = true;
+      if (row.payment_id) {
+        try {
+          const meta = JSON.parse(row.payment_id);
+          if (meta && meta.paid_until) {
+            stillValid = new Date(meta.paid_until).getTime() >= now;
+          }
+        } catch (e) { /* not JSON — legacy row, treat as valid */ }
+      }
+      if (stillValid) paidEmails.add(row.user_email);
+    }
 
     let sent = 0, failed = 0, skipped = 0;
     for (const sub of subscribers) {
