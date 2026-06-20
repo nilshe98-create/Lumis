@@ -35,6 +35,30 @@ async function unlockChapter(email, chapter, paymentId) {
   }
 }
 
+// Store subscription access + metadata (paid_until, cancel-at-period-end flag) as JSON
+// inside the payment_id column of the 'subscription' purchases row.
+async function upsertSubscriptionAccess(email, subscriptionId, nextBillingDate, cancelAtNext) {
+  await supabase.from('purchases').upsert([
+    {
+      user_email: email,
+      chapter: 'subscription',
+      subscription_id: subscriptionId || null,
+      payment_id: JSON.stringify({
+        paid_until: nextBillingDate || null,
+        cancel_at_next_billing_date: !!cancelAtNext,
+      }),
+    },
+  ], { onConflict: 'user_email,chapter' });
+}
+
+// Subscription is truly over — remove access AND stop their daily LINE messages
+async function revokeSubscriptionAccess(email) {
+  await supabase.from('purchases').delete()
+    .eq('user_email', email).eq('chapter', 'subscription');
+  await supabase.from('line_subscribers')
+    .update({ active: false }).eq('email', email);
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -53,32 +77,62 @@ module.exports = async function handler(req, res) {
       if (email && chapter) await unlockChapter(email, chapter, payment.payment_id);
     }
 
-    // Subscription activated (Dodo uses both names)
-    // Trial also fires this — user gets access during the 7-day trial
-    if (eventType === 'subscription.active' || eventType === 'subscription.activated') {
+    // Subscription activated or renewed — grant/extend access.
+    // 'active' also fires during the 7-day trial, so trial users get access immediately.
+    if (
+      eventType === 'subscription.active' ||
+      eventType === 'subscription.activated' ||
+      eventType === 'subscription.renewed'
+    ) {
       const sub = event.data;
       const email = sub.customer?.email;
       const productId = sub.product_id;
-      // Only our basic subscription product grants daily horoscope
       if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
-        await supabase.from('purchases').upsert([
-          { user_email: email, chapter: 'subscription', subscription_id: sub.subscription_id },
-        ], { onConflict: 'user_email,chapter' });
+        await upsertSubscriptionAccess(
+          email,
+          sub.subscription_id,
+          sub.next_billing_date,
+          sub.cancel_at_next_billing_date
+        );
       }
     }
 
-    // Subscription cancelled — remove access AND stop their daily LINE messages
-    if (eventType === 'subscription.cancelled' || eventType === 'subscription.canceled') {
+    // Subscription updated — fires on ANY field change, most importantly when the user
+    // cancels (cancel_at_next_billing_date becomes true). We sync that flag + the latest
+    // next_billing_date but only touch rows for subscribers who already have access,
+    // so we don't accidentally create one from an unrelated update.
+    if (eventType === 'subscription.updated') {
       const sub = event.data;
       const email = sub.customer?.email;
       const productId = sub.product_id;
       if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
-        // Remove subscription record
-        await supabase.from('purchases').delete()
+        const { data: existing } = await supabase
+          .from('purchases')
+          .select('chapter')
           .eq('user_email', email).eq('chapter', 'subscription');
-        // Deactivate their LINE delivery
-        await supabase.from('line_subscribers')
-          .update({ active: false }).eq('email', email);
+        if (existing && existing.length > 0) {
+          await upsertSubscriptionAccess(
+            email,
+            sub.subscription_id,
+            sub.next_billing_date,
+            sub.cancel_at_next_billing_date
+          );
+        }
+      }
+    }
+
+    // Subscription truly over (period ended after cancellation, or expired outright) —
+    // revoke access AND stop their daily LINE messages.
+    if (
+      eventType === 'subscription.cancelled' ||
+      eventType === 'subscription.canceled' ||
+      eventType === 'subscription.expired'
+    ) {
+      const sub = event.data;
+      const email = sub.customer?.email;
+      const productId = sub.product_id;
+      if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
+        await revokeSubscriptionAccess(email);
       }
     }
 
