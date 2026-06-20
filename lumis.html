@@ -5393,3 +5393,45 @@ function validateField(fieldId, errorId) {
     error.classList.add('show');
     return false;
   }
+  field.classList.remove('error');
+  error.classList.remove('show');
+  return true;
+}
+
+// Clear error on input
+['field-dob','field-time','field-place','field-gender'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', () => {
+      el.classList.remove('error');
+      const errId = 'err-' + id.replace('field-', '');
+      const err = document.getElementById(errId);
+      if (err) err.classList.remove('show');
+    });
+  }
+});
+
+// =====================
+// STAR RATING
+// =====================
+function setRating(clickedStar) {
+  const stars = clickedStar.parentElement.querySelectorAll('span');
+  const index = Array.from(stars).indexOf(clickedStar);
+  stars.forEach((star, i) => {
+    star.style.opacity = i <= index ? '1' : '0.3';
+    star.style.transform = i <= index ? 'scale(1.2)' : 'scale(1)';
+  });
+}
+
+// Feedback submit
+const feedbackSubmit = document.querySelector('#feedback-modal .form-submit');
+if (feedbackSubmit) {
+  feedbackSubmit.addEventListener('click', () => {
+    feedbackSubmit.textContent = '✦ 已送出 — 謝謝你 ✨';
+    feedbackSubmit.style.background = 'rgba(201,168,76,0.2)';
+    setTimeout(() => closeFeedback(), 1500);
+  });
+}
+</script>
+</body>
+</html>
