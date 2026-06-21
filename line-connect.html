@@ -66,6 +66,7 @@
         到 LUMIS 的訂閱成功畫面，點擊綠色的<br>「一鍵連結 LINE」按鈕即可自動完成。
       </div>
       <a class="btn gold" href="https://www.lumisstar.com">前往 LUMIS</a>
+      <div id="debug-detail" style="margin-top:18px; font-size:0.7rem; color:#555; letter-spacing:0; word-break:break-all;"></div>
     </div>
 
     <!-- Success -->
@@ -121,8 +122,11 @@ async function main() {
   try {
     await liff.init({ liffId: LIFF_ID });
   } catch (err) {
-    // liff.init only succeeds inside LINE on the configured domain. If it fails here,
-    // the user likely opened the link outside LINE — guide them back, don't alarm them.
+    // liff.init only succeeds inside LINE (mobile) or via LINE's web login (desktop) on the
+    // configured domain. Show the calm "open in LINE" message, but include the real error
+    // in small muted text underneath so it can be diagnosed if it shouldn't be failing here.
+    const debugEl = document.getElementById('debug-detail');
+    if (debugEl) debugEl.textContent = 'Debug: liff.init failed — ' + (err && (err.message || err.code || String(err)));
     show('info');
     return;
   }
