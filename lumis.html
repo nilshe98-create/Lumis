@@ -3907,10 +3907,10 @@ async function setupLineConnectButton() {
     btn.onclick = (e) => { e.preventDefault(); setupLineConnectButton(); };
   };
   try {
-    const res = await fetch('/api/gen-line-token', {
+    const res = await fetch('/api/line-connect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ action: 'gen', email })
     });
     const data = await res.json();
     if (data && data.token) {
