@@ -106,27 +106,38 @@ function setError(text, allowRetry) {
 }
 
 async function main() {
+  // CRITICAL ORDERING (per LINE's own docs): when opened via the LIFF magic link, the first
+  // hop does NOT preserve our ?token=... as-is — LINE wraps it inside a `liff.state` param.
+  // liff.init() is what unwraps that back into a normal ?token=... query param (sometimes via
+  // an internal secondary redirect). So we must call liff.init() FIRST, and only read the
+  // token from the URL AFTER that — checking before init() will always miss it.
+  show('loading');
+
+  let liffInitError = null;
+  try {
+    await liff.init({ liffId: LIFF_ID });
+  } catch (err) {
+    liffInitError = err;
+  }
+
+  // Re-read the URL now — if liff.state was present, it's been unwrapped by liff.init() above.
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
 
-  // No token means the page was opened directly (or in a preview), not via the LIFF link.
-  // This is expected — show a calm "open in LINE" message rather than an error.
   if (!token) {
+    // Still no token even after LIFF init — genuinely opened directly (or in a preview),
+    // not via the magic link. Calm "open in LINE" message rather than an error.
+    if (liffInitError) {
+      const debugEl = document.getElementById('debug-detail');
+      if (debugEl) debugEl.textContent = 'Debug: liff.init failed — ' + (liffInitError.message || liffInitError.code || String(liffInitError));
+    }
     show('info');
     return;
   }
 
-  // We have a token, so we're meant to be linking — show the spinner and start.
-  show('loading');
-
-  try {
-    await liff.init({ liffId: LIFF_ID });
-  } catch (err) {
-    // liff.init only succeeds inside LINE (mobile) or via LINE's web login (desktop) on the
-    // configured domain. Show the calm "open in LINE" message, but include the real error
-    // in small muted text underneath so it can be diagnosed if it shouldn't be failing here.
+  if (liffInitError) {
     const debugEl = document.getElementById('debug-detail');
-    if (debugEl) debugEl.textContent = 'Debug: liff.init failed — ' + (err && (err.message || err.code || String(err)));
+    if (debugEl) debugEl.textContent = 'Debug: liff.init failed — ' + (liffInitError.message || liffInitError.code || String(liffInitError));
     show('info');
     return;
   }
@@ -138,8 +149,24 @@ async function main() {
       return;
     }
 
-    const profile = await liff.getProfile();
-    const lineUserId = profile.userId;
+    // Get the LINE user ID. Prefer liff.getProfile() (needs the 'profile' scope), but fall
+    // back to the ID token's `sub` field (needs only 'openid', which is always granted) so this
+    // works even if the 'profile' scope wasn't checked in the LIFF app settings.
+    let lineUserId = null;
+    try {
+      const profile = await liff.getProfile();
+      if (profile && profile.userId) lineUserId = profile.userId;
+    } catch (e) { /* profile scope not granted — fall through to ID token */ }
+    if (!lineUserId) {
+      try {
+        const idToken = liff.getDecodedIDToken();
+        if (idToken && idToken.sub) lineUserId = idToken.sub;
+      } catch (e) { /* no ID token available */ }
+    }
+    if (!lineUserId) {
+      setError('無法取得 LINE 帳號資訊，請重試一次。', true);
+      return;
+    }
 
     const res = await fetch('/api/line-connect', {
       method: 'POST',
