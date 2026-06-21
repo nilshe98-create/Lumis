@@ -32,23 +32,53 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .msg { font-size: 0.95rem; line-height: 1.9; color: #C9C9D8; letter-spacing: 0.5px; }
   .icon { font-size: 2.4rem; margin-bottom: 14px; }
+  .icon.gold { color: #C9A84C; }
   .err { color: #E08080; }
+  .btn {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 12px 26px;
+    background: #06C755;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+  .btn.gold { background: transparent; border: 1px solid rgba(201,168,76,0.5); color: #C9A84C; }
 </style>
 </head>
 <body>
   <div class="card">
     <div class="title">LUMIS</div>
-    <div id="state-loading">
+
+    <!-- Loading: actively linking (only when a token is present and we're inside LINE) -->
+    <div id="state-loading" style="display:none;">
       <div class="spinner"></div>
       <div class="msg">正在連結你的 LINE 帳號...</div>
     </div>
+
+    <!-- Info: page opened directly / outside LINE / without a token. Calm, not an error. -->
+    <div id="state-info">
+      <div class="icon gold">✦</div>
+      <div class="msg">
+        請在 <b>LINE</b> 中開啟此頁面。<br><br>
+        到 LUMIS 的訂閱成功畫面，點擊綠色的<br>「一鍵連結 LINE」按鈕即可自動完成。
+      </div>
+      <a class="btn gold" href="https://www.lumisstar.com">前往 LUMIS</a>
+    </div>
+
+    <!-- Success -->
     <div id="state-success" style="display:none;">
-      <div class="icon">✦</div>
+      <div class="icon gold">✦</div>
       <div class="msg">連結成功！🎉<br>明天早上 6 點開始，<br>你會收到專屬的星辰訊息。<br><br>你可以關閉這個頁面了。</div>
     </div>
+
+    <!-- Error: a real failure during an actual linking attempt -->
     <div id="state-error" style="display:none;">
       <div class="icon err">⚠</div>
       <div class="msg err" id="error-text">連結失敗，請稍後再試。</div>
+      <a class="btn" id="error-retry" href="javascript:void(0)" style="display:none;">重試</a>
     </div>
   </div>
 
@@ -56,34 +86,50 @@
 const LIFF_ID = '2010456983-KoYPa3ey';
 
 function show(state) {
-  ['loading', 'success', 'error'].forEach(function (s) {
-    document.getElementById('state-' + s).style.display = (s === state) ? 'block' : 'none';
+  ['loading', 'info', 'success', 'error'].forEach(function (s) {
+    var el = document.getElementById('state-' + s);
+    if (el) el.style.display = (s === state) ? 'block' : 'none';
   });
 }
 
-function setError(text) {
+function setError(text, allowRetry) {
   document.getElementById('error-text').textContent = text;
+  var retry = document.getElementById('error-retry');
+  if (allowRetry) {
+    retry.style.display = 'inline-block';
+    retry.onclick = function (e) { e.preventDefault(); main(); };
+  } else {
+    retry.style.display = 'none';
+  }
   show('error');
 }
 
 async function main() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
+
+  // No token means the page was opened directly (or in a preview), not via the LIFF link.
+  // This is expected — show a calm "open in LINE" message rather than an error.
   if (!token) {
-    setError('連結網址不完整，請從付款成功頁面重新點擊連結按鈕。');
+    show('info');
     return;
   }
+
+  // We have a token, so we're meant to be linking — show the spinner and start.
+  show('loading');
 
   try {
     await liff.init({ liffId: LIFF_ID });
   } catch (err) {
-    setError('LINE 初始化失敗：' + (err.message || '請稍後再試。'));
+    // liff.init only succeeds inside LINE on the configured domain. If it fails here,
+    // the user likely opened the link outside LINE — guide them back, don't alarm them.
+    show('info');
     return;
   }
 
   try {
     if (!liff.isLoggedIn()) {
-      // Redirects through LINE login, then reloads this same URL (token survives in the query string)
+      // Redirects through LINE login, then reloads this same URL (token stays in the query)
       liff.login({ redirectUri: window.location.href });
       return;
     }
@@ -94,17 +140,17 @@ async function main() {
     const res = await fetch('/api/line-connect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: token, lineUserId: lineUserId })
+      body: JSON.stringify({ action: 'link', token: token, lineUserId: lineUserId })
     });
     const data = await res.json();
 
     if (data && data.ok) {
       show('success');
     } else {
-      setError((data && data.error) || '連結失敗，請稍後再試。');
+      setError((data && data.error) || '連結失敗，請稍後再試。', true);
     }
   } catch (err) {
-    setError('發生錯誤：' + (err.message || '請稍後再試。'));
+    setError('發生錯誤：' + (err.message || '請稍後再試。'), true);
   }
 }
 
