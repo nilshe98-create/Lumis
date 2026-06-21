@@ -3709,9 +3709,51 @@ function showAuthStep(step) {
   if (el) el.style.display = 'block';
 }
 
+// Google blocks OAuth sign-in from embedded "in-app browsers" (LINE chat's built-in browser,
+// Facebook/Instagram/WeChat/TikTok in-app browsers) for security reasons — it shows a scary,
+// confusing "Access blocked: disallowed_useragent" page. We detect this ahead of time and show
+// a friendly instruction instead of letting the user hit Google's error page.
+function isEmbeddedWebView() {
+  const ua = navigator.userAgent || '';
+  return /\bLine\//i.test(ua) || /FBAN|FBAV/i.test(ua) || /Instagram/i.test(ua) ||
+         /MicroMessenger/i.test(ua) || /TikTok|musical_ly/i.test(ua);
+}
+
+function showInAppBrowserWarning() {
+  let overlay = document.getElementById('inapp-browser-warning');
+  if (overlay) { overlay.style.display = 'flex'; return; }
+  overlay = document.createElement('div');
+  overlay.id = 'inapp-browser-warning';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,10,0.96);z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;';
+  overlay.innerHTML = `
+    <div style="max-width:340px;">
+      <div style="color:var(--gold,#C9A84C);font-size:1.6rem;margin-bottom:16px;">✦</div>
+      <div style="color:var(--gold,#C9A84C);font-family:'Noto Serif TC',serif;font-size:0.95rem;letter-spacing:1px;line-height:1.9;margin-bottom:20px;">
+        Google 登入無法在目前的瀏覽器中使用<br>（例如 LINE 內建瀏覽器）。
+      </div>
+      <div style="color:#C9C9D8;font-size:0.85rem;line-height:1.9;margin-bottom:24px;">
+        請點擊右上角選單，選擇「在瀏覽器中開啟」，<br>或複製下方網址貼到 Safari／Chrome 開啟。
+      </div>
+      <button id="inapp-copy-link-btn" style="width:100%;padding:12px;background:var(--gold,#C9A84C);color:#000;border:none;font-family:'Noto Serif TC',serif;font-size:0.85rem;letter-spacing:2px;cursor:pointer;margin-bottom:12px;">複製網址</button>
+      <button id="inapp-close-btn" style="width:100%;padding:10px;background:transparent;color:#888;border:1px solid #333;font-family:'Noto Serif TC',serif;font-size:0.8rem;letter-spacing:1px;cursor:pointer;">關閉</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById('inapp-copy-link-btn').onclick = function () {
+    const url = 'https://www.lumisstar.com';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => showToast('✦ 網址已複製'));
+    } else {
+      showToast('請手動複製：' + url);
+    }
+  };
+  document.getElementById('inapp-close-btn').onclick = function () { overlay.style.display = 'none'; };
+}
+
 function handleGoogleSignup() { startGoogleLogin(); }
 function handleGoogleLogin() { startGoogleLogin(); }
 function startGoogleLogin() {
+  if (isEmbeddedWebView()) { showInAppBrowserWarning(); return; }
   // Save pending chapter before OAuth redirect (page will reload)
   if (pendingChapter) localStorage.setItem('lumis_pending_chapter', String(pendingChapter));
   // Save non-chapter pending actions (soulmate, starchild, bundle, subscription)
