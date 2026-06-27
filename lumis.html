@@ -2088,8 +2088,8 @@
         <div class="pricing-period">每月</div>
         <ul class="pricing-features">
           <li>每日星座運勢 — 每天早上6時</li>
-          <li>每週星辰路徑 — 每週一</li>
-          <li>每月星座運勢 — 每月一日</li>
+          <li>每週星辰路徑 — 每週日早晨</li>
+          <li>每月星象 — 每月最後一天</li>
           <li>LINE 送達或網站查看</li>
           <li>7天免費體驗</li>
         </ul>
@@ -2543,11 +2543,11 @@
       <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--soft-white); text-align:center; margin-bottom:24px;">建立你的帳號</div>
       <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
-      <button onclick="handleGoogleSignup()" style="width:100%; padding:14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.4); color:var(--soft-white); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
+      <button id="google-signup-btn" onclick="handleGoogleSignup()" style="width:100%; padding:14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.4); color:var(--soft-white); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
         <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#C9A84C" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#A8A8C0" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#E8E8F0" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#8B6914" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
         ✦ 使用 Google 建立帳號
       </button>
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+      <div id="google-signup-divider" style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
         <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
         <div style="font-size:0.75rem; color:rgba(168,168,192,0.5); letter-spacing:2px;">或</div>
         <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
@@ -2570,11 +2570,11 @@
       <div style="font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:6px;">LUMIS</div>
       <div style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--soft-white); text-align:center; margin-bottom:24px;">歡迎回來 ☽</div>
       <div style="height:1px; background:linear-gradient(to right,transparent,var(--gold-deep),transparent); margin-bottom:24px;"></div>
-      <button onclick="handleGoogleLogin()" style="width:100%; padding:14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.4); color:var(--soft-white); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
+      <button id="google-login-btn" onclick="handleGoogleLogin()" style="width:100%; padding:14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.4); color:var(--soft-white); font-family:'Noto Serif TC',serif; font-size:0.9rem; letter-spacing:2px; cursor:pointer; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.12)'" onmouseout="this.style.background='rgba(201,168,76,0.06)'">
         <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#C9A84C" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#A8A8C0" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#E8E8F0" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#8B6914" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
         ✦ 使用 Google 登入
       </button>
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+      <div id="google-login-divider" style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
         <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
         <div style="font-size:0.75rem; color:rgba(168,168,192,0.5); letter-spacing:2px;">或</div>
         <div style="flex:1; height:1px; background:rgba(201,168,76,0.2);"></div>
@@ -3707,53 +3707,33 @@ function showAuthStep(step) {
   const map = { 'who': 'auth-who', 'login-new': 'auth-login-new', 'login-returning': 'auth-login-returning' };
   const el = document.getElementById(map[step]);
   if (el) el.style.display = 'block';
+  hideGoogleAuthIfEmbedded();
 }
 
 // Google blocks OAuth sign-in from embedded "in-app browsers" (LINE chat's built-in browser,
-// Facebook/Instagram/WeChat/TikTok in-app browsers) for security reasons — it shows a scary,
-// confusing "Access blocked: disallowed_useragent" page. We detect this ahead of time and show
-// a friendly instruction instead of letting the user hit Google's error page.
+// Facebook/Instagram/WeChat/TikTok in-app browsers). This matters a lot for LUMIS specifically
+// because referrals are shared and tapped *inside LINE* — so we can't tell people to "leave the
+// app." Instead: when inside one of these, we simply hide the Google button. The email+password
+// signup/login already on the same screen becomes the only option — no popup, no instructions,
+// no leaving LINE. Same email gets used for payment either way, so subscription tracking is
+// identical regardless of which login method someone uses.
 function isEmbeddedWebView() {
   const ua = navigator.userAgent || '';
   return /\bLine\//i.test(ua) || /FBAN|FBAV/i.test(ua) || /Instagram/i.test(ua) ||
          /MicroMessenger/i.test(ua) || /TikTok|musical_ly/i.test(ua);
 }
 
-function showInAppBrowserWarning() {
-  let overlay = document.getElementById('inapp-browser-warning');
-  if (overlay) { overlay.style.display = 'flex'; return; }
-  overlay = document.createElement('div');
-  overlay.id = 'inapp-browser-warning';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,10,0.96);z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;';
-  overlay.innerHTML = `
-    <div style="max-width:340px;">
-      <div style="color:var(--gold,#C9A84C);font-size:1.6rem;margin-bottom:16px;">✦</div>
-      <div style="color:var(--gold,#C9A84C);font-family:'Noto Serif TC',serif;font-size:0.95rem;letter-spacing:1px;line-height:1.9;margin-bottom:20px;">
-        Google 登入無法在目前的瀏覽器中使用<br>（例如 LINE 內建瀏覽器）。
-      </div>
-      <div style="color:#C9C9D8;font-size:0.85rem;line-height:1.9;margin-bottom:24px;">
-        請點擊右上角選單，選擇「在瀏覽器中開啟」，<br>或複製下方網址貼到 Safari／Chrome 開啟。
-      </div>
-      <button id="inapp-copy-link-btn" style="width:100%;padding:12px;background:var(--gold,#C9A84C);color:#000;border:none;font-family:'Noto Serif TC',serif;font-size:0.85rem;letter-spacing:2px;cursor:pointer;margin-bottom:12px;">複製網址</button>
-      <button id="inapp-close-btn" style="width:100%;padding:10px;background:transparent;color:#888;border:1px solid #333;font-family:'Noto Serif TC',serif;font-size:0.8rem;letter-spacing:1px;cursor:pointer;">關閉</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-  document.getElementById('inapp-copy-link-btn').onclick = function () {
-    const url = 'https://www.lumisstar.com';
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(() => showToast('✦ 網址已複製'));
-    } else {
-      showToast('請手動複製：' + url);
-    }
-  };
-  document.getElementById('inapp-close-btn').onclick = function () { overlay.style.display = 'none'; };
+function hideGoogleAuthIfEmbedded() {
+  if (!isEmbeddedWebView()) return;
+  ['google-signup-btn', 'google-signup-divider', 'google-login-btn', 'google-login-divider'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 }
 
 function handleGoogleSignup() { startGoogleLogin(); }
 function handleGoogleLogin() { startGoogleLogin(); }
 function startGoogleLogin() {
-  if (isEmbeddedWebView()) { showInAppBrowserWarning(); return; }
   // Save pending chapter before OAuth redirect (page will reload)
   if (pendingChapter) localStorage.setItem('lumis_pending_chapter', String(pendingChapter));
   // Save non-chapter pending actions (soulmate, starchild, bundle, subscription)
@@ -4095,9 +4075,9 @@ async function submitSoulmate() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1500,
-        system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析配對。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單人話說出深刻真相。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位最多2-3句，簡潔有力。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
+        system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析配對。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單人話說出深刻真相。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位 2 到 3 句，簡潔有力，內容要對這兩個人獨一無二。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
         messages: [{ role: 'user', content: `對方：${sDob} ${sTime} ${sPlace} ${sGender}` }]
       }));
     });
@@ -4173,9 +4153,9 @@ async function submitStarChild() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1500,
-        system: `你是 LUMIS 星童解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析孩子。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單溫暖的話說出深刻真相。每個欄位最多2-3句，簡潔有力，像一個真正了解這個孩子的人在說話。只回傳純JSON：{"title":"一句話描述這個孩子的靈魂","who":"這個孩子是誰，性格天賦合在一起，2-3句，非常具體，讓父母說這說的就是我的孩子","future":"孩子的未來方向，包含適合的工作環境和天賦發光的時間點，2-3句，具體但不限制","bond":"親子關係，2句，說出父母和孩子之間真實的動力","message":"給父母的話，2句，溫暖有力，讓父母感動"}`,
+        system: `你是 LUMIS 星童解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析孩子。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單溫暖的話說出深刻真相。每個欄位最多2-3句，簡潔有力，像一個真正了解這個孩子的人在說話。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"title":"一句話描述這個孩子的靈魂","who":"這個孩子是誰，性格天賦合在一起，2-3句，非常具體，讓父母說這說的就是我的孩子","future":"孩子的未來方向，包含適合的工作環境和天賦發光的時間點，2-3句，具體但不限制","bond":"親子關係，2句，說出父母和孩子之間真實的動力","message":"給父母的話，2句，溫暖有力，讓父母感動"}`,
         messages: [{ role: 'user', content: `父母：${myDob} ${myTime} ${myPlace}\n孩子：${lsDob} ${lsTime} ${lsPlace} ${lsGender}` }]
       }));
     });
@@ -4349,10 +4329,10 @@ async function testCompatibility() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: `你是 LUMIS 靈魂配對解讀師。根據兩人出生資料生成非常深度的配對分析。
-繁體中文，每行最多10字，用\\n換行，大量留白。
+繁體中文。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。
 像認識兩個人二十年的摯友說話。非常具體，非常深刻，不提占星術語。
 讓人讀完說「天啊這說的就是我們」。每個部分至少80字。
 只回傳純JSON：{"compatibility":{"score":"數字%","title":"兩句話描述這段緣分","content":"深度配對分析，至少250字，非常具體，包含這段關係的優勢、挑戰和未來","warning":"需要注意的事，至少60字，非常具體","strength":"最大優勢，至少60字，非常具體"}}`,
@@ -4408,10 +4388,10 @@ async function testChildren() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: `你是 LUMIS 星童解讀師。根據孩子出生資料生成溫暖的個人分析。
-繁體中文，每行最多12字，用\\n換行。
+繁體中文。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。
 像了解孩子的朋友說話，溫暖充滿愛，給父母實用建議。不提占星術語。
 只回傳純JSON：{"child":{"title":"孩子的獨特之光","personality":"個性特質80字","talent":"天生才能60字","learning":"最適合的學習方式60字","bond":"親子關係指引60字"}}`,
         messages: [{
@@ -4574,35 +4554,33 @@ function closeModal() {
 // =====================
 // LUMIS CLAUDE API
 // =====================
-const LUMIS_PROMPT = `你是 LUMIS 最頂尖的星辰解讀師。現在是2026年。
+const LUMIS_PROMPT = `你是 LUMIS 最頂尖的星辰解讀師。現在是 2026 年。
 
-你會收到真實的印度吠陀星盤計算數據。請根據這些真實數據寫作，不要自己想像。
+你會收到這個人「真實的印度吠陀星盤計算數據」。LUMIS 的核心，就是把這份真實的星盤，翻譯成溫暖、簡單、像朋友說話的人生洞察。請務必根據星盤裡的真實資訊寫作（行星落點、相位、強弱），讓內容對「這一個人」獨一無二，絕對不要寫成適用於每個人的通用文字。
 
 寫作規則（絕對遵守）：
-- 繁體中文
-- 結構：短開頭段落（2-3句）+ 4個項目符號 bullet points + 短結尾段落（2-3句）
-- 每個 bullet 要犀利具體，一句話一個洞察
-- 不提占星術語（不說星座、宮位、行星、四柱、希臘字、印度字）
-- 用「過去」「未來」「某個階段」「最近幾年」等時間描述，不要具體年份
-- 溫柔語言 — 不說「你是冷漠的」要說「你可能給人距離感」
-- 像認識這個人十年的朋友說話，不是算命師
-- 每個 bullet 都要讓人說「天啊這就是我」
-- 不要陳腔濫調，不要空話
+- 全部使用繁體中文，絕對不要出現任何英文字。
+- 結構：先一段簡短開頭（2 到 3 句，點出這一章的核心），接著 3 到 4 個犀利具體的洞察，最後一段簡短收尾（2 到 3 句，給希望與力量）。
+- 每個洞察都要根據星盤的真實特徵，一針見血、非常具體，讓人讀完忍不住說「天啊這就是我」。
+- 完全不提任何占星術語（不要出現星座、宮位、行星名稱、相位、四柱、希臘字、梵文等）。把星盤的能量直接翻譯成生活化的人話。
+- 用「過去」「最近幾年」「未來某個階段」這類方式描述時間，不要寫具體年份。
+- 語言要溫柔——不說「你很冷漠」，而說「你可能在不熟的人面前給人一點距離感」。
+- 像一個認識這個人十年、真正懂他的朋友在說話，不是高高在上的算命師。
+- 不要陳腔濫調、不要空話、不要每一章都用類似的句型或結尾。每一章的角度與語氣都要不一樣。
+- 標點符號一律使用台灣全形標點：句子之間用全形逗號「，」，並列時用頓號「、」，句尾用全形句號「。」。不要使用半形的逗號或句號。
 
-範例格式：
-「短段落介紹章節主題（2-3句）
+格式範例：
+「簡短開頭，點出本章主題（2 到 3 句）
 
-- 犀利的觀察 1
-- 犀利的觀察 2
-- 犀利的觀察 3
-- 犀利的觀察 4
+- 根據星盤的犀利洞察一
+- 根據星盤的犀利洞察二
+- 根據星盤的犀利洞察三
 
-短段落收尾，給希望和力量（2-3句）」
+溫暖有力的收尾，給希望與方向（2 到 3 句）」
 
-只回傳純 JSON，不要任何 markdown 標記
-- 永遠只用繁體中文，絕對不要寫任何英文字
-- 不要在結尾加「你已讀完所有篇章」或任何章節總結
-- 不要提章節數量（不要說「十四章」「五章」「全部篇章」等）`;
+只回傳純 JSON，不要任何 markdown 標記或程式碼框。
+- 不要在結尾加「你已讀完所有篇章」或任何章節總結。
+- 不要提到章節數量（不要說「五章」「全部篇章」等）。`;
 
 const LOADING_MSGS = ['星辰正在為你排列...','讀取你的星辰圖案...','宇宙正在書寫你的故事...','你的光正在顯現...','篇章即將揭示...'];
 
@@ -4790,7 +4768,7 @@ async function retryCurrentChapter() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: LUMIS_PROMPT,
         messages: [{ role: 'user', content: `${userDetails}\n\n現在只寫第${num}章「${title}」。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
@@ -4835,7 +4813,7 @@ async function regenerateCurrentChapter() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: LUMIS_PROMPT,
         messages: [{ role: 'user', content: `${userDetails}\n\n請重新生成第${num}章「${title}」，給出不同角度的深刻解讀。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
@@ -5324,7 +5302,7 @@ async function submitForm() {
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1500,
         system: prompt,
         messages: [{ role: 'user', content: userMsg }]
