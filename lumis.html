@@ -4558,6 +4558,29 @@ function closeModal() {
 // =====================
 // LUMIS CLAUDE API
 // =====================
+// Extract text from any Anthropic API response format.
+// GLOBAL on purpose — every reading function (chapters, soulmate, star child) calls this,
+// so it must not be nested inside any single one of them.
+function extractText(r) {
+  if (!r) throw new Error('Empty API response');
+  // Standard Anthropic: { content: [{type:'text', text:'...'}] }
+  if (r.content && Array.isArray(r.content) && r.content[0] && r.content[0].text)
+    return r.content[0].text;
+  // String content
+  if (r.content && typeof r.content === 'string') return r.content;
+  // Simple text wrapper
+  if (r.text) return r.text;
+  // Raw string
+  if (typeof r === 'string') return r;
+  // Error object
+  if (r.error) {
+    const e = r.error;
+    const msg = typeof e === 'string' ? e : (e.message || e.type || JSON.stringify(e).substring(0, 200));
+    throw new Error(msg);
+  }
+  throw new Error('Format: ' + JSON.stringify(r).substring(0, 200));
+}
+
 const LUMIS_PROMPT = `你是 LUMIS 最頂尖的星辰解讀師。現在是 2026 年。
 
 你會收到這個人「真實的印度吠陀星盤計算數據」。LUMIS 的核心，就是把這份真實的星盤，翻譯成溫暖、簡單、像朋友說話的人生洞察。請務必根據星盤裡的真實資訊寫作（行星落點、相位、強弱），讓內容對「這一個人」獨一無二，絕對不要寫成適用於每個人的通用文字。
@@ -5312,27 +5335,6 @@ async function submitForm() {
         messages: [{ role: 'user', content: userMsg }]
       }));
     });
-  }
-
-  // Extract text from any API response format
-  function extractText(r) {
-    if (!r) throw new Error('Empty API response');
-    // Standard Anthropic: { content: [{type:'text', text:'...'}] }
-    if (r.content && Array.isArray(r.content) && r.content[0] && r.content[0].text)
-      return r.content[0].text;
-    // String content
-    if (r.content && typeof r.content === 'string') return r.content;
-    // Simple text wrapper
-    if (r.text) return r.text;
-    // Raw string
-    if (typeof r === 'string') return r;
-    // Error object
-    if (r.error) {
-      const e = r.error;
-      const msg = typeof e === 'string' ? e : (e.message || e.type || JSON.stringify(e).substring(0, 200));
-      throw new Error(msg);
-    }
-    throw new Error('Format: ' + JSON.stringify(r).substring(0, 200));
   }
 
   try {
