@@ -2302,7 +2302,7 @@
     <!-- FORM -->
     <div id="soulmate-form-screen">
       <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.0rem; color:var(--silver); text-align:center; margin-bottom:28px; line-height:1.8; letter-spacing:1px;">
-        輸入你們的出生資料<br>星辰將揭示你們之間的真相
+        輸入對方的出生資料<br>星辰將揭示你們之間的真相
       </div>
 
       <div style="font-size:0.78rem; color:rgba(201,168,76,0.7); text-align:center; margin-bottom:24px; padding:12px 16px; border:1px dashed rgba(201,168,76,0.25); letter-spacing:1px; line-height:1.8;">
@@ -4070,20 +4070,24 @@ async function submitSoulmate() {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', '/api/reading');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.timeout = 60000;
+      xhr.timeout = 90000;
       xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else { reject(new Error(xhr.status)); } };
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
+        max_tokens: 2000,
         system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。使用吠陀占星、西方占星和八字三個系統分析配對。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單人話說出深刻真相。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位 2 到 3 句，簡潔有力，內容要對這兩個人獨一無二。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
-        messages: [{ role: 'user', content: `對方：${sDob} ${sTime} ${sPlace} ${sGender}` }]
+        messages: [{ role: 'user', content: `我的出生資料：${window.lumisUserDob || ''} ${window.lumisUserTime || ''} ${window.lumisUserPlace || ''} ${window.lumisUserGender || ''}\n對方的出生資料：${sDob} ${sTime} ${sPlace} ${sGender}\n請根據我們兩人的星盤，分析我們的靈魂配對` }]
       }));
     });
 
     const text = extractText(result).replace(/```json|```/g,'').trim();
-    const c = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
+    const jStart = text.indexOf('{'), jEnd = text.lastIndexOf('}');
+    if (jStart < 0 || jEnd < 0) throw new Error('星辰回應格式異常，請重試');
+    let c;
+    try { c = JSON.parse(text.substring(jStart, jEnd + 1)); }
+    catch(parseErr) { throw new Error('解析失敗，請重試一次'); }
 
     document.getElementById('soulmate-loading-screen').style.display = 'none';
     const res = document.getElementById('soulmate-result-screen');
@@ -4121,7 +4125,7 @@ async function submitSoulmate() {
   } catch(err) {
     document.getElementById('soulmate-loading-screen').style.display = 'none';
     document.getElementById('soulmate-result-screen').style.display = 'block';
-    document.getElementById('soulmate-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">連線失敗，請再試一次。<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitSoulmate()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeSoulmateModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
+    document.getElementById('soulmate-result-screen').innerHTML = `<div style="text-align:center; color:var(--silver); padding:20px;">${(err && err.message) ? err.message : '連線失敗，請再試一次。'}<br><br><div style="display:flex;gap:10px;justify-content:center;margin-top:8px;"><button onclick="submitSoulmate()" style="background:transparent; border:1px solid var(--gold); color:var(--gold); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">✦ 重試</button><button onclick="closeSoulmateModal()" style="background:transparent; border:1px solid rgba(201,168,76,0.4); color:var(--silver); padding:10px 24px; cursor:pointer; font-family:'Noto Serif TC',serif; letter-spacing:2px; font-size:0.82rem;">關閉</button></div></div>`;
   }
 }
 
