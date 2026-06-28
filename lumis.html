@@ -1913,9 +1913,10 @@
       <div class="hero-divider-symbol">☽ · ☉ · ♄</div>
       <div class="hero-divider-line right"></div>
     </div>
-    <div class="hero-tagline">你的光，早已寫在星辰之中</div>
-    <button class="hero-btn" onclick="openChapter(1)">
-      <span>✨ 探索你的命運</span>
+    <div class="hero-tagline">搞懂你自己，是所有答案的起點</div>
+    <div class="hero-subtagline">LUMIS 用你的人格與星盤，<br>幫你看清你是誰、適合什麼、想要什麼</div>
+    <button class="hero-btn" onclick="openDiscover()">
+      <span>✦ 免費開始 · 認識自己</span>
     </button>
     <div class="scroll-indicator">
       <div class="scroll-line"></div>
@@ -2280,6 +2281,228 @@
   </footer>
 
 <!-- SOULMATE MODAL -->
+<style>
+/* ===== DISCOVERY · self-understanding front door (additive) ===== */
+.hero-subtagline{font-family:'Noto Serif TC',serif;font-weight:300;color:var(--silver);font-size:0.92rem;line-height:1.9;letter-spacing:1px;margin:0 auto 28px;max-width:21em;}
+.dsc-prog{display:flex;gap:5px;justify-content:center;margin-bottom:24px;}
+.dsc-prog i{width:16px;height:2px;background:rgba(168,168,192,0.25);border-radius:2px;transition:background .4s;}
+.dsc-prog i.done{background:var(--gold);}
+.dsc-prog i.now{background:var(--gold-bright);}
+.dsc-step{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;color:var(--gold-deep);letter-spacing:2px;text-align:center;margin-bottom:22px;}
+.dsc-q{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.4rem;color:var(--soft-white);line-height:1.5;text-align:center;margin-bottom:24px;}
+.dsc-q .zh{font-family:'Noto Serif TC',serif;display:block;font-size:0.92em;margin-top:2px;}
+.dsc-con{height:54px;margin-bottom:8px;display:block;width:100%;}
+.dsc-opt{display:block;width:100%;text-align:center;cursor:pointer;font-family:'Noto Serif TC',serif;font-weight:300;font-size:1rem;letter-spacing:0.5px;color:var(--soft-white);background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.25);padding:17px;margin-bottom:11px;border-radius:3px;transition:all .3s;}
+.dsc-opt:hover{border-color:rgba(201,168,76,0.6);background:rgba(201,168,76,0.06);}
+.dsc-opt.pick{border-color:var(--gold);background:rgba(201,168,76,0.13);}
+.dsc-chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:6px;}
+.dsc-chip{cursor:pointer;font-family:'Noto Serif TC',serif;font-size:0.92rem;color:var(--soft-white);background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.25);padding:10px 16px;border-radius:22px;transition:all .3s;}
+.dsc-chip:hover{border-color:rgba(201,168,76,0.6);}
+.dsc-chip.pick{border-color:var(--gold);background:rgba(201,168,76,0.13);color:var(--gold-bright);}
+.dsc-slider-ends{display:flex;justify-content:space-between;font-size:0.8rem;color:var(--silver);margin:24px 0 12px;letter-spacing:0.5px;}
+.dsc-slider{-webkit-appearance:none;width:100%;height:2px;background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:2px;outline:none;}
+.dsc-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold-bright);cursor:pointer;box-shadow:0 0 16px rgba(255,229,160,0.6);border:2px solid var(--black);}
+.dsc-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold-bright);cursor:pointer;border:2px solid var(--black);}
+.dsc-ta{width:100%;min-height:120px;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.25);color:var(--soft-white);font-family:'Noto Serif TC',serif;font-size:1rem;line-height:1.8;padding:14px;border-radius:5px;outline:none;resize:vertical;}
+.dsc-ta:focus{border-color:var(--gold);}
+.dsc-sigil{height:200px;margin:0 auto 4px;display:block;}
+.dsc-pre{font-size:0.85rem;color:var(--silver);letter-spacing:3px;text-align:center;margin-bottom:8px;}
+.dsc-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:2.8rem;color:var(--gold-bright);letter-spacing:3px;line-height:1.1;text-align:center;}
+.dsc-en{font-family:'Cinzel Decorative',serif;font-size:0.7rem;letter-spacing:3px;color:var(--gold-deep);text-align:center;margin-top:12px;}
+.dsc-essence{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.2rem;color:var(--soft-white);text-align:center;margin:20px auto 0;max-width:20em;line-height:1.6;}
+.dsc-body{font-size:1rem;color:var(--soft-white);line-height:1.95;max-width:26em;margin:22px auto 0;text-align:left;}
+.dsc-cele{display:flex;gap:11px;align-items:flex-start;max-width:26em;margin:20px auto 0;padding:16px 18px;border:1px solid rgba(201,168,76,0.2);border-radius:3px;background:rgba(201,168,76,0.03);text-align:left;}
+.dsc-cele .ic{color:var(--gold);margin-top:2px;}
+.dsc-cele .tx{font-size:0.92rem;color:var(--silver);line-height:1.8;}
+.dsc-cele .tx em{color:var(--gold-bright);font-style:normal;}
+.dsc-ack{max-width:26em;margin:16px auto 0;padding:16px 18px;border-left:2px solid var(--gold-deep);background:linear-gradient(90deg,rgba(201,168,76,0.04),transparent);text-align:left;}
+.dsc-ack .tx{font-size:0.92rem;color:var(--soft-white);line-height:1.85;}
+.dsc-ack .tx b{color:var(--gold-bright);font-weight:400;}
+.dsc-card{width:320px;max-width:86%;margin:0 auto;padding:30px 26px 26px;background:linear-gradient(165deg,#0d0a1a,#05030f);border:1px solid rgba(201,168,76,0.4);border-radius:8px;position:relative;text-align:center;box-shadow:0 24px 70px -30px #000,0 0 60px -38px rgba(201,168,76,0.4);}
+.dsc-card:before{content:"";position:absolute;inset:7px;border:1px solid rgba(201,168,76,0.16);border-radius:5px;pointer-events:none;}
+.dsc-card-mark{font-family:'Cinzel Decorative',serif;letter-spacing:3px;font-size:0.7rem;color:var(--gold);}
+.dsc-card-sigil{height:110px;margin:12px 0 4px;}
+.dsc-card-name{font-family:'Cormorant Garamond',serif;font-size:2.1rem;color:var(--gold-bright);letter-spacing:2px;line-height:1.1;}
+.dsc-card-en{font-family:'Cinzel Decorative',serif;font-size:0.6rem;letter-spacing:3px;color:var(--gold-deep);margin-top:8px;}
+.dsc-card-essence{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.95rem;color:var(--soft-white);margin-top:14px;line-height:1.5;}
+.dsc-card-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:15px;}
+.dsc-card-tag{font-size:0.68rem;letter-spacing:0.5px;color:var(--gold);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:3px 11px;}
+.dsc-card-foot{font-family:'Cinzel Decorative',serif;font-size:0.54rem;letter-spacing:2px;color:var(--gold-deep);margin-top:18px;}
+.dsc-note{font-size:0.7rem;color:var(--gold-deep);opacity:0.7;line-height:1.7;text-align:center;margin-top:22px;}
+.dsc-morning{max-width:26em;margin:0 auto;text-align:left;background:rgba(13,6,40,0.5);border:1px solid rgba(201,168,76,0.2);border-radius:14px;border-top-left-radius:3px;padding:20px;}
+.dsc-morning-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+.dsc-morning-av{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--gold-bright),var(--gold-deep));flex:none;display:flex;align-items:center;justify-content:center;font-size:0.66rem;color:var(--black);}
+.dsc-morning-nm{font-family:'Cinzel Decorative',serif;font-size:0.62rem;letter-spacing:2px;color:var(--gold);}
+.dsc-morning-time{font-size:0.64rem;color:var(--silver);margin-left:auto;}
+.dsc-morning-body{font-size:0.96rem;color:var(--soft-white);line-height:1.95;white-space:pre-line;}
+.dsc-morning-body .nm{color:var(--gold-bright);}
+.dsc-vlist{max-width:26em;margin:0 auto 26px;text-align:left;}
+.dsc-vitem{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid rgba(201,168,76,0.15);}
+.dsc-vitem:last-child{border-bottom:none;}
+.dsc-vic{font-size:1.05rem;color:var(--gold);width:1.4em;text-align:center;flex:none;}
+.dsc-vtx{font-size:0.98rem;color:var(--soft-white);line-height:1.5;}
+.dsc-vtx span{display:block;font-size:0.78rem;color:var(--silver);margin-top:3px;}
+.dsc-sdot{fill:var(--gold-bright);opacity:0;transition:opacity .6s;}
+.dsc-sdot.lit{opacity:1;}
+.dsc-shalo{fill:var(--gold-bright);opacity:0;}
+.dsc-shalo.lit{opacity:0.14;}
+.dsc-sline{stroke:var(--gold);stroke-width:1;fill:none;opacity:0.5;stroke-dasharray:600;stroke-dashoffset:600;transition:stroke-dashoffset 1.4s ease;}
+.dsc-sline.draw{stroke-dashoffset:0;}
+.dsc-anchor{fill:#fff;opacity:0.22;}
+</style>
+
+<!-- ===== DISCOVERY MODAL (free front door) ===== -->
+<div class="modal-overlay" id="discover-modal">
+  <div class="overlay-star-left"><span class="ov-sym">☉</span><span class="ov-line"></span><span class="ov-sym">✦</span><span class="ov-dot"></span><span class="ov-sym">☽</span><span class="ov-line"></span><span class="ov-sym">✧</span></div>
+  <div class="overlay-star-right"><span class="ov-sym">♀</span><span class="ov-line"></span><span class="ov-sym">✦</span><span class="ov-dot"></span><span class="ov-sym">♂</span><span class="ov-line"></span><span class="ov-sym">✧</span></div>
+  <div class="modal" id="discover-modal-inner">
+    <button class="modal-close" onclick="closeDiscover()">✕</button>
+    <div class="modal-title">LUMIS</div>
+    <div class="modal-subtitle">認識自己</div>
+    <div class="modal-divider">✦ · · · ✦</div>
+
+    <!-- BIRTH -->
+    <div id="dsc-birth">
+      <div class="dsc-prog" id="dsc-p-birth"></div>
+      <div class="dsc-step">第一步 · 你來到世界的那一刻</div>
+      <div class="form-group">
+        <label class="form-label">📅 你的生日</label>
+        <div style="display:flex;gap:8px;">
+          <select id="dsc-y" class="form-input" style="flex:1.2;text-align:center;cursor:pointer;"></select>
+          <select id="dsc-m" class="form-input" style="flex:1;text-align:center;cursor:pointer;"></select>
+          <select id="dsc-d" class="form-input" style="flex:1;text-align:center;cursor:pointer;"></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🕐 出生時間</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="dsc-th" class="form-input" style="flex:1;text-align:center;cursor:pointer;"></select>
+          <span style="color:var(--gold);font-weight:bold;">:</span>
+          <select id="dsc-tm" class="form-input" style="flex:1;text-align:center;cursor:pointer;"></select>
+          <select id="dsc-tap" class="form-input" style="flex:1.3;text-align:center;cursor:pointer;"></select>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:0.84rem;color:var(--silver);cursor:pointer;"><input type="checkbox" id="dsc-unknown" style="width:auto;"> 我不確定出生時間（沒關係，先估一個）</label>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📍 出生地點</label>
+        <input type="text" id="dsc-place" class="form-input" placeholder="例如：台北、高雄、台中…">
+        <div class="form-hint">✦ 星盤需要這些資料來計算。時間越準，越貼近你。</div>
+      </div>
+      <button class="hero-btn" onclick="dscNext()"><span>下一步 →</span></button>
+    </div>
+
+    <!-- PERSONALITY -->
+    <div id="dsc-q" style="display:none;">
+      <div class="dsc-prog" id="dsc-p-q"></div>
+      <div class="dsc-step">第二步 · 你是怎麼運作的</div>
+      <svg class="dsc-con" viewBox="0 0 200 54" id="dsc-qsig"></svg>
+      <div class="dsc-q" id="dsc-qtext"></div>
+      <div id="dsc-qopts"></div>
+    </div>
+
+    <!-- CONTEXT 1 -->
+    <div id="dsc-c1" style="display:none;">
+      <div class="dsc-prog" id="dsc-p-c1"></div>
+      <div class="dsc-step">第三步 · 你現在站在哪裡</div>
+      <div class="dsc-q"><span class="zh">最近，最常佔住你心裡的是——</span></div>
+      <div id="dsc-c1opts"></div>
+    </div>
+
+    <!-- CONTEXT 2 slider -->
+    <div id="dsc-c2" style="display:none;">
+      <div class="dsc-prog" id="dsc-p-c2"></div>
+      <div class="dsc-step">第三步 · 你現在站在哪裡</div>
+      <div class="dsc-q"><span class="zh">對於「我想往哪裡去」，<br>你現在的感覺是——</span></div>
+      <div class="dsc-slider-ends"><span>完全迷惘</span><span>越來越清楚</span></div>
+      <input type="range" class="dsc-slider" id="dsc-slider" min="0" max="100" value="50">
+      <button class="hero-btn" onclick="dscSaveSlider()" style="margin-top:24px;"><span>下一步 →</span></button>
+    </div>
+
+    <!-- CONTEXT 3 multi -->
+    <div id="dsc-c3" style="display:none;">
+      <div class="dsc-prog" id="dsc-p-c3"></div>
+      <div class="dsc-step">第三步 · 你現在站在哪裡</div>
+      <div class="dsc-q"><span class="zh">最近，你常有哪些感覺？<br><span style="font-size:0.72em;color:var(--silver);">（可以選多個）</span></span></div>
+      <div class="dsc-chips" id="dsc-c3chips"></div>
+      <button class="hero-btn" onclick="dscNext()" style="margin-top:22px;"><span>下一步 →</span></button>
+    </div>
+
+    <!-- CONTEXT 4 -->
+    <div id="dsc-c4" style="display:none;">
+      <div class="dsc-prog" id="dsc-p-c4"></div>
+      <div class="dsc-step">第三步 · 你現在站在哪裡</div>
+      <div class="dsc-q"><span class="zh">如果 LUMIS 先幫你一件事，<br>你最想要——</span></div>
+      <div id="dsc-c4opts"></div>
+    </div>
+
+    <!-- OPEN -->
+    <div id="dsc-open" style="display:none;">
+      <div class="dsc-prog" id="dsc-p-open"></div>
+      <div class="dsc-step">最後 · 你想說的</div>
+      <div class="dsc-q" style="margin-bottom:14px;"><span class="zh">有沒有什麼，<br>想讓 LUMIS 知道的？</span></div>
+      <div class="hero-subtagline" style="margin-bottom:16px;">也許是你正在煩惱的事，或一個放在心裡很久的問題。<br><span style="color:var(--gold-deep);">沒有也可以，直接跳過。</span></div>
+      <textarea class="dsc-ta" id="dsc-text" placeholder="寫下任何你想說的…（可留空）"></textarea>
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <button class="hero-btn" onclick="dscFinish()" style="flex:1;opacity:0.65;"><span>跳過</span></button>
+        <button class="hero-btn" onclick="dscFinish()" style="flex:1.6;"><span>完成，看見我自己 →</span></button>
+      </div>
+    </div>
+
+    <!-- REVEAL -->
+    <div id="dsc-reveal" style="display:none;">
+      <svg class="dsc-sigil" viewBox="0 0 200 200" id="dsc-bigsig"></svg>
+      <div class="dsc-pre">你是</div>
+      <div class="dsc-name" id="dsc-r-name"></div>
+      <div class="dsc-en" id="dsc-r-en"></div>
+      <div class="dsc-essence" id="dsc-r-essence"></div>
+      <div class="dsc-body" id="dsc-r-body"></div>
+      <div class="dsc-cele"><span class="ic">✦</span><span class="tx" id="dsc-r-cele"></span></div>
+      <div class="dsc-ack"><span class="tx" id="dsc-r-ack"></span></div>
+      <button class="hero-btn" onclick="dscNext()" style="margin-top:24px;"><span>看我的星辰名片 →</span></button>
+      <div class="dsc-note">＊ 示範版：星盤為示意。正式版用你真實的出生資料計算星盤，與人格、與你剛剛說的，交織成完整的你。</div>
+    </div>
+
+    <!-- CARD -->
+    <div id="dsc-cardscreen" style="display:none;">
+      <div class="dsc-pre" style="margin-bottom:18px;">這是你的星辰名片 · 截圖分享給懂你的人</div>
+      <div class="dsc-card">
+        <div class="dsc-card-mark">LUMIS</div>
+        <svg class="dsc-card-sigil" viewBox="0 0 200 200" id="dsc-cardsig"></svg>
+        <div class="dsc-card-name" id="dsc-c-name"></div>
+        <div class="dsc-card-en" id="dsc-c-en"></div>
+        <div class="dsc-card-essence" id="dsc-c-essence"></div>
+        <div class="dsc-card-tags" id="dsc-c-tags"></div>
+        <div class="dsc-card-foot">LUMISSTAR.COM</div>
+      </div>
+      <button class="hero-btn" onclick="dscNext()" style="margin-top:24px;"><span>繼續 →</span></button>
+    </div>
+
+    <!-- MORNING -->
+    <div id="dsc-morningscreen" style="display:none;">
+      <div class="dsc-step">明天早上，你會收到這樣的訊息</div>
+      <div class="dsc-morning">
+        <div class="dsc-morning-head"><div class="dsc-morning-av">✦</div><div class="dsc-morning-nm">LUMIS</div><div class="dsc-morning-time">上午 6:00</div></div>
+        <div class="dsc-morning-body" id="dsc-m-body"></div>
+      </div>
+      <button class="hero-btn" onclick="dscNext()" style="margin-top:24px;"><span>所以，LUMIS 是什麼 →</span></button>
+    </div>
+
+    <!-- VISION -->
+    <div id="dsc-vision" style="display:none;">
+      <div class="dsc-q" style="margin-bottom:24px;">認識自己，<br>只是第一堂課。</div>
+      <div class="dsc-vlist">
+        <div class="dsc-vitem"><span class="dsc-vic">☀</span><span class="dsc-vtx">每天早晨，一句真正懂你的話<span>不是運勢，是有人記得你在努力</span></span></div>
+        <div class="dsc-vitem"><span class="dsc-vic">✦</span><span class="dsc-vtx">你的職涯方向，從「你是誰」開始<span>不告訴你該做什麼，陪你找到適合你的</span></span></div>
+        <div class="dsc-vitem"><span class="dsc-vic">☽</span><span class="dsc-vtx">找到那些，和你同類的人<span>把名片給對的人，連結就開始了</span></span></div>
+      </div>
+      <div class="dsc-essence" style="font-size:1.1rem;">學校沒教的那堂課，<br>LUMIS 陪你，慢慢上。</div>
+      <button class="hero-btn" onclick="dscStartChapters()" style="margin-top:26px;"><span>✦ 解鎖完整的自我篇章</span></button>
+    </div>
+
+  </div>
+</div>
+
+
 <div class="modal-overlay" id="soulmate-modal">
   <div class="overlay-star-left">
     <span class="ov-sym">♃</span><span class="ov-line"></span>
@@ -5534,5 +5757,193 @@ if (feedbackSubmit) {
   });
 }
 </script>
+
+<script>
+/* ===== DISCOVERY · self-understanding front door (additive, namespaced) ===== */
+(function(){
+  const FLOW=['dsc-birth','dsc-q','dsc-c1','dsc-c2','dsc-c3','dsc-c4','dsc-open','dsc-reveal','dsc-cardscreen','dsc-morningscreen','dsc-vision'];
+  const STEPS=['dsc-birth','dsc-q','dsc-c1','dsc-c2','dsc-c3','dsc-c4','dsc-open'];
+  let fi=0, qi=0, ans=[], curType='';
+  let ctx={worry:'',dir:50,feels:[],want:'',text:''};
+
+  const QS=[
+   {t:'一整天和人相處後，<br><span class="zh">晚上你通常——</span>',a:['還有電，想找人聊聊','只想自己，把電充回來'],m:['E','I']},
+   {t:'在一群還不熟的人裡，<br><span class="zh">你——</span>',a:['很快就聊開了','需要點時間才放得開'],m:['E','I']},
+   {t:'你比較容易被什麼吸引？',a:['實際、做得到的事','有想像、有可能性的事'],m:['S','N']},
+   {t:'認識你的人常說你——',a:['務實、腳踏實地','想很多、活在未來'],m:['S','N']},
+   {t:'遇到重要決定，<br><span class="zh">你最後聽的是——</span>',a:['腦袋：怎樣最合理','心：怎樣大家都好過'],m:['T','F']},
+   {t:'朋友難過來找你，<br><span class="zh">你會先——</span>',a:['幫他分析、想辦法','先陪他、聽他說'],m:['T','F']},
+   {t:'對還沒定下來的事，<br><span class="zh">你——</span>',a:['想趕快決定才踏實','喜歡留彈性、邊走邊看'],m:['J','P']},
+   {t:'你的日子，比較像——',a:['有計畫，照著清單走','看狀況，邊走邊看'],m:['J','P']}
+  ];
+  const C1=['工作 · 方向','感情 · 關係','金錢 · 現實','家庭','「我到底是誰」','身心狀態'];
+  const C3=['迷惘','累','焦慮','對未來沒方向','跟不上別人','想改變卻卡住','還算平穩','對某件事有點期待'];
+  const C4=['更懂我自己','找到方向','看清一段關係','每天有人懂我','找到同類的人'];
+
+  const T={
+   INFJ:{n:'守夢者',en:'DREAM KEEPER',e:'安靜卻看得很深，懂別人，也懂這個世界。',b:'你總是先感覺到別人沒說出口的東西，這讓你溫柔，也常常讓你累。但你心裡有一個很大的世界，值得被人好好看見。',tags:['深刻','直覺','溫柔的理想'],c:'你的月亮藏在很深的地方，<em>那是你力量的來源</em>。'},
+   INFP:{n:'理想者',en:'THE IDEALIST',e:'心裡住著一片溫柔的海，安靜地相信美好。',b:'你對世界有一種別人沒有的溫度，常常為了一首歌、一個人、一句話而觸動。別讓這個世界說服你變硬，那份柔軟正是你最珍貴的地方。',tags:['真誠','想像力','柔軟'],c:'海王星為你的世界，<em>鍍上一層夢的光</em>。'},
+   ENFJ:{n:'暖光者',en:'THE WARM LIGHT',e:'讓身邊的人，都想成為更好的自己。',b:'你天生會把光分給別人，朋友難過時第一個想到的就是你。記得，偶爾也把那道光，留一點給自己。',tags:['溫暖','感染力','為他人著想'],c:'你的太陽，<em>落在照亮別人的位置</em>。'},
+   ENFP:{n:'造夢者',en:'THE DREAMER',e:'自由、好奇，對世界永遠充滿「如果」。',b:'你走到哪裡都能點亮一個房間，腦中總有一百個還沒實現的點子。你不是三分鐘熱度，你只是還在找那件值得你全心投入的事。',tags:['自由','熱情','好奇'],c:'木星，<em>讓你的世界一直保持遼闊</em>。'},
+   INTJ:{n:'策畫者',en:'THE ARCHITECT',e:'在腦中，為未來畫好一張別人還看不到的藍圖。',b:'你習慣想得比別人遠，也因此常常覺得孤單。你不是難相處，你只是還沒遇到跟得上你思考的人。',tags:['遠見','獨立','策略'],c:'土星，<em>給了你別人沒有的耐心與長線</em>。'},
+   INTP:{n:'解謎者',en:'THE PUZZLER',e:'對世界永遠充滿問號，享受想通的那一刻。',b:'你的腦袋很少停下來，總想知道事情背後「為什麼」。世界需要你這種人——願意慢下來，把事情真正想清楚。',tags:['好奇','邏輯','獨特視角'],c:'水星，<em>讓你的思緒像星圖一樣縱橫交錯</em>。'},
+   ENTJ:{n:'領航者',en:'THE NAVIGATOR',e:'天生想把一群人、一件事，帶往對的方向。',b:'你看得到目標，也敢扛起責任，這讓你天生像個領導者。記得，最強的領導不只是往前衝，也懂得回頭等人。',tags:['決斷','格局','行動'],c:'火星與木星，<em>給了你前進的引擎</em>。'},
+   ENTP:{n:'點火者',en:'THE SPARK',e:'用點子和好奇心，點亮每一場對話。',b:'你享受把想法丟來丟去的火花，討厭無聊更勝於失敗。你的挑戰不是缺點子，而是選一個，然後走到底。',tags:['機智','點子','不怕挑戰'],c:'水星與天王星，<em>讓你的腦袋永遠領先半步</em>。'},
+   ISTJ:{n:'守護者',en:'THE KEEPER',e:'可靠、踏實，說到就一定做到。',b:'你不太說漂亮話，但你是那種真的會把事情扛好的人。在這個浮動的世界裡，你的穩定本身就是一種溫柔。',tags:['可靠','務實','責任感'],c:'土星，<em>給了你別人羨慕的踏實</em>。'},
+   ISFJ:{n:'後盾者',en:'THE GUARDIAN',e:'默默地，把身邊每個人都接住。',b:'你總是記得別人忘記的小事，照顧人對你來說像呼吸一樣自然。別忘了，那個總是接住別人的你，也值得被接住。',tags:['細心','體貼','默默付出'],c:'你的月亮，<em>落在守護的位置</em>。'},
+   ESTJ:{n:'執行者',en:'THE ORGANIZER',e:'把混亂變成秩序，把計畫變成結果。',b:'你討厭事情卡住，總是那個跳出來把局面收拾好的人。你的可靠是團隊的定海神針，記得偶爾也允許事情不完美。',tags:['效率','條理','負責'],c:'土星與太陽，<em>給了你把事做成的力量</em>。'},
+   ESFJ:{n:'連結者',en:'THE CONNECTOR',e:'讓一群人，慢慢變成一家人。',b:'你天生懂得照顧氣氛，讓每個人都覺得自己被在乎。你的溫暖把人聚在一起，記得，自己也要被好好對待。',tags:['熱心','合群','溫暖'],c:'金星，<em>讓你天生擅長把人連在一起</em>。'},
+   ISTP:{n:'拆解者',en:'THE MAKER',e:'用雙手和冷靜，把一切搞懂、修好。',b:'你話不多，但動手做的時候最像自己。你享受把複雜的東西拆開、再裝回去的那種掌控感。',tags:['冷靜','動手','解決問題'],c:'你的水星，<em>偏好行動，而不是空談</em>。'},
+   ISFP:{n:'感受者',en:'THE ARTIST',e:'安靜地，把平凡的生活活成一件作品。',b:'你對美和感覺特別敏銳，常常用自己的方式默默地過得很講究。你不需要大聲，你的存在本身就很有風格。',tags:['美感','真誠','活在當下'],c:'金星，<em>把你的世界調成柔和的色溫</em>。'},
+   ESTP:{n:'行動者',en:'THE DOER',e:'想到就做，活在當下，不怕弄髒手。',b:'你討厭想太多，相信行動比計畫更誠實。你的勇氣讓你比別人更早出發，記得偶爾停下來，看看要去哪。',tags:['果敢','反應快','現在就做'],c:'火星，<em>給了你立刻出發的衝勁</em>。'},
+   ESFP:{n:'發光者',en:'THE STAR',e:'走到哪裡，哪裡就變得熱鬧起來。',b:'你天生會把快樂帶給身邊的人，活在當下是你的天賦。在那份熱鬧底下，你也有不想被看見的脆弱，那也沒關係。',tags:['熱情','自然','感染力'],c:'你的太陽，<em>落在舞台的中央</em>。'}
+  };
+
+  function fillSelects(){
+    const y=document.getElementById('dsc-y'),m=document.getElementById('dsc-m'),d=document.getElementById('dsc-d');
+    const th=document.getElementById('dsc-th'),tm=document.getElementById('dsc-tm'),tap=document.getElementById('dsc-tap');
+    if(!y) return;
+    let oy='<option value="">年</option>';for(let i=2014;i>=1940;i--)oy+='<option>'+i+'</option>';y.innerHTML=oy;
+    let om='<option value="">月</option>';for(let i=1;i<=12;i++)om+='<option>'+i+'</option>';m.innerHTML=om;
+    let od='<option value="">日</option>';for(let i=1;i<=31;i++)od+='<option>'+i+'</option>';d.innerHTML=od;
+    let oh='<option value="">時</option>';for(let i=1;i<=12;i++)oh+='<option>'+i+'</option>';th.innerHTML=oh;
+    let omin='<option value="">分</option>';for(let i=0;i<=59;i++){const v=String(i).padStart(2,'0');omin+='<option>'+v+'</option>';}tm.innerHTML=omin;
+    tap.innerHTML='<option value="">上午/下午</option><option value="AM">AM 上午</option><option value="PM">PM 下午</option>';
+  }
+
+  function show(id){
+    FLOW.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';});
+    const cur=document.getElementById(id);if(cur)cur.style.display='block';
+    const modalInner=document.getElementById('discover-modal-inner');if(modalInner)modalInner.scrollTop=0;
+    if(id==='dsc-q') renderQ();
+    if(id==='dsc-c1') renderSingle('dsc-c1opts',C1,'worry');
+    if(id==='dsc-c3') renderChips();
+    if(id==='dsc-c4') renderSingle('dsc-c4opts',C4,'want');
+    if(id==='dsc-reveal') renderReveal();
+    if(id==='dsc-cardscreen') renderCard();
+    if(id==='dsc-morningscreen') renderMorning();
+    drawProg(id);
+  }
+  function dscNext(){ fi++; if(fi>=FLOW.length) fi=FLOW.length-1; show(FLOW[fi]); }
+  function drawProg(id){
+    const idx=STEPS.indexOf(id); if(idx<0) return;
+    const bar=document.getElementById('dsc-p-'+id.replace('dsc-',''));
+    if(!bar) return;
+    bar.innerHTML=STEPS.map((_,i)=>'<i class="'+(i<idx?'done':(i===idx?'now':''))+'"></i>').join('');
+  }
+
+  function renderQ(){
+    const q=QS[qi];
+    document.getElementById('dsc-qtext').innerHTML=q.t;
+    const w=document.getElementById('dsc-qopts');w.innerHTML='';
+    q.a.forEach((txt,idx)=>{const b=document.createElement('button');b.className='dsc-opt';b.textContent=txt;b.onclick=function(){pick(idx);};w.appendChild(b);});
+    miniSig();
+  }
+  function pick(idx){
+    const q=QS[qi];ans[qi]={dim:q.m[0]+q.m[1],letter:q.m[idx]};
+    const opts=document.querySelectorAll('#dsc-qopts .dsc-opt');if(opts[idx])opts[idx].classList.add('pick');
+    miniSig();
+    setTimeout(function(){qi++;if(qi<QS.length)renderQ();else{computeType();dscNext();}},340);
+  }
+  function computeType(){
+    const dims={EI:['E','I'],SN:['S','N'],TF:['T','F'],JP:['J','P']};let out='';
+    for(const k in dims){
+      const picks=ans.filter(a=>a.dim===k).map(a=>a.letter);
+      const c0=picks.filter(x=>x===dims[k][0]).length,c1=picks.filter(x=>x===dims[k][1]).length;
+      out+= c0>c1?dims[k][0] : (c1>c0?dims[k][1] : picks[0]);
+    }
+    curType=out;
+  }
+  function miniSig(){
+    const svg=document.getElementById('dsc-qsig');if(!svg)return;const n=QS.length;let pts=[];
+    for(let i=0;i<n;i++){const answered=i<ans.length;const off=answered?(ans[i].letter===QS[i].m[0]?-7:7):0;pts.push([18+i*(164/(n-1))+off,27+(i%2?13:-13),answered]);}
+    let s='';
+    if(ans.length>1){let d='M'+pts.slice(0,ans.length).map(p=>p[0].toFixed(1)+' '+p[1]).join(' L');s+='<path d="'+d+'" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".5"/>';}
+    pts.forEach(p=>{s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1]+'" r="'+(p[2]?2.6:1.7)+'" fill="'+(p[2]?'var(--gold-bright)':'#3a3550')+'" opacity="'+(p[2]?1:.5)+'"/>';});
+    svg.innerHTML=s;
+  }
+
+  function renderSingle(elId,arr,key){
+    const w=document.getElementById(elId);w.innerHTML='';
+    arr.forEach(txt=>{const b=document.createElement('button');b.className='dsc-opt';b.textContent=txt;b.onclick=function(){ctx[key]=txt;b.classList.add('pick');setTimeout(dscNext,320);};w.appendChild(b);});
+  }
+  function renderChips(){
+    const w=document.getElementById('dsc-c3chips');w.innerHTML='';
+    C3.forEach(txt=>{const b=document.createElement('button');b.className='dsc-chip';b.textContent=txt;b.onclick=function(){b.classList.toggle('pick');const i=ctx.feels.indexOf(txt);if(i<0)ctx.feels.push(txt);else ctx.feels.splice(i,1);};w.appendChild(b);});
+  }
+
+  const SLOTY=[34,82,130,174];
+  function starX(i,letter,pair){const base=100,nud=[26,32,22,28][i];return letter===pair[0]?base-nud:base+nud;}
+  function buildSigil(svgId,withDelay){
+    const svg=document.getElementById(svgId);if(!svg)return;let s='';
+    s+='<circle class="dsc-anchor" cx="44" cy="26" r="1.1"/><circle class="dsc-anchor" cx="158" cy="56" r="1.4"/><circle class="dsc-anchor" cx="150" cy="170" r="1"/><circle class="dsc-anchor" cx="40" cy="132" r="1.2"/>';
+    const pts=ans.map((a,i)=>[starX(i,a.letter,QS[i].m),SLOTY[i]]);
+    const d='M'+pts.map(p=>p[0].toFixed(1)+' '+p[1]).join(' L');
+    s+='<path class="dsc-sline" d="'+d+'"/>';
+    pts.forEach(p=>{s+='<circle class="dsc-shalo" cx="'+p[0].toFixed(1)+'" cy="'+p[1]+'" r="9"/><circle class="dsc-sdot" cx="'+p[0].toFixed(1)+'" cy="'+p[1]+'" r="3"/>';});
+    svg.innerHTML=s;
+    requestAnimationFrame(function(){
+      svg.querySelectorAll('.dsc-sdot').forEach((el,i)=>setTimeout(()=>el.classList.add('lit'),140*i+(withDelay?200:0)));
+      svg.querySelectorAll('.dsc-shalo').forEach((el,i)=>setTimeout(()=>el.classList.add('lit'),140*i+(withDelay?200:0)));
+      const ln=svg.querySelector('.dsc-sline');if(ln)setTimeout(()=>ln.classList.add('draw'),withDelay?300:0);
+    });
+  }
+
+  function renderReveal(){
+    const d=T[curType]||T.ENFP;
+    buildSigil('dsc-bigsig',true);
+    document.getElementById('dsc-r-name').textContent=d.n;
+    document.getElementById('dsc-r-en').textContent=curType+' · '+d.en;
+    document.getElementById('dsc-r-essence').textContent='「'+d.e+'」';
+    document.getElementById('dsc-r-body').textContent=d.b;
+    document.getElementById('dsc-r-cele').innerHTML=d.c;
+    let ack='你說，最近最常佔住你心裡的是 <b>'+(ctx.worry||'你自己的事')+'</b>。';
+    if(ctx.text) ack+='<br><br>還有你寫下的那段話，LUMIS 都收到了。<br>接下來的每一步，都會放在心上。';
+    else ack+='<br><br>這些，LUMIS 都記住了。接下來，會放在心上。';
+    document.getElementById('dsc-r-ack').innerHTML=ack;
+  }
+  function renderCard(){
+    const d=T[curType]||T.ENFP;buildSigil('dsc-cardsig',false);
+    document.getElementById('dsc-c-name').textContent=d.n;
+    document.getElementById('dsc-c-en').textContent=curType;
+    document.getElementById('dsc-c-essence').textContent='「'+d.e+'」';
+    const tg=document.getElementById('dsc-c-tags');tg.innerHTML='';
+    d.tags.forEach(t=>{const sp=document.createElement('span');sp.className='dsc-card-tag';sp.textContent=t;tg.appendChild(sp);});
+  }
+  function renderMorning(){
+    const d=T[curType]||T.ENFP;const worry=ctx.worry||'';
+    let mid='你昨天是不是又想了很多、做了一點點？沒關係，你不是沒在前進，你只是用自己的節奏在走。';
+    if(worry.indexOf('工作')>=0||worry.indexOf('方向')>=0) mid='關於方向，你還沒有答案，這很正常。方向不是想出來的，是走出來的——今天先走一小步就好。';
+    else if(worry.indexOf('感情')>=0||worry.indexOf('關係')>=0) mid='關係裡的事，你放在心上很久了吧。今天，先把那份溫柔，留一點給自己。';
+    else if(worry.indexOf('金錢')>=0||worry.indexOf('現實')>=0) mid='現實的重量，你扛得比誰都清楚。但你不只是數字，今天也記得，為自己做一件小小的、開心的事。';
+    else if(worry.indexOf('誰')>=0) mid='你還在問「我到底是誰」，這不是迷路，這是你正在認真地活。答案會慢慢長出來的。';
+    document.getElementById('dsc-m-body').innerHTML='早安，<span class="nm">'+d.n+'</span>。\n\n'+mid+'\n\n今天不用急著想通所有事，先把一件小事做好，就夠了。';
+  }
+
+  function reset(){
+    fi=0;qi=0;ans=[];curType='';ctx={worry:'',dir:50,feels:[],want:'',text:''};
+    const tx=document.getElementById('dsc-text');if(tx)tx.value='';
+    document.querySelectorAll('#dsc-c3chips .dsc-chip.pick').forEach(c=>c.classList.remove('pick'));
+    ['dsc-y','dsc-m','dsc-d','dsc-th','dsc-tm','dsc-tap'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+    const sl=document.getElementById('dsc-slider');if(sl)sl.value=50;
+    const un=document.getElementById('dsc-unknown');if(un)un.checked=false;
+    const pl=document.getElementById('dsc-place');if(pl)pl.value='';
+    show('dsc-birth');
+  }
+
+  // public handlers
+  window.openDiscover=function(){ fillSelects(); reset(); document.getElementById('discover-modal').classList.add('active'); document.body.style.overflow='hidden'; };
+  window.closeDiscover=function(){ document.getElementById('discover-modal').classList.remove('active'); document.body.style.overflow=''; };
+  window.dscNext=dscNext;
+  window.dscSaveSlider=function(){ const sl=document.getElementById('dsc-slider'); ctx.dir=sl?+sl.value:50; dscNext(); };
+  window.dscFinish=function(){ const tx=document.getElementById('dsc-text'); ctx.text=tx?(tx.value||'').trim():''; dscNext(); };
+  window.dscStartChapters=function(){ window.closeDiscover(); if(typeof openChapter==='function'){ openChapter(1); } };
+
+  // populate selects once at load (modal hidden but present)
+  if(document.readyState!=='loading'){ fillSelects(); }
+  else { document.addEventListener('DOMContentLoaded', fillSelects); }
+})();
+</script>
+
 </body>
 </html>
