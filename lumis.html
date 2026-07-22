@@ -3143,13 +3143,8 @@
 
       <div class="form-group">
         <label class="form-label">📍 出生地點</label>
-        <select id="field-place" class="form-input" style="cursor:pointer;">
-          <option value="">請選擇出生地點</option>
-          <optgroup label="台灣"><option value="台北市">台北市</option><option value="新北市">新北市</option><option value="基隆市">基隆市</option><option value="桃園市">桃園市</option><option value="新竹市">新竹市</option><option value="新竹縣">新竹縣</option><option value="苗栗縣">苗栗縣</option><option value="台中市">台中市</option><option value="彰化縣">彰化縣</option><option value="南投縣">南投縣</option><option value="雲林縣">雲林縣</option><option value="嘉義市">嘉義市</option><option value="嘉義縣">嘉義縣</option><option value="台南市">台南市</option><option value="高雄市">高雄市</option><option value="屏東縣">屏東縣</option><option value="宜蘭縣">宜蘭縣</option><option value="花蓮縣">花蓮縣</option><option value="台東縣">台東縣</option><option value="澎湖縣">澎湖縣</option><option value="金門縣">金門縣</option><option value="連江縣（馬祖）">連江縣（馬祖）</option></optgroup>
-          <optgroup label="亞洲"><option value="香港">香港</option><option value="澳門">澳門</option><option value="新加坡">新加坡</option><option value="吉隆坡">吉隆坡</option><option value="上海">上海</option><option value="北京">北京</option><option value="廣州">廣州</option><option value="深圳">深圳</option><option value="東京">東京</option><option value="大阪">大阪</option><option value="首爾">首爾</option><option value="曼谷">曼谷</option><option value="胡志明市">胡志明市</option><option value="河內">河內</option><option value="馬尼拉">馬尼拉</option><option value="雅加達">雅加達</option><option value="新德里">新德里</option><option value="孟買">孟買</option></optgroup>
-          <optgroup label="其他地區"><option value="紐約">紐約</option><option value="洛杉磯">洛杉磯</option><option value="舊金山">舊金山</option><option value="西雅圖">西雅圖</option><option value="溫哥華">溫哥華</option><option value="多倫多">多倫多</option><option value="倫敦">倫敦</option><option value="巴黎">巴黎</option><option value="柏林">柏林</option><option value="雪梨">雪梨</option><option value="墨爾本">墨爾本</option><option value="奧克蘭">奧克蘭</option></optgroup>
-        </select>
-        <div class="form-hint">✦ 選擇出生城市 — 這會決定星盤的精準度</div>
+                <input type="text" id="field-place" class="form-input" placeholder="如：台北市 或 Sikar, Rajasthan" autocomplete="off">
+        <div class="form-hint">✦ 輸入出生城市 — 中文或英文皆可，世界各地都行<br>例如：台北市 · 高雄市 · Sikar, Rajasthan · Tokyo · New York</div>
         <div class="form-error" id="err-place">⚠ 請輸入出生地點</div>
       </div>
 
@@ -4720,7 +4715,7 @@ function openModal(callback, intent) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  ['field-time-h','field-time-m','field-time-ampm','field-dob-y','field-dob-m','field-dob-d','field-place','field-gender'].forEach(id => {
+  ['field-time-h','field-time-m','field-time-ampm','field-dob-y','field-dob-m','field-dob-d','field-gender'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.selectedIndex = 0;
   });
@@ -4778,7 +4773,51 @@ function closeModal() {
 // LUMIS CLAUDE API
 // =====================
 // ===== VedAstro chart helpers (GLOBAL: used by chapters, soulmate, AND star child) =====
-function parseBirthForVedAstro(dobStr, timeStr, placeStr) {
+// Resolve a time-zone's UTC offset at a specific past date — daylight-saving & history aware.
+function offsetForZoneAtDate(zone, y, m, d, hh, mm) {
+  try {
+    const utc = new Date(Date.UTC(y, m - 1, d, hh, mm));
+    const inv = new Date(utc.toLocaleString('en-US', { timeZone: zone }));
+    const diff = Math.round((inv - utc) / 60000);
+    const sign = diff < 0 ? '-' : '+';
+    const a = Math.abs(diff);
+    return sign + String(Math.floor(a/60)).padStart(2,'0') + ':' + String(a%60).padStart(2,'0');
+  } catch (e) { return null; }
+}
+
+// Free worldwide geocoder (Open-Meteo, GeoNames data) — no API key, works in Chinese or English.
+// Returns { lat, lng, tz, label } or null. Never throws; times out after 8s.
+async function geocodePlaceName(placeStr) {
+  const q = (placeStr || '').trim();
+  if (!q) return null;
+  const lang = /[\u3400-\u9fff]/.test(q) ? 'zh' : 'en';
+  const tries = [q];
+  if (q.indexOf(',') >= 0) tries.push(q.split(',')[0].trim());
+  if (q.indexOf('\uFF0C') >= 0) tries.push(q.split('\uFF0C')[0].trim());
+  for (const t of tries) {
+    if (!t) continue;
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 8000);
+      const url = 'https://geocoding-api.open-meteo.com/v1/search?name=' +
+                  encodeURIComponent(t) + '&count=1&language=' + lang + '&format=json';
+      const resp = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(to);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      if (data && Array.isArray(data.results) && data.results.length) {
+        const r = data.results[0];
+        if (typeof r.latitude === 'number' && typeof r.longitude === 'number') {
+          return { lat: r.latitude, lng: r.longitude, tz: r.timezone || null,
+                   label: [r.name, r.admin1, r.country].filter(Boolean).join(', ') };
+        }
+      }
+    } catch (e) { /* try next candidate */ }
+  }
+  return null;
+}
+
+async function parseBirthForVedAstro(dobStr, timeStr, placeStr) {
     const dobParts = dobStr.split('/').map(s => s.trim());
     // Support M/D/YYYY (4/21/2026) and D/M/YYYY (16/01/1998)
     // If first part > 12, it must be a day → D/M/YYYY
@@ -4887,16 +4926,27 @@ function parseBirthForVedAstro(dobStr, timeStr, placeStr) {
     };
 
     const raw = (placeStr || '').trim();
-    let coords = '25.03,121.57'; // default Taipei
+    let coords = '25.03,121.57';   // last-resort default: Taipei
     let tz = '+08:00';
-    if (CITY_DB[raw]) {
-      coords = CITY_DB[raw][0];
-      tz = CITY_DB[raw][1];
-    } else {
-      // Fallback for free-text values saved by older versions
-      const placeLower = raw.toLowerCase();
-      for (const [city, v] of Object.entries(CITY_DB)) {
-        if (placeLower.includes(city.toLowerCase())) { coords = v[0]; tz = v[1]; break; }
+    let resolved = false;
+
+    // 1) PRIMARY — free worldwide geocoder (any language) + accurate historical timezone
+    const geo = await geocodePlaceName(raw);
+    if (geo) {
+      coords = geo.lat + ',' + geo.lng;
+      const off = geo.tz ? offsetForZoneAtDate(geo.tz, parseInt(yyyy), parseInt(mm), parseInt(dd), parseInt(hh), parseInt(min)) : null;
+      if (off) tz = off;
+      resolved = true;
+    }
+
+    // 2) FALLBACK — offline table for common cities (only if the geocoder is unreachable)
+    if (!resolved && raw) {
+      if (CITY_DB[raw]) { coords = CITY_DB[raw][0]; tz = CITY_DB[raw][1]; }
+      else {
+        const placeLower = raw.toLowerCase();
+        for (const [city, v] of Object.entries(CITY_DB)) {
+          if (placeLower.includes(city.toLowerCase())) { coords = v[0]; tz = v[1]; break; }
+        }
       }
     }
 
@@ -4907,7 +4957,7 @@ function parseBirthForVedAstro(dobStr, timeStr, placeStr) {
   }
 
   async function getVedAstroChart(dob, time, place) {
-    const parsed = parseBirthForVedAstro(dob, time, place);
+    const parsed = await parseBirthForVedAstro(dob, time, place);
     // Fetch all planet data via Vercel backend (key hidden server-side)
     const url = `/api/vedastro?time=${encodeURIComponent(parsed.time)}&location=${encodeURIComponent(parsed.location)}`;
     return new Promise((resolve, reject) => {
