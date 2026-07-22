@@ -3143,8 +3143,8 @@
 
       <div class="form-group">
         <label class="form-label">📍 出生地點</label>
-                <input type="text" id="field-place" class="form-input" placeholder="如：台北市 或 Sikar, Rajasthan" autocomplete="off">
-        <div class="form-hint">✦ 輸入出生城市 — 中文或英文皆可，世界各地都行<br>例如：台北市 · 高雄市 · Sikar, Rajasthan · Tokyo · New York</div>
+                <input type="text" id="field-place" class="form-input" placeholder="如：淡水，新北市" autocomplete="off">
+        <div class="form-hint">✦ 例如：淡水，新北市 · 東區，台南市 · 鹿港，彰化縣</div>
         <div class="form-error" id="err-place">⚠ 請輸入出生地點</div>
       </div>
 
@@ -3243,6 +3243,12 @@
         <div style="font-size:0.82rem; letter-spacing:6px; color:var(--gold-deep); margin-bottom:8px;">✦ · · · ✦ · · · ✦</div>
         <div style="font-family:'Cinzel Decorative',serif; font-size:1.05rem; color:var(--gold); letter-spacing:4px; margin-bottom:4px;">LUMIS</div>
         <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.82rem; color:var(--silver); letter-spacing:2px;">你的星辰圖案已揭示</div>
+      </div>
+
+      <!-- Birth chart wheel — shown with every chapter -->
+      <div id="reading-chart-wrap" style="display:none; margin:0 0 24px;">
+        <div class="ch-wheel-wrap"><svg viewBox="0 0 320 320" id="reading-wheel"></svg></div>
+        <div id="reading-big" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:440px; margin:6px auto 0;"></div>
       </div>
 
       <!-- Chapter counter -->
@@ -5104,6 +5110,7 @@ function displayReadings(data) {
   currentChapterIndex = jumpTo;
   showChapter(jumpTo);
   document.querySelector('.modal').classList.add('reading-mode');
+  if(typeof window.drawReadingWheel==='function') window.drawReadingWheel();
 }
 
 function showChapter(index) {
@@ -5988,7 +5995,9 @@ if (feedbackSubmit) {
       if(!chartStr||chartStr.indexOf('Incorrect')>=0||chartStr.indexOf('Error')>=0) throw new Error('bad chart');
       chartStr=chartStr.substring(0,12000);
       if(lt)lt.textContent='正在為你解讀…';
+      window._lumisRawChart=chartStr;
       const data=await extractChart(chartStr);
+      window._lumisChart=data;
       renderChart(data,false);
     }catch(e){
       // offline / backend unavailable -> show sample so the design is visible
@@ -6015,6 +6024,46 @@ if (feedbackSubmit) {
     try{localStorage.setItem('lumis_birth',JSON.stringify({dob:dob,time:time,place:place,gender:window.lumisUserGender}));}catch(e){}
     loadMyChart(dob,time,place);
   };
+  // ---- Birth chart shown inside the chapter reading (reuses the wheel) ----
+  let _lumisChartPromise=null;
+  async function ensureLumisChart(){
+    if(window._lumisChart) return window._lumisChart;
+    if(_lumisChartPromise) return _lumisChartPromise;
+    _lumisChartPromise=(async function(){
+      try{
+        let s=window._lumisRawChart||'';
+        if(!s){
+          const dob=window.lumisUserDob, time=window.lumisUserTime||'12:00', place=window.lumisUserPlace;
+          if(!dob||!place) return null;
+          const chart=await getVedAstroChart(dob,time,place);
+          const payload=chart&&(chart.Payload||chart);
+          s=JSON.stringify(payload||'');
+          if(!s||s.indexOf('Incorrect')>=0||s.indexOf('Error')>=0) return null;
+          s=s.substring(0,12000);
+          window._lumisRawChart=s;
+        }
+        const data=await extractChart(s);
+        window._lumisChart=data;
+        return data;
+      }catch(e){ return null; }
+    })();
+    return _lumisChartPromise;
+  }
+  window.drawReadingWheel=async function(){
+    const wrap=document.getElementById('reading-chart-wrap');
+    if(!wrap) return;
+    try{
+      const d=await ensureLumisChart();
+      if(!d){ wrap.style.display='none'; return; }
+      const wheelEl=document.getElementById('reading-wheel');
+      if(wheelEl) wheelEl.innerHTML=drawWheel(d);
+      const big=[['\u2609','\u592a\u967d',d.sun],['\u263d','\u6708\u4eae',d.moon],['\u2191','\u4e0a\u5347',d.rising]];
+      const bigEl=document.getElementById('reading-big');
+      if(bigEl) bigEl.innerHTML=big.map(function(b){var o=b[2]||{};return '<div class="ch-big-card"><div class="ch-big-glyph">'+b[0]+'</div><div class="ch-big-name">'+b[1]+'</div><div class="ch-big-sign">'+(o.sign||'\u2014')+'</div></div>';}).join('');
+      wrap.style.display='block';
+    }catch(e){ wrap.style.display='none'; }
+  };
+
   window.chartToChapters=function(){ window.closeMyChart(); if(typeof openChapter==='function'){ openChapter(1); } };
 
   if(document.readyState!=='loading'){ fillChartSelects(); } else { document.addEventListener('DOMContentLoaded', fillChartSelects); }
