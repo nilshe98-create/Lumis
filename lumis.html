@@ -2337,7 +2337,11 @@
 @keyframes chspin{to{transform:rotate(360deg);}}
 .ch-loading-text{margin-top:18px;color:var(--silver);font-size:0.92rem;letter-spacing:2px;}
 .ch-wheel-wrap{display:flex;justify-content:center;margin:6px 0 10px;}
-.ch-wheel-wrap svg{width:300px;max-width:84vw;height:auto;}
+.ch-wheel-wrap svg{width:340px;max-width:88vw;height:auto;overflow:visible;}
+.lw-g{font-family:'Noto Sans Symbols 2','Segoe UI Symbol','Cormorant Garamond',serif;font-variant-emoji:text;}
+.lw-asp{stroke-dasharray:5 4;animation:lwdrift 30s linear infinite;}
+@keyframes lwdrift{to{stroke-dashoffset:-180;}}
+@media (prefers-reduced-motion:reduce){.lw-asp{animation:none;}}
 .ch-sample-note{display:none;text-align:center;font-size:0.74rem;color:var(--gold-deep);opacity:0.8;letter-spacing:1px;margin-bottom:14px;}
 .ch-section-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gold);letter-spacing:2px;text-align:center;margin:24px 0 14px;}
 .ch-big-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:6px;}
@@ -2408,7 +2412,7 @@
     <!-- RESULT -->
     <div id="ch-result" style="display:none;">
       <div class="ch-sample-note" id="ch-sample-note">（目前顯示示範資料 · 上線後會用你真實的出生資料計算）</div>
-      <div class="ch-wheel-wrap"><svg viewBox="0 0 320 320" id="ch-wheel"></svg></div>
+      <div class="ch-wheel-wrap"><svg viewBox="0 0 600 600" id="ch-wheel"></svg></div>
       <div class="ch-section-title">你的三大星座</div>
       <div class="ch-big-grid" id="ch-big"></div>
       <div class="ch-section-title">你的行星，點開看看</div>
@@ -3247,7 +3251,7 @@
 
       <!-- Birth chart wheel — shown with every chapter -->
       <div id="reading-chart-wrap" style="display:none; margin:0 0 24px;">
-        <div class="ch-wheel-wrap"><svg viewBox="0 0 320 320" id="reading-wheel"></svg></div>
+        <div class="ch-wheel-wrap"><svg viewBox="0 0 600 600" id="reading-wheel"></svg></div>
         <div id="reading-big" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:440px; margin:6px auto 0;"></div>
       </div>
 
@@ -5128,6 +5132,7 @@ function showChapter(index) {
   document.getElementById('chapter-counter').textContent = `✦ 第 ${index + 1} 章 · 共 9 章 ✦`;
   document.getElementById('display-ch-num').textContent = `✦ 第${CHAPTER_NUMS[index]}章 ✦`;
   document.getElementById('display-ch-title').textContent = CHAPTER_TITLES[index];
+  if (typeof window.refreshReadingWheelFocus === 'function') window.refreshReadingWheelFocus();
 
   const content = document.getElementById('display-ch-content');
 
@@ -5893,41 +5898,114 @@ if (feedbackSubmit) {
     if(name.indexOf('火星')>=0||n.indexOf('mars')>=0) return '♂';
     if(name.indexOf('木星')>=0||n.indexOf('jupiter')>=0) return '♃';
     if(name.indexOf('土星')>=0||n.indexOf('saturn')>=0) return '♄';
-    if(name.indexOf('北交')>=0||n.indexOf('rahu')>=0) return '☊';
-    if(name.indexOf('南交')>=0||n.indexOf('ketu')>=0) return '☋';
+    if(name.indexOf('北交')>=0||name.indexOf('羅睺')>=0||n.indexOf('rahu')>=0) return '☊';
+    if(name.indexOf('南交')>=0||name.indexOf('計都')>=0||n.indexOf('ketu')>=0) return '☋';
     return '✦';
   }
 
   const CX=160,CY=160;
   function pt(r,deg){ const A=deg*Math.PI/180; return [CX+r*Math.sin(A), CY-r*Math.cos(A)]; }
-  function drawWheel(d){
+  const PLANET_BY_CH=['太陽','月亮','水星','金星','火星','木星','土星','羅睺','計都'];
+  function drawWheel(d,focusName){
+    const C=300,R_OUT=286,R_ZIN=246,R_ZG=266,R_PL=212,R_HUB=86;
+    const FOC=focusName||null;
+    const ascIdx=(d&&d.rising)?signIndex(d.rising.sign):-1;
+    const ASC=(ascIdx>=0)?(ascIdx*30+(+(d.rising.deg)||0)):0;
+    function P(L,r){const a=(180-(L-ASC))*Math.PI/180;return [(C+r*Math.cos(a)).toFixed(1),(C-r*Math.sin(a)).toFixed(1)];}
     let s='';
-    s+='<circle cx="160" cy="160" r="146" fill="none" stroke="rgba(201,168,76,0.32)" stroke-width="1"/>';
-    s+='<circle cx="160" cy="160" r="112" fill="none" stroke="rgba(201,168,76,0.14)" stroke-width="1"/>';
-    for(let i=0;i<12;i++){
-      const a0=i*30, p1=pt(112,a0), p2=pt(146,a0);
-      s+='<line x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>';
-      const g=pt(129,a0+15);
-      s+='<text x="'+g[0].toFixed(1)+'" y="'+(g[1]+4).toFixed(1)+'" text-anchor="middle" font-size="13" fill="var(--gold)" opacity="0.85">'+SIGNS[i].glyph+'</text>';
+    // slow tick rings — outer clockwise, inner counter (rotated by JS)
+    let t1='',t2='';
+    for(let dg=0;dg<360;dg+=6){const a=dg*Math.PI/180,r1=293,r2=(dg%30===0)?300:297;
+      t1+='<line x1="'+(C+r1*Math.cos(a)).toFixed(1)+'" y1="'+(C-r1*Math.sin(a)).toFixed(1)+'" x2="'+(C+r2*Math.cos(a)).toFixed(1)+'" y2="'+(C-r2*Math.sin(a)).toFixed(1)+'" stroke="rgba(201,168,76,0.20)" stroke-width="1"/>';}
+    for(let dg=0;dg<360;dg+=10){const a=dg*Math.PI/180,r1=R_HUB+4,r2=(dg%30===0)?(R_HUB+11):(R_HUB+8);
+      t2+='<line x1="'+(C+r1*Math.cos(a)).toFixed(1)+'" y1="'+(C-r1*Math.sin(a)).toFixed(1)+'" x2="'+(C+r2*Math.cos(a)).toFixed(1)+'" y2="'+(C-r2*Math.sin(a)).toFixed(1)+'" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>';}
+    s+='<g data-lw-spin="1">'+t1+'</g><g data-lw-spin="-0.7">'+t2+'</g>';
+    // rings
+    s+='<circle cx="300" cy="300" r="'+R_OUT+'" fill="none" stroke="rgba(201,168,76,0.34)" stroke-width="1"/>';
+    s+='<circle cx="300" cy="300" r="'+R_ZIN+'" fill="none" stroke="rgba(201,168,76,0.34)" stroke-width="1"/>';
+    s+='<circle cx="300" cy="300" r="'+R_HUB+'" fill="none" stroke="rgba(201,168,76,0.17)" stroke-width="1"/>';
+    // zodiac dividers + monochrome glyphs
+    for(let z=0;z<12;z++){
+      const p1=P(z*30,R_ZIN),p2=P(z*30,R_OUT);
+      s+='<line x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>';
+      const g=P(z*30+15,R_ZG);
+      s+='<text x="'+g[0]+'" y="'+(parseFloat(g[1])+7).toFixed(1)+'" text-anchor="middle" class="lw-g" font-size="20" fill="rgba(201,168,76,0.72)">'+SIGNS[z].glyph+'\uFE0E</text>';
+    }
+    // house cusps from the ascendant — lines only, no numbers, no words
+    for(let h=0;h<12;h++){
+      const c1=P(ASC+h*30,R_HUB),c2=P(ASC+h*30,R_ZIN);
+      s+='<line x1="'+c1[0]+'" y1="'+c1[1]+'" x2="'+c2[0]+'" y2="'+c2[1]+'" stroke="rgba(201,168,76,0.13)" stroke-width="1"/>';
     }
     // ascendant marker
-    if(d.rising&&d.rising.sign){ const si=signIndex(d.rising.sign);
-      if(si>=0){ const lon=si*30+(+d.rising.deg||0); const a=pt(112,lon),b=pt(146,lon),l=pt(103,lon);
-        s+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="var(--gold-bright)" stroke-width="2"/>';
-        s+='<text x="'+l[0].toFixed(1)+'" y="'+(l[1]+3).toFixed(1)+'" text-anchor="middle" font-size="9" fill="var(--gold-bright)">↑</text>'; } }
-    function place(glyph,sign,deg,big){
-      const si=signIndex(sign); if(si<0) return '';
-      const lon=si*30+(+deg||15); const p=pt(big?94:94,lon);
-      let g='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(big?3:2.3)+'" fill="var(--gold-bright)"/>';
-      g+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]-7).toFixed(1)+'" text-anchor="middle" font-size="'+(big?13:11)+'" fill="var(--gold-bright)">'+glyph+'</text>';
-      return g;
-    }
-    if(d.sun) s+=place('☉',d.sun.sign,d.sun.deg,true);
-    if(d.moon) s+=place('☽',d.moon.sign,d.moon.deg,true);
-    (d.planets||[]).forEach(p=>{ s+=place(planetGlyph(p.name),p.sign,p.deg,false); });
-    s+='<text x="160" y="166" text-anchor="middle" font-size="15" fill="var(--gold)" opacity="0.9">✦</text>';
+    if(ascIdx>=0){const a1=P(ASC,R_ZIN),a2=P(ASC,R_OUT);
+      s+='<line x1="'+a1[0]+'" y1="'+a1[1]+'" x2="'+a2[0]+'" y2="'+a2[1]+'" stroke="var(--gold-bright)" stroke-width="2"/>';}
+    // bodies
+    const bodies=[];
+    if(d&&d.sun)bodies.push({name:'太陽',sign:d.sun.sign,deg:d.sun.deg});
+    if(d&&d.moon)bodies.push({name:'月亮',sign:d.moon.sign,deg:d.moon.deg});
+    ((d&&d.planets)||[]).forEach(function(p){bodies.push({name:p.name,sign:p.sign,deg:p.deg});});
+    const placed=[];
+    bodies.forEach(function(b){const si=signIndex(b.sign);if(si<0)return;placed.push({name:b.name,lon:si*30+(+b.deg||15)});});
+    function isFoc(nm){return !!(FOC&&nm&&nm.indexOf(FOC)>=0);}
+    // aspects — the web between the stars
+    const MAJ=[[0,7],[60,6],[90,7],[120,7],[180,7]];
+    for(let i=0;i<placed.length;i++){for(let j=i+1;j<placed.length;j++){
+      let diff=Math.abs(placed[i].lon-placed[j].lon);if(diff>180)diff=360-diff;
+      for(let m=0;m<MAJ.length;m++){
+        if(Math.abs(diff-MAJ[m][0])<=MAJ[m][1]){
+          const harm=(MAJ[m][0]===60||MAJ[m][0]===120);
+          const hot=isFoc(placed[i].name)||isFoc(placed[j].name);
+          const op=hot?0.7:(FOC?0.10:(harm?0.28:0.38));
+          const w=hot?1.4:(harm?0.8:1);
+          const q1=P(placed[i].lon,R_HUB),q2=P(placed[j].lon,R_HUB);
+          s+='<line x1="'+q1[0]+'" y1="'+q1[1]+'" x2="'+q2[0]+'" y2="'+q2[1]+'" class="lw-asp" stroke="var(--gold)" stroke-width="'+w+'" stroke-opacity="'+op+'"/>';
+          break;
+        }
+      }
+    }}
+    // planets
+    placed.forEach(function(b){
+      const hot=isFoc(b.name);
+      const k1=P(b.lon,R_ZIN),k2=P(b.lon,R_ZIN-10);
+      s+='<line x1="'+k1[0]+'" y1="'+k1[1]+'" x2="'+k2[0]+'" y2="'+k2[1]+'" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>';
+      const g=P(b.lon,R_PL);
+      const fill=hot?'#F6E6B8':(FOC?'rgba(201,168,76,0.5)':'var(--gold-bright)');
+      s+='<text x="'+g[0]+'" y="'+(parseFloat(g[1])+8).toFixed(1)+'" text-anchor="middle" class="lw-g" font-size="'+(hot?30:22)+'" fill="'+fill+'">'+planetGlyph(b.name)+'\uFE0E</text>';
+      const dp=P(b.lon,R_PL-20);
+      s+='<circle cx="'+dp[0]+'" cy="'+dp[1]+'" r="'+(hot?3.5:2)+'" fill="var(--gold-bright)"/>';
+    });
+    s+='<circle cx="300" cy="300" r="2.5" fill="rgba(240,216,154,0.9)"/>';
     return s;
   }
+
+  // Guaranteed-visible rotation (JS-driven, works everywhere; honors reduced motion)
+  if(!window._lwSpinLoop){
+    window._lwSpinLoop=true;
+    (function(){
+      var reduce=false;
+      try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+      if(reduce)return;
+      var a=0;
+      (function tick(){
+        a=(a+0.15)%360;
+        var els=document.querySelectorAll('[data-lw-spin]');
+        for(var i=0;i<els.length;i++){
+          var f=parseFloat(els[i].getAttribute('data-lw-spin'))||1;
+          els[i].setAttribute('transform','rotate('+(a*f)+' 300 300)');
+        }
+        requestAnimationFrame(tick);
+      })();
+    })();
+  }
+
+  // Re-draw the reading wheel focused on the current chapter's star
+  window.refreshReadingWheelFocus=function(){
+    try{
+      var idx=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;
+      var el=document.getElementById('reading-wheel');
+      if(el&&window._lumisChart) el.innerHTML=drawWheel(window._lumisChart, PLANET_BY_CH[idx]||null);
+    }catch(e){}
+  };
 
   function showScreenCh(id){ ['ch-birth','ch-loading','ch-result'].forEach(s=>{const el=document.getElementById(s);if(el)el.style.display='none';}); const el=document.getElementById(id); if(el)el.style.display='block'; const inner=document.getElementById('chart-modal-inner'); if(inner)inner.scrollTop=0; }
 
@@ -5945,7 +6023,7 @@ if (feedbackSubmit) {
   // Claude extracts clean structured data + warm plain-Chinese synthesis from the raw chart
   const CHART_SYS='你是專業又溫暖的占星資料整理員。請把吠陀星盤的原始資料，整理成乾淨的 JSON。把整張星盤當成一個完整的人來綜合解讀，解釋要溫暖、具體、用台灣口語的繁體中文，像朋友在跟你說話。不要堆術語，不要預測未來，不要說命中註定。';
   function chartUserMsg(chartStr){
-    return '這是某個人的吠陀星盤原始資料：\n'+chartStr+'\n\n請只回傳 JSON（不要任何其他文字、不要 markdown）。星座名稱用繁體中文（牡羊座、金牛座、雙子座、巨蟹座、獅子座、處女座、天秤座、天蠍座、射手座、摩羯座、水瓶座、雙魚座）。格式：{"sun":{"sign":"星座","house":1,"deg":12,"text":"一到兩句溫暖解釋"},"moon":{"sign":"","house":0,"deg":0,"text":""},"rising":{"sign":"","deg":0,"text":""},"planets":[{"name":"水星","sign":"","house":0,"deg":0,"text":""},{"name":"金星","sign":"","house":0,"deg":0,"text":""},{"name":"火星","sign":"","house":0,"deg":0,"text":""},{"name":"木星","sign":"","house":0,"deg":0,"text":""},{"name":"土星","sign":"","house":0,"deg":0,"text":""}],"summary":"3到4句，把整張盤合起來看的綜合解讀"}';
+    return '這是某個人的吠陀星盤原始資料：\n'+chartStr+'\n\n請只回傳 JSON（不要任何其他文字、不要 markdown）。星座名稱用繁體中文（牡羊座、金牛座、雙子座、巨蟹座、獅子座、處女座、天秤座、天蠍座、射手座、摩羯座、水瓶座、雙魚座）。格式：{"sun":{"sign":"星座","house":1,"deg":12,"text":"一到兩句溫暖解釋"},"moon":{"sign":"","house":0,"deg":0,"text":""},"rising":{"sign":"","deg":0,"text":""},"planets":[{"name":"水星","sign":"","house":0,"deg":0,"text":""},{"name":"金星","sign":"","house":0,"deg":0,"text":""},{"name":"火星","sign":"","house":0,"deg":0,"text":""},{"name":"木星","sign":"","house":0,"deg":0,"text":""},{"name":"土星","sign":"","house":0,"deg":0,"text":""},{"name":"羅睺","sign":"","house":0,"deg":0,"text":""},{"name":"計都","sign":"","house":0,"deg":0,"text":""}],"summary":"3到4句，把整張盤合起來看的綜合解讀"}';
   }
   async function extractChart(chartStr){
     const res=await fetch('/api/reading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1500,system:CHART_SYS,messages:[{role:'user',content:chartUserMsg(chartStr)}]})});
@@ -5965,7 +6043,9 @@ if (feedbackSubmit) {
       {name:'金星',sign:'雙魚座',house:3,deg:18,text:'你愛人的方式很溫柔、很願意付出。要小心別把自己全給出去，也要被好好疼。'},
       {name:'火星',sign:'牡羊座',house:1,deg:2,text:'你的行動力很強，喜歡的事會全力以赴。學會把這股火用在對的地方，你會很有成就。'},
       {name:'木星',sign:'巨蟹座',house:4,deg:14,text:'家庭和歸屬感是你的幸運來源。照顧人、被人需要，會讓你覺得人生很踏實。'},
-      {name:'土星',sign:'天秤座',house:7,deg:23,text:'你在關係裡會學到最多功課。一開始可能覺得難，但這也是你最會成長的地方。'}
+      {name:'土星',sign:'天秤座',house:7,deg:23,text:'你在關係裡會學到最多功課。一開始可能覺得難，但這也是你最會成長的地方。'},
+      {name:'羅睺',sign:'雙子座',house:6,deg:11,text:'這一生有股力量拉著你去學、去說、去連結人。跟著這股渴望走，它知道路。'},
+      {name:'計都',sign:'射手座',house:12,deg:11,text:'你天生帶著一種看透事情的直覺。安靜的時候，答案常常自己浮出來。'}
     ],
     summary:'整體看，你是一個外表沉穩、內心熱烈的人——牡羊的衝勁配上摩羯的自律，讓你既敢衝又靠得住。你的功課多半在「關係」和「信任」上：學會把深藏的情感，慢慢交給對的人。你不是缺方向，你只是還在等一件值得你全力以赴的事。'
   };
@@ -6056,7 +6136,7 @@ if (feedbackSubmit) {
       const d=await ensureLumisChart();
       if(!d){ wrap.style.display='none'; return; }
       const wheelEl=document.getElementById('reading-wheel');
-      if(wheelEl) wheelEl.innerHTML=drawWheel(d);
+      if(wheelEl){var _fi=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;wheelEl.innerHTML=drawWheel(d, PLANET_BY_CH[_fi]||null);}
       const big=[['\u2609','\u592a\u967d',d.sun],['\u263d','\u6708\u4eae',d.moon],['\u2191','\u4e0a\u5347',d.rising]];
       const bigEl=document.getElementById('reading-big');
       if(bigEl) bigEl.innerHTML=big.map(function(b){var o=b[2]||{};return '<div class="ch-big-card"><div class="ch-big-glyph">'+b[0]+'</div><div class="ch-big-name">'+b[1]+'</div><div class="ch-big-sign">'+(o.sign||'\u2014')+'</div></div>';}).join('');
