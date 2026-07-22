@@ -5715,6 +5715,7 @@ async function submitForm() {
       const payloadStr = JSON.stringify(payload);
       if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
         chartStr = payloadStr.substring(0, 12000);
+        window._lumisRawChart = chartStr;  // share with the reading wheel — no second fetch
       }
     } catch(vedaErr) {
       // VedAstro failed — continue without chart data
@@ -6001,9 +6002,12 @@ if (feedbackSubmit) {
   // Re-draw the reading wheel focused on the current chapter's star
   window.refreshReadingWheelFocus=function(){
     try{
+      if(!window._lumisChart){ if(typeof window.drawReadingWheel==='function') window.drawReadingWheel(); return; }
       var idx=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;
       var el=document.getElementById('reading-wheel');
-      if(el&&window._lumisChart) el.innerHTML=drawWheel(window._lumisChart, PLANET_BY_CH[idx]||null);
+      if(el) el.innerHTML=drawWheel(window._lumisChart, PLANET_BY_CH[idx]||null);
+      var wrap=document.getElementById('reading-chart-wrap');
+      if(wrap) wrap.style.display='block';
     }catch(e){}
   };
 
@@ -6127,14 +6131,19 @@ if (feedbackSubmit) {
         return data;
       }catch(e){ return null; }
     })();
-    return _lumisChartPromise;
+    const out=await _lumisChartPromise;
+    if(!out) _lumisChartPromise=null;  // allow a later retry instead of caching failure
+    return out;
   }
   window.drawReadingWheel=async function(){
     const wrap=document.getElementById('reading-chart-wrap');
     if(!wrap) return;
     try{
+      // show the wheel structure immediately — planets appear when the data lands
+      const skel=document.getElementById('reading-wheel');
+      if(skel && !window._lumisChart){ skel.innerHTML=drawWheel({},null); wrap.style.display='block'; }
       const d=await ensureLumisChart();
-      if(!d){ wrap.style.display='none'; return; }
+      if(!d){ if(!window._lumisChart) wrap.style.display='none'; return; }
       const wheelEl=document.getElementById('reading-wheel');
       if(wheelEl){var _fi=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;wheelEl.innerHTML=drawWheel(d, PLANET_BY_CH[_fi]||null);}
       const big=[['\u2609','\u592a\u967d',d.sun],['\u263d','\u6708\u4eae',d.moon],['\u2191','\u4e0a\u5347',d.rising]];
