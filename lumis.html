@@ -6002,12 +6002,10 @@ if (feedbackSubmit) {
   // Re-draw the reading wheel focused on the current chapter's star
   window.refreshReadingWheelFocus=function(){
     try{
-      if(!window._lumisChart){ if(typeof window.drawReadingWheel==='function') window.drawReadingWheel(); return; }
-      var idx=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;
-      var el=document.getElementById('reading-wheel');
-      if(el) el.innerHTML=drawWheel(window._lumisChart, PLANET_BY_CH[idx]||null);
-      var wrap=document.getElementById('reading-chart-wrap');
-      if(wrap) wrap.style.display='block';
+      var d=window._lumisChart||window._lumisChartGeom||null;
+      if(!d && window._lumisRawChart){ d=parseChartPositions(window._lumisRawChart); if(d) window._lumisChartGeom=d; }
+      if(d){ renderReadingWheel(d); return; }
+      if(typeof window.drawReadingWheel==='function') window.drawReadingWheel();
     }catch(e){}
   };
 
@@ -6109,6 +6107,63 @@ if (feedbackSubmit) {
     loadMyChart(dob,time,place);
   };
   // ---- Birth chart shown inside the chapter reading (reuses the wheel) ----
+  // Read planet positions straight out of the raw VedAstro data — instant, no AI step.
+  function parseChartPositions(chartStr){
+    if(!chartStr || typeof chartStr!=='string') return null;
+    var SIGN_RE=/(Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Scorpius|Sagittarius|Capricorn|Capricornus|Aquarius|Pisces)/;
+    var DEG_RE=/"(?:TotalDegrees|DegreesIn|SignDegrees|Degrees)"\s*:\s*\{?\s*"?(?:TotalDegrees"?\s*:\s*)?"?([0-9]+(?:\.[0-9]+)?)/;
+    function normSign(s){ if(s==='Scorpius')return 'scorpio'; if(s==='Capricornus')return 'capricorn'; return s.toLowerCase(); }
+    function findBody(names){
+      for(var n=0;n<names.length;n++){
+        var idx=chartStr.indexOf('"'+names[n]+'"');
+        if(idx<0) idx=chartStr.indexOf(names[n]);
+        if(idx<0) continue;
+        var win=chartStr.substring(idx, idx+900);
+        var sm=win.match(SIGN_RE);
+        if(!sm) continue;
+        var deg=15;
+        var dm=win.match(DEG_RE);
+        if(dm){ deg=parseFloat(dm[1]); }
+        else { var any=win.substring(win.indexOf(sm[1])).match(/([0-9]+\.[0-9]+)/); if(any) deg=parseFloat(any[1]); }
+        if(!(deg>=0)) deg=15;
+        if(deg>=30) deg=deg%30;
+        return {sign:normSign(sm[1]), deg:deg};
+      }
+      return null;
+    }
+    var defs=[['太陽',['Sun']],['月亮',['Moon']],['水星',['Mercury']],['金星',['Venus']],['火星',['Mars']],['木星',['Jupiter']],['土星',['Saturn']],['羅睺',['Rahu','NorthNode','North Node']],['計都',['Ketu','SouthNode','South Node']]];
+    var planets=[],sun=null,moon=null,found=0;
+    for(var i=0;i<defs.length;i++){
+      var b=findBody(defs[i][1]);
+      if(!b) continue;
+      found++;
+      if(defs[i][0]==='太陽') sun={sign:b.sign,deg:b.deg};
+      else if(defs[i][0]==='月亮') moon={sign:b.sign,deg:b.deg};
+      else planets.push({name:defs[i][0],sign:b.sign,deg:b.deg});
+    }
+    if(found<5) return null; // too little to be a trustworthy chart
+    var rising=findBody(['Ascendant','Lagna','Rising','House1','HouseName":"House1']);
+    var out={planets:planets};
+    if(sun) out.sun=sun;
+    if(moon) out.moon=moon;
+    if(rising) out.rising={sign:rising.sign,deg:rising.deg};
+    return out;
+  }
+
+  // One renderer for the reading wheel — used by every path.
+  function renderReadingWheel(d){
+    var wrap=document.getElementById('reading-chart-wrap');
+    var wheelEl=document.getElementById('reading-wheel');
+    if(!wrap||!wheelEl||!d) return false;
+    var fi=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;
+    wheelEl.innerHTML=drawWheel(d, PLANET_BY_CH[fi]||null);
+    var big=[['\u2609','\u592a\u967d',d.sun],['\u263d','\u6708\u4eae',d.moon],['\u2191','\u4e0a\u5347',d.rising]];
+    var bigEl=document.getElementById('reading-big');
+    if(bigEl) bigEl.innerHTML=big.map(function(b){var o=b[2]||{};var zh=o.sign?(signIndex(o.sign)>=0?SIGNS[signIndex(o.sign)].zh:o.sign):'\u2014';return '<div class="ch-big-card"><div class="ch-big-glyph">'+b[0]+'</div><div class="ch-big-name">'+b[1]+'</div><div class="ch-big-sign">'+zh+'</div></div>';}).join('');
+    wrap.style.display='block';
+    return true;
+  }
+
   let _lumisChartPromise=null;
   async function ensureLumisChart(){
     if(window._lumisChart) return window._lumisChart;
@@ -6139,17 +6194,23 @@ if (feedbackSubmit) {
     const wrap=document.getElementById('reading-chart-wrap');
     if(!wrap) return;
     try{
-      // show the wheel structure immediately — planets appear when the data lands
+      // 1) Full chart already structured? Draw it.
+      if(window._lumisChart && renderReadingWheel(window._lumisChart)) return;
+      // 2) Instant path: read positions straight from the raw chart — no AI needed.
+      if(window._lumisRawChart){
+        var geom=window._lumisChartGeom || parseChartPositions(window._lumisRawChart);
+        if(geom){ window._lumisChartGeom=geom; renderReadingWheel(geom); return; }
+      }
+      // 3) Nothing local yet — show the ring skeleton, then fall back to the full fetch.
       const skel=document.getElementById('reading-wheel');
-      if(skel && !window._lumisChart){ skel.innerHTML=drawWheel({},null); wrap.style.display='block'; }
+      if(skel){ skel.innerHTML=drawWheel({},null); wrap.style.display='block'; }
       const d=await ensureLumisChart();
-      if(!d){ if(!window._lumisChart) wrap.style.display='none'; return; }
-      const wheelEl=document.getElementById('reading-wheel');
-      if(wheelEl){var _fi=(typeof currentChapterIndex!=='undefined')?currentChapterIndex:0;wheelEl.innerHTML=drawWheel(d, PLANET_BY_CH[_fi]||null);}
-      const big=[['\u2609','\u592a\u967d',d.sun],['\u263d','\u6708\u4eae',d.moon],['\u2191','\u4e0a\u5347',d.rising]];
-      const bigEl=document.getElementById('reading-big');
-      if(bigEl) bigEl.innerHTML=big.map(function(b){var o=b[2]||{};return '<div class="ch-big-card"><div class="ch-big-glyph">'+b[0]+'</div><div class="ch-big-name">'+b[1]+'</div><div class="ch-big-sign">'+(o.sign||'\u2014')+'</div></div>';}).join('');
-      wrap.style.display='block';
+      if(d){ renderReadingWheel(d); return; }
+      if(window._lumisRawChart){
+        var g2=parseChartPositions(window._lumisRawChart);
+        if(g2){ window._lumisChartGeom=g2; renderReadingWheel(g2); return; }
+      }
+      wrap.style.display='none';
     }catch(e){ wrap.style.display='none'; }
   };
 
