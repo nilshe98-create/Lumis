@@ -1,5 +1,11 @@
 // api/dodo-webhook.js
-// Receives payment webhooks from Dodo Payments
+// Receives payment webhooks from Dodo Payments.
+//
+// PRODUCT IDS ARE NO LONGER HARDCODED — products are matched BY NAME from the
+// live Dodo product list (same rule as dodo-checkout.js). Keep these keywords
+// in product names: "Chapter 2".."Chapter 9", "Daily"/"Horoscope", "Soulmate",
+// "Star", "All".
+// The bundle now unlocks ALL chapters 2-9 (matches the NT$600 全部九章 offer).
 
 const { createClient } = require('@supabase/supabase-js');
 
@@ -8,26 +14,55 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const PRODUCT_CHAPTERS = {
-  'pdt_0NeisQEQvTp8XraWPadOS': 'chapter2',
-  'pdt_0NeisdwJUSDrFgwNoE3M0': 'chapter3',
-  'pdt_0NeiskUuoq1SbWCBmEVys': 'chapter4',
-  'pdt_0NeispMKsK20aoJIIsvHg': 'chapter5',
-  'pdt_0NeisuvP3bDexjKUCYsVN': 'bundle',
-  'pdt_0Neit3X8xxYJh1G7m1ztZ': 'soulmate',
-  'pdt_0Neit9n3LyCwUsoCRtjiX': 'starchild',
-  'pdt_0NeitaqBccnHAKvtqDOA1': 'basic_sub',
-};
+const DODO_API = 'https://live.dodopayments.com';
+
+function classify(name) {
+  const n = String(name || '').toLowerCase();
+  const ch = n.match(/chapter\s*([2-9])/);
+  if (ch) return 'chapter' + ch[1];
+  if (n.includes('daily') || n.includes('horoscope')) return 'basic_sub';
+  if (n.includes('soulmate')) return 'soulmate';
+  if (n.includes('star')) return 'starchild';
+  if (n.includes('all')) return 'bundle';
+  return null;
+}
+
+// productId -> feature key, from the live product list, cached 5 min
+let _cache = { map: null, ts: 0 };
+async function getFeatureMap() {
+  if (_cache.map && Date.now() - _cache.ts < 5 * 60 * 1000) return _cache.map;
+  const map = {};
+  for (let page = 0; page < 5; page++) {
+    const r = await fetch(`${DODO_API}/products?page_size=100&page_number=${page}`, {
+      headers: { Authorization: `Bearer ${process.env.DODO_API_KEY}` },
+    });
+    if (!r.ok) break;
+    const json = await r.json();
+    const items = (json && json.items) || [];
+    for (const it of items) {
+      const key = classify(it.name);
+      if (key) map[it.product_id] = key; // include archived too: old payments may still fire events
+    }
+    if (items.length < 100) break;
+  }
+  _cache = { map, ts: Date.now() };
+  return map;
+}
+
+async function featureOf(productId) {
+  if (!productId) return null;
+  const map = await getFeatureMap();
+  return map[productId] || null;
+}
 
 async function unlockChapter(email, chapter, paymentId) {
   if (chapter === 'bundle') {
-    // Bundle unlocks chapters 2-5 only (matches frontend USD $15 pricing)
-    await supabase.from('purchases').upsert([
-      { user_email: email, chapter: 'chapter2', payment_id: paymentId },
-      { user_email: email, chapter: 'chapter3', payment_id: paymentId },
-      { user_email: email, chapter: 'chapter4', payment_id: paymentId },
-      { user_email: email, chapter: 'chapter5', payment_id: paymentId },
-    ], { onConflict: 'user_email,chapter' });
+    // Bundle unlocks ALL chapters 2-9 (NT$600 全部九章)
+    const rows = [];
+    for (let c = 2; c <= 9; c++) {
+      rows.push({ user_email: email, chapter: 'chapter' + c, payment_id: paymentId });
+    }
+    await supabase.from('purchases').upsert(rows, { onConflict: 'user_email,chapter' });
   } else {
     await supabase.from('purchases').upsert([
       { user_email: email, chapter, payment_id: paymentId },
@@ -73,7 +108,7 @@ module.exports = async function handler(req, res) {
       const payment = event.data;
       const email = payment.customer?.email;
       const productId = payment.product_cart?.[0]?.product_id;
-      const chapter = PRODUCT_CHAPTERS[productId];
+      const chapter = await featureOf(productId);
       if (email && chapter) await unlockChapter(email, chapter, payment.payment_id);
     }
 
@@ -86,8 +121,7 @@ module.exports = async function handler(req, res) {
     ) {
       const sub = event.data;
       const email = sub.customer?.email;
-      const productId = sub.product_id;
-      if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
+      if (email && (await featureOf(sub.product_id)) === 'basic_sub') {
         await upsertSubscriptionAccess(
           email,
           sub.subscription_id,
@@ -104,8 +138,7 @@ module.exports = async function handler(req, res) {
     if (eventType === 'subscription.updated') {
       const sub = event.data;
       const email = sub.customer?.email;
-      const productId = sub.product_id;
-      if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
+      if (email && (await featureOf(sub.product_id)) === 'basic_sub') {
         const { data: existing } = await supabase
           .from('purchases')
           .select('chapter')
@@ -130,8 +163,7 @@ module.exports = async function handler(req, res) {
     ) {
       const sub = event.data;
       const email = sub.customer?.email;
-      const productId = sub.product_id;
-      if (email && PRODUCT_CHAPTERS[productId] === 'basic_sub') {
+      if (email && (await featureOf(sub.product_id)) === 'basic_sub') {
         await revokeSubscriptionAccess(email);
       }
     }
