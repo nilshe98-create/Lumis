@@ -22,7 +22,31 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const BASIC_SUB_PRODUCT = 'pdt_0NeitaqBccnHAKvtqDOA1';
+// PRODUCT ID NO LONGER HARDCODED — the daily-horoscope subscription product is
+// found BY NAME from the live Dodo product list (keywords: "Daily"/"Horoscope"),
+// so recreating products in the dashboard never breaks this flow.
+let _subIds = { set: null, ts: 0 };
+async function getBasicSubProductIds() {
+  if (_subIds.set && Date.now() - _subIds.ts < 5 * 60 * 1000) return _subIds.set;
+  const ids = new Set();
+  try {
+    for (let page = 0; page < 5; page++) {
+      const r = await fetch(`https://live.dodopayments.com/products?page_size=100&page_number=${page}`, {
+        headers: { Authorization: `Bearer ${process.env.DODO_API_KEY}` },
+      });
+      if (!r.ok) break;
+      const json = await r.json();
+      const items = (json && json.items) || [];
+      for (const it of items) {
+        const n = String(it.name || '').toLowerCase();
+        if (n.includes('daily') || n.includes('horoscope')) ids.add(it.product_id);
+      }
+      if (items.length < 100) break;
+    }
+  } catch (e) { console.error('getBasicSubProductIds error:', e.message); }
+  _subIds = { set: ids, ts: Date.now() };
+  return ids;
+}
 // Signing secret — reuse an existing server-only env var (never exposed to the browser).
 const TOKEN_SECRET = process.env.CRON_SECRET || process.env.SUPABASE_SERVICE_KEY || 'lumis-fallback-secret';
 
@@ -65,6 +89,7 @@ function verifyToken(token) {
 async function findActiveDodoSub(email) {
   try {
     const target = email.toLowerCase();
+    const subIds = await getBasicSubProductIds();
     const base = 'https://live.dodopayments.com/subscriptions';
     for (let page = 0; page < 5; page++) {
       const url = `${base}?status=active&page_size=100&page_number=${page}`;
@@ -76,7 +101,7 @@ async function findActiveDodoSub(email) {
       const items = (json && json.items) || [];
       for (const it of items) {
         const em = it.customer && it.customer.email;
-        if (em && em.toLowerCase() === target && it.product_id === BASIC_SUB_PRODUCT) {
+        if (em && em.toLowerCase() === target && subIds.has(it.product_id)) {
           return it;
         }
       }
