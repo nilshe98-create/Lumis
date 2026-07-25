@@ -2835,7 +2835,7 @@
     <button class="modal-close" onclick="closePrivacy()">✕</button>
     <div class="legal-title">LUMIS</div>
     <div class="legal-subtitle">隱私政策</div>
-    <div class="legal-date">最後更新：2026年5月 · lumisstar.com</div>
+    <div class="legal-date">最後更新：2026年7月 · lumisstar.com</div>
 
     <div class="legal-section">
       <div class="legal-section-title">✦ 前言</div>
@@ -2852,7 +2852,7 @@
           <li><strong>出生資料：</strong>出生日期、出生時間、出生地點</li>
           <li><strong>性別認同：</strong>您自行填寫的性別認同資訊</li>
           <li><strong>登入資料：</strong>透過 Google 登入時，我們僅接收您的帳號識別碼與基本資料（如顯示名稱）</li>
-          <li><strong>付款資料：</strong>所有付款均透過 ECPay 第三方金流處理，本平台不儲存您的信用卡或金融卡資訊</li>
+          <li><strong>付款資料：</strong>所有付款均透過 Dodo Payments 第三方金流安全處理，本平台不儲存您的信用卡或金融卡資訊</li>
           <li><strong>使用紀錄：</strong>您解鎖的篇章、訂閱狀態、推薦記錄</li>
         </ul>
       </div>
@@ -2888,7 +2888,7 @@
       <div class="legal-text">
         <ul>
           <li>您的資料儲存於加密的雲端伺服器，採用業界標準之 SSL/TLS 加密技術</li>
-          <li>付款資訊由 ECPay 依 PCI DSS 標準處理，本平台不留存任何金融卡資料</li>
+          <li>付款資訊由 Dodo Payments 依國際 PCI DSS 標準安全處理，本平台不留存任何金融卡資料</li>
           <li>Google 及電子郵件登入資料僅用於身份驗證，我們不儲存您的密碼</li>
           <li>我們定期進行安全性檢查，確保您的資料受到妥善保護</li>
         </ul>
@@ -2936,7 +2936,7 @@
     <button class="modal-close" onclick="closeTerms()">✕</button>
     <div class="legal-title">LUMIS</div>
     <div class="legal-subtitle">服務條款</div>
-    <div class="legal-date">最後更新：2026年5月 · lumisstar.com</div>
+    <div class="legal-date">最後更新：2026年7月 · lumisstar.com</div>
 
     <div class="legal-section">
       <div class="legal-section-title">✦ 服務說明</div>
@@ -2980,11 +2980,11 @@
           <li>單章解鎖：<strong>NT$100</strong> 每章，永久有效</li>
           <li>全部九章：<strong>NT$600</strong> <span style="text-decoration:line-through; opacity:0.45; font-size:0.9em;">NT$800</span> 一次購買，永久有效（省 NT$200）</li>
           <li>靈魂配對：<strong>NT$100</strong> 每次，每換新對象需重新購買</li>
-          <li>星童完整檔案：<strong>NT$100</strong> 每位孩子，永久有效</li>
+          <li>星童完整檔案：<strong>NT$100</strong> 每位孩子，每位需個別購買</li>
           <li>星辰訂閱：<strong>NT$100</strong> 每月，前 7 天免費試用</li>
 
         </ul>
-        所有付款透過 ECPay 安全處理。支援 LINE Pay 及信用卡（Visa、Mastercard、JCB）。
+        所有付款透過 Dodo Payments 安全處理，支援主要國際信用卡與金融卡（Visa、Mastercard、JCB 等）。價格均為含稅金額。
       </div>
     </div>
 
@@ -3375,43 +3375,35 @@
   <div class="modal">
     <button class="modal-close" onclick="closeFeedback()">✕</button>
     <div class="modal-title">LUMIS</div>
-    <div class="modal-subtitle">告訴我們你的故事</div>
+    <div class="modal-subtitle">有任何話想對我們說嗎？</div>
     <div class="modal-divider">✦ · · · ✦</div>
 
+    <div style="font-size:0.85rem; color:var(--silver); text-align:center; margin-bottom:24px; line-height:1.9; letter-spacing:0.5px;">
+      不管是喜歡的、遇到的問題，還是任何想法，<br>都可以直接告訴我們。我們會親自看過每一則。
+    </div>
+
     <div class="form-group">
-      <label class="form-label">你的 LUMIS 體驗如何？</label>
-      <div style="display:flex; gap:12px; margin-top:8px;">
-        <span style="font-size:1.5rem; cursor:pointer;" onclick="setRating(this)">⭐</span>
-        <span style="font-size:1.5rem; cursor:pointer;" onclick="setRating(this)">⭐</span>
-        <span style="font-size:1.5rem; cursor:pointer;" onclick="setRating(this)">⭐</span>
-        <span style="font-size:1.5rem; cursor:pointer;" onclick="setRating(this)">⭐</span>
-        <span style="font-size:1.5rem; cursor:pointer;" onclick="setRating(this)">⭐</span>
+      <label class="form-label">你的 LUMIS 體驗如何？<span style="color:var(--silver); font-weight:400;">（選填）</span></label>
+      <div id="fb-stars" style="display:flex; gap:12px; margin-top:8px;">
+        <span style="font-size:1.5rem; cursor:pointer; opacity:0.3;" onclick="setRating(this)">⭐</span>
+        <span style="font-size:1.5rem; cursor:pointer; opacity:0.3;" onclick="setRating(this)">⭐</span>
+        <span style="font-size:1.5rem; cursor:pointer; opacity:0.3;" onclick="setRating(this)">⭐</span>
+        <span style="font-size:1.5rem; cursor:pointer; opacity:0.3;" onclick="setRating(this)">⭐</span>
+        <span style="font-size:1.5rem; cursor:pointer; opacity:0.3;" onclick="setRating(this)">⭐</span>
       </div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">你想分享什麼？</label>
-      <textarea class="form-input" rows="4" placeholder="告訴我們你的體驗、建議或任何問題..." style="resize:none; padding-top:12px;"></textarea>
+      <label class="form-label">想說的話</label>
+      <textarea id="fb-message" class="form-input" rows="5" placeholder="把想說的、遇到的問題，或任何建議寫在這裡..." style="resize:none; padding-top:12px;"></textarea>
     </div>
 
     <div class="form-group">
-      <label class="form-label">問題類型</label>
-      <select class="form-input" style="cursor:pointer; background:transparent;">
-        <option value="" style="background:#020818;">請選擇</option>
-        <option value="general" style="background:#020818;">一般回饋</option>
-        <option value="technical" style="background:#020818;">技術問題</option>
-        <option value="reading" style="background:#020818;">關於我的星辰圖案</option>
-        <option value="payment" style="background:#020818;">付款問題</option>
-        <option value="other" style="background:#020818;">其他</option>
-      </select>
+      <label class="form-label">電子郵件<span style="color:var(--silver); font-weight:400;">（選填，想收到回覆再填）</span></label>
+      <input type="email" id="fb-email" class="form-input" placeholder="例：yourname@gmail.com">
     </div>
 
-    <div class="form-group">
-      <label class="form-label">電子郵件（選填，若需要回覆）</label>
-      <input type="email" class="form-input" placeholder="例：yourname@gmail.com（選填）">
-    </div>
-
-    <button class="form-submit">✦ 送出回饋</button>
+    <button class="form-submit" id="fb-submit">✦ 送出</button>
   </div>
 </div>
 
@@ -3707,15 +3699,10 @@ function handleDodoReturn() {
   const status = params.get('dodo_status');
   const product = params.get('product');
   if (status === 'succeeded' && product) {
-    // Per-use features (soulmate, starchild): each payment grants ONE credit (one new reading).
-    // Everything else is a permanent unlock.
-    if (product === 'soulmate' || product === 'starchild') {
-      addCredit(product);
-    } else {
-      markFeaturePaid(product);
-      if (product === 'bundle' || product === 'all5chapters') {
-        ['chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'].forEach(c => markFeaturePaid(c));
-      }
+    // Mark paid
+    markFeaturePaid(product);
+    if (product === 'bundle' || product === 'all5chapters') {
+      ['chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'].forEach(c => markFeaturePaid(c));
     }
     window.history.replaceState({}, '', window.location.pathname);
 
@@ -3768,12 +3755,7 @@ async function syncPurchasesFromServer() {
     if (!email) return;
     const res = await fetch('/api/check-purchases?email=' + encodeURIComponent(email));
     const data = await res.json();
-    if (data.chapters) data.chapters.forEach(c => { if (c !== 'soulmate' && c !== 'starchild') markFeaturePaid(c); });
-    // Per-use credits: trust the server balance as the source of truth
-    if (data.credits) {
-      if (typeof data.credits.soulmate === 'number') setCredits('soulmate', data.credits.soulmate);
-      if (typeof data.credits.starchild === 'number') setCredits('starchild', data.credits.starchild);
-    }
+    if (data.chapters) data.chapters.forEach(c => markFeaturePaid(c));
     refreshChapterCards();
     // Restore birth data from server if not already in localStorage
     if (data.birth && !localStorage.getItem('lumis_birth')) {
@@ -3830,27 +3812,6 @@ function refreshChapterCards() {
   });
 }
 function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
-
-// ===== Per-use credits (soulmate, starchild): buy one -> one new reading. New person = new payment. =====
-const LUMIS_CREDITS_KEY = 'lumis_credits_v1';
-function getAllCredits() { try { return JSON.parse(localStorage.getItem(LUMIS_CREDITS_KEY) || '{}') || {}; } catch(e) { return {}; } }
-function getCredits(f) { const c = getAllCredits(); return Math.max(0, parseInt(c[f] || 0) || 0); }
-function setCredits(f, n) { const c = getAllCredits(); c[f] = Math.max(0, parseInt(n) || 0); try { localStorage.setItem(LUMIS_CREDITS_KEY, JSON.stringify(c)); } catch(e) {} }
-function addCredit(f, n) { setCredits(f, getCredits(f) + (n || 1)); }
-// Consume one credit locally AND on the server (so a page reload can't restore a spent credit).
-async function consumeCredit(f) {
-  setCredits(f, getCredits(f) - 1);
-  try {
-    const email = lumisUser?.email;
-    if (email) {
-      await fetch('/api/check-purchases', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, action: 'consume_credit', feature: f })
-      });
-    }
-  } catch(e) { /* server best-effort; local decrement already applied */ }
-}
 // Ancient symbols — one per user based on email
 const ANCIENT_SYMBOLS = ['𓂀','𓃭','𓅃','𓆣','𓇋','𓈖','𓉐','𓊪','𓋴','𓌀','𓍢','𓎛','𓏏','𓐍','☥','𓁹','𓂋','𓄿','𓅱','𓆑','𓇯','𓈙','𓉔','𓊽','𓋹','𓌙','𓍯','𓎼','𓐀','𓑁'];
 
@@ -4233,13 +4194,13 @@ function openSoulmateModal() {
   // New user needs birth form first (no saved data yet)
   if (!window.lumisUserDob) {
     openModal(() => {
-      if (getCredits('soulmate') > 0) { _openSoulmateForm(); return; }
-      openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { addCredit('soulmate'); _openSoulmateForm(); }, 'soulmate');
+      if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
+      openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
     }, 'soulmate');
     return;
   }
-  if (getCredits('soulmate') > 0) { _openSoulmateForm(); return; }
-  openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { addCredit('soulmate'); _openSoulmateForm(); }, 'soulmate');
+  if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
+  openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
 }
 function _openSoulmateForm() {
   document.getElementById('soulmate-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -4257,13 +4218,13 @@ function openStarChildModal() {
   if (!isLoggedIn()) { window._pendingOAuthAction = 'starchild'; openAuthModal(() => openStarChildModal(), '解鎖星童分析', '請先登入或建立帳號'); return; }
   if (!window.lumisUserDob) {
     openModal(() => {
-      if (getCredits('starchild') > 0) { _openStarChildForm(); return; }
-      openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { addCredit('starchild'); _openStarChildForm(); }, 'starchild');
+      if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
+      openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
     }, 'starchild');
     return;
   }
-  if (getCredits('starchild') > 0) { _openStarChildForm(); return; }
-  openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { addCredit('starchild'); _openStarChildForm(); }, 'starchild');
+  if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
+  openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
 }
 function _openStarChildForm() {
   document.getElementById('star-child-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -4343,9 +4304,6 @@ async function submitSoulmate() {
     let c;
     try { c = JSON.parse(text.substring(jStart, jEnd + 1)); }
     catch(parseErr) { throw new Error('解析失敗，請重試一次'); }
-
-    // Success — this pairing is done: spend one credit. A new person will need a new payment.
-    consumeCredit('soulmate');
 
     document.getElementById('soulmate-loading-screen').style.display = 'none';
     const res = document.getElementById('soulmate-result-screen');
@@ -4439,9 +4397,6 @@ async function submitStarChild() {
 
     const text = extractText(result).replace(/```json|```/g,'').trim();
     const c = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
-
-    // Success — this child is done: spend one credit. Another child will need a new payment.
-    consumeCredit('starchild');
 
     document.getElementById('ls-loading-screen').style.display = 'none';
     const res = document.getElementById('ls-result-screen');
@@ -4583,10 +4538,10 @@ function selectChildGender(val) {
   document.getElementById('ls-gender').value = val;
   ['ls-gender-m','ls-gender-f','ls-gender-o'].forEach(id => {
     const btn = document.getElementById(id);
-    if (btn) btn.classList.remove('selected');
+    if (btn) btn.classList.remove('active');
   });
   const map = {'男孩':'ls-gender-m','女孩':'ls-gender-f','其他':'ls-gender-o'};
-  if (map[val]) document.getElementById(map[val])?.classList.add('selected');
+  if (map[val]) document.getElementById(map[val])?.classList.add('active');
 }
 
 
@@ -5937,22 +5892,46 @@ function validateField(fieldId, errorId) {
 // =====================
 // STAR RATING
 // =====================
+let _fbRating = 0;
 function setRating(clickedStar) {
   const stars = clickedStar.parentElement.querySelectorAll('span');
   const index = Array.from(stars).indexOf(clickedStar);
+  _fbRating = index + 1;
   stars.forEach((star, i) => {
     star.style.opacity = i <= index ? '1' : '0.3';
     star.style.transform = i <= index ? 'scale(1.2)' : 'scale(1)';
   });
 }
 
-// Feedback submit
-const feedbackSubmit = document.querySelector('#feedback-modal .form-submit');
+// Feedback submit — actually sends the message so the owner can read it (stored in Supabase)
+const feedbackSubmit = document.getElementById('fb-submit');
 if (feedbackSubmit) {
-  feedbackSubmit.addEventListener('click', () => {
+  feedbackSubmit.addEventListener('click', async () => {
+    const msg = (document.getElementById('fb-message')?.value || '').trim();
+    if (!msg && _fbRating === 0) { showToast('⚠ 請留下你的訊息或評分'); return; }
+    const email = (document.getElementById('fb-email')?.value || '').trim() || (lumisUser?.email || '');
+    feedbackSubmit.disabled = true;
+    feedbackSubmit.textContent = '傳送中...';
+    try {
+      await fetch('/api/check-purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'submit_feedback', email, rating: _fbRating, message: msg })
+      });
+    } catch(e) { /* best-effort; still thank the user */ }
     feedbackSubmit.textContent = '✦ 已送出 — 謝謝你 ✨';
     feedbackSubmit.style.background = 'rgba(201,168,76,0.2)';
-    setTimeout(() => closeFeedback(), 1500);
+    setTimeout(() => {
+      closeFeedback();
+      // reset for next time
+      feedbackSubmit.disabled = false;
+      feedbackSubmit.textContent = '✦ 送出';
+      feedbackSubmit.style.background = '';
+      _fbRating = 0;
+      const t = document.getElementById('fb-message'); if (t) t.value = '';
+      const em = document.getElementById('fb-email'); if (em) em.value = '';
+      document.querySelectorAll('#fb-stars span').forEach(s => { s.style.opacity = '0.3'; s.style.transform = 'scale(1)'; });
+    }, 1500);
   });
 }
 </script>
