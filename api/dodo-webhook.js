@@ -55,7 +55,31 @@ async function featureOf(productId) {
   return map[productId] || null;
 }
 
+// Per-use features (soulmate, starchild): each successful payment adds ONE credit.
+// Stored as chapter='soulmate_credits' / 'starchild_credits' with { count } in payment_id.
+async function addUseCredit(email, feature) {
+  const row = feature + '_credits';
+  const { data: existing } = await supabase
+    .from('purchases')
+    .select('payment_id')
+    .eq('user_email', email).eq('chapter', row).limit(1);
+  let count = 0;
+  if (existing && existing.length) {
+    try { count = parseInt(JSON.parse(existing[0].payment_id).count) || 0; } catch(e) { count = 0; }
+  }
+  count += 1;
+  await supabase.from('purchases').upsert(
+    { user_email: email, chapter: row, payment_id: JSON.stringify({ count }) },
+    { onConflict: 'user_email,chapter' }
+  );
+}
+
 async function unlockChapter(email, chapter, paymentId) {
+  // Soulmate & Star Child are per-use: grant a credit instead of a permanent unlock
+  if (chapter === 'soulmate' || chapter === 'starchild') {
+    await addUseCredit(email, chapter);
+    return;
+  }
   if (chapter === 'bundle') {
     // Bundle unlocks ALL chapters 2-9 (NT$600 全部九章)
     const rows = [];
