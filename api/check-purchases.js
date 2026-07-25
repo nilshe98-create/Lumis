@@ -6,9 +6,26 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
-  // POST — save birth data
+  // POST — save birth data or a generated reading
   if (req.method === 'POST') {
-    const { email, action, dob, time, place, gender } = req.body || {};
+    const { email, action, dob, time, place, gender, key, title, content, sig } = req.body || {};
+
+    // Save a generated chapter reading (chapter1..chapter9) tied to the birth data it was made from
+    if (action === 'save_reading' && email && key && content) {
+      if (!/^chapter[1-9]$/.test(key)) return res.status(400).json({ error: 'Bad key' });
+      try {
+        await supabase.from('purchases').upsert({
+          user_email: email,
+          chapter: 'reading_' + key,
+          payment_id: JSON.stringify({ title: title || '', content: String(content).slice(0, 20000), sig: sig || '' }),
+          subscription_id: null,
+        }, { onConflict: 'user_email,chapter' });
+        return res.status(200).json({ ok: true });
+      } catch(e) {
+        return res.status(200).json({ ok: false });
+      }
+    }
+
     if (action === 'save_birth' && email && dob) {
       try {
         await supabase.from('purchases').upsert({
@@ -39,17 +56,20 @@ module.exports = async function handler(req, res) {
       if (error) throw error;
 
       const chapters = [];
+      const readings = {};
       let birth = null;
 
       (data || []).forEach(row => {
         if (row.chapter === 'birth_profile') {
           try { birth = JSON.parse(row.payment_id); } catch(e) {}
+        } else if (row.chapter && row.chapter.indexOf('reading_') === 0) {
+          try { readings[row.chapter.slice(8)] = JSON.parse(row.payment_id); } catch(e) {}
         } else {
           chapters.push(row.chapter);
         }
       });
 
-      return res.status(200).json({ chapters, birth });
+      return res.status(200).json({ chapters, birth, readings });
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
