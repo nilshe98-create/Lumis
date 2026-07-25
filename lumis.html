@@ -37,7 +37,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; font-size: 106.25%; } /* 17px base — site-wide readability bump */
 
   body {
     background: var(--black);
@@ -113,7 +113,7 @@
   .mobile-nav a {
     color: var(--silver);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 1rem;
     letter-spacing: 3px;
     transition: color 0.3s;
     border-bottom: 1px solid rgba(201,168,76,0.1);
@@ -401,11 +401,11 @@
   .nav-links a {
     color: var(--silver);
     text-decoration: none;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     letter-spacing: 2px;
     transition: color 0.3s;
     font-family: 'Noto Serif TC', serif;
-    font-weight: 200;
+    font-weight: 300;
   }
 
   .nav-links a:hover { color: var(--gold); }
@@ -1862,20 +1862,39 @@
   }
 
 /* ---- readability boost: larger text site-wide ---- */
-.chapter-preview{font-size:0.95rem;}
-.chapter-number{font-size:0.88rem;}
-.chapter-price{font-size:1.15rem;}
-.step-desc{font-size:0.98rem;line-height:1.95;}
-.form-hint{font-size:0.88rem;}
-.modal-subtitle{font-size:0.98rem;}
-.reading-ch-content{font-size:1.22rem;line-height:2.0;}
-.pricing-features li{font-size:0.98rem;line-height:1.95;}
-.pricing-period{font-size:0.92rem;}
-.modal ul li{font-size:0.95rem;line-height:1.9;}
-#chapter-counter{font-size:0.92rem;}
-#nav-hint{font-size:0.88rem;}
-#display-positive-note{font-size:1.02rem;}
-#next-ch-preview{font-size:0.95rem;}
+.chapter-preview{font-size:1.02rem;}
+.chapter-number{font-size:0.92rem;}
+.chapter-price{font-size:1.18rem;}
+.step-desc{font-size:1.05rem;line-height:1.95;}
+.form-hint{font-size:0.94rem;}
+.modal-subtitle{font-size:1.05rem;}
+.reading-ch-content{font-size:1.3rem;line-height:2.05;}
+.pricing-features li{font-size:1.02rem;line-height:1.95;}
+.pricing-period{font-size:0.95rem;}
+.modal ul li{font-size:1rem;line-height:1.9;}
+#chapter-counter{font-size:0.95rem;}
+#nav-hint{font-size:0.92rem;}
+#display-positive-note{font-size:1.1rem;}
+#next-ch-preview{font-size:1rem;}
+
+/* ---- chapter lock/unlock state ---- */
+#unlock-counter{
+  text-align:center; margin:0 0 36px;
+  font-size:0.95rem; letter-spacing:4px; color:var(--gold);
+}
+#unlock-counter .uc-dim{ color:var(--silver); opacity:0.7; }
+.chapter-card .unlock-tag{
+  display:none;
+  font-family:'Noto Serif TC',serif; font-weight:600;
+  font-size:0.85rem; letter-spacing:3px; color:var(--gold);
+  border:1px solid rgba(201,168,76,0.55);
+  padding:5px 16px; margin-bottom:2px;
+}
+.chapter-card.is-unlocked .unlock-tag{ display:inline-block; }
+.chapter-card.is-unlocked .chapter-price{ display:none; }
+.chapter-card.is-unlocked{ border-color:rgba(201,168,76,0.5); }
+.chapter-card.is-locked{ opacity:0.6; }
+.chapter-card.is-locked:hover{ opacity:1; }
 </style>
 </head>
 <body>
@@ -1989,9 +2008,10 @@
       <span class="divider-symbol">✦</span>
       <div class="divider-line"></div>
     </div>
+    <div id="unlock-counter" class="reveal">已解鎖 <span id="unlock-count">1</span> <span class="uc-dim">/ 9 章</span></div>
     <div class="chapters-grid">
 
-      <div class="chapter-card free reveal">
+      <div class="chapter-card free reveal" data-ch="1">
         <div class="chapter-free-badge">免費</div>
         <div class="chapter-number">✦ 第一章 ✦</div>
         <div class="chapter-title">☉ 太陽 · 你是誰</div>
@@ -2002,81 +2022,89 @@
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="2">
         <div class="chapter-number">✦ 第二章 ✦</div>
         <div class="chapter-title">☽ 月亮 · 你的內心</div>
         <div class="chapter-preview">「你心裡的潮汐<br>什麼讓你安心<br>什麼讓你不安」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(2)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="3">
         <div class="chapter-number">✦ 第三章 ✦</div>
         <div class="chapter-title">☿ 水星 · 你的頭腦</div>
         <div class="chapter-preview">「你思考的方式<br>和別人不一樣<br>那正是你的天賦」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(3)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="4">
         <div class="chapter-number">✦ 第四章 ✦</div>
         <div class="chapter-title">♀ 金星 · 你的愛</div>
         <div class="chapter-preview">「你在愛裡的模式<br>比你以為的<br>更有規律」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(4)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="5">
         <div class="chapter-number">✦ 第五章 ✦</div>
         <div class="chapter-title">♂ 火星 · 你的勇氣</div>
         <div class="chapter-preview">「你心中的那把火<br>為什麼而燒<br>又該往哪裡去」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(5)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="6">
         <div class="chapter-number">✦ 第六章 ✦</div>
         <div class="chapter-title">♃ 木星 · 你的福氣</div>
         <div class="chapter-preview">「你的幸運<br>會從哪裡來<br>豐盛在等你」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(6)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="7">
         <div class="chapter-number">✦ 第七章 ✦</div>
         <div class="chapter-title">♄ 土星 · 你的功課</div>
         <div class="chapter-preview">「你這一生的功課<br>那個一直重複的關卡<br>其實在保護你」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(7)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="8">
         <div class="chapter-number">✦ 第八章 ✦</div>
         <div class="chapter-title">☊ 羅睺 · 你的渴望</div>
         <div class="chapter-preview">「有股力量<br>一直拉著你向前<br>它想帶你去哪」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(8)">查看</button>
         </div>
       </div>
 
-      <div class="chapter-card reveal">
+      <div class="chapter-card reveal" data-ch="9">
         <div class="chapter-number">✦ 第九章 ✦</div>
         <div class="chapter-title">☋ 計都 · 你的靈魂</div>
         <div class="chapter-preview">「你天生帶來的<br>和你該放下的<br>都在這一章」</div>
         <div class="chapter-lock">
+          <div class="unlock-tag">已解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
           <button class="chapter-btn" onclick="openChapter(9)">查看</button>
         </div>
@@ -3748,6 +3776,7 @@ async function syncPurchasesFromServer() {
     const res = await fetch('/api/check-purchases?email=' + encodeURIComponent(email));
     const data = await res.json();
     if (data.chapters) data.chapters.forEach(c => markFeaturePaid(c));
+    refreshChapterCards();
     // Restore birth data from server if not already in localStorage
     if (data.birth && !localStorage.getItem('lumis_birth')) {
       const b = data.birth;
@@ -3786,7 +3815,26 @@ function loadSession() {
 }
 
 function getPaidFeatures() { try { return JSON.parse(localStorage.getItem(LUMIS_PAID_KEY) || '[]'); } catch(e) { return []; } }
-function markFeaturePaid(f) { const p = getPaidFeatures(); if (!p.includes(f)) { p.push(f); localStorage.setItem(LUMIS_PAID_KEY, JSON.stringify(p)); } }
+function markFeaturePaid(f) { const p = getPaidFeatures(); if (!p.includes(f)) { p.push(f); localStorage.setItem(LUMIS_PAID_KEY, JSON.stringify(p)); } refreshChapterCards(); }
+
+// Paint locked/unlocked state on the 9 chapter cards + counter. Safe to call any time.
+function refreshChapterCards() {
+  const cards = document.querySelectorAll('.chapter-card[data-ch]');
+  if (!cards.length) return;
+  let unlocked = 0;
+  cards.forEach(card => {
+    const n = parseInt(card.dataset.ch);
+    const open = isChapterUnlocked(n - 1);
+    if (open) unlocked++;
+    if (n === 1) return; // free card keeps its 免費 badge
+    card.classList.toggle('is-unlocked', open);
+    card.classList.toggle('is-locked', !open);
+    const btn = card.querySelector('.chapter-btn');
+    if (btn) btn.textContent = open ? '開始閱讀' : '解鎖';
+  });
+  const cnt = document.getElementById('unlock-count');
+  if (cnt) cnt.textContent = unlocked;
+}
 function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
 // Ancient symbols — one per user based on email
 const ANCIENT_SYMBOLS = ['𓂀','𓃭','𓅃','𓆣','𓇋','𓈖','𓉐','𓊪','𓋴','𓌀','𓍢','𓎛','𓏏','𓐍','☥','𓁹','𓂋','𓄿','𓅱','𓆑','𓇯','𓈙','𓉔','𓊽','𓋹','𓌙','𓍯','𓎼','𓐀','𓑁'];
@@ -3864,6 +3912,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (birth.dob) { window.lumisUserDob = birth.dob; window.lumisUserTime = birth.time; window.lumisUserPlace = birth.place; window.lumisUserGender = birth.gender; }
     } catch(e) {}
   }
+  refreshChapterCards();
 });
 
 // =====================
@@ -4753,6 +4802,75 @@ function openModal(callback, intent) {
 // Called after payment success — continues the reading using saved birth data
 let _pendingChapterJump = null; // jump to specific chapter after reading generates
 
+// ===== Reading & chart caches (localStorage) — make repeat opens instant =====
+function _birthSig() {
+  return [window.lumisUserDob||'', window.lumisUserTime||'', window.lumisUserPlace||'', window.lumisUserGender||''].join('|');
+}
+function _readingsCacheKey() { return 'lumis_readings_v1:' + (lumisUser.email||'anon') + ':' + _birthSig(); }
+function _chartCacheKey()    { return 'lumis_chart_v1:' + _birthSig(); }
+function loadReadingsCache() {
+  try { const r = JSON.parse(localStorage.getItem(_readingsCacheKey()) || 'null'); return (r && typeof r === 'object') ? r : null; } catch(e) { return null; }
+}
+function saveReadingsCache(readings) {
+  try {
+    const clean = {};
+    for (const k in readings) {
+      const c = readings[k] && readings[k].content;
+      if (c && c !== '此篇章正在載入中，請稍後再試。') clean[k] = readings[k];
+    }
+    localStorage.setItem(_readingsCacheKey(), JSON.stringify(clean));
+  } catch(e) { /* storage full — non-fatal */ }
+}
+function loadChartCache() { try { return localStorage.getItem(_chartCacheKey()) || ''; } catch(e) { return ''; } }
+function saveChartCache(chartStr) { try { if (chartStr) localStorage.setItem(_chartCacheKey(), chartStr); } catch(e) {} }
+
+const CHAPTER_META = [
+  {key:'chapter1', title:'你是誰',   num:1, focus:'太陽 ☉：核心自我、性格、天賦與生命力。用溫暖、具體、像朋友的口吻，不要術語堆砌，不要預測未來'},
+  {key:'chapter2', title:'你的內心', num:2, focus:'月亮 ☽：情緒、安全感、內在需求、你如何被安撫、與家的連結'},
+  {key:'chapter3', title:'你的頭腦', num:3, focus:'水星 ☿：思考方式、溝通風格、學習方式、表達自己的方式'},
+  {key:'chapter4', title:'你的愛',   num:4, focus:'金星 ♀：愛情模式、你怎麼愛人、會吸引的對象、對美與享受的品味'},
+  {key:'chapter5', title:'你的勇氣', num:5, focus:'火星 ♂：行動力、動力、慾望、面對衝突的方式、你為什麼而戰'},
+  {key:'chapter6', title:'你的福氣', num:6, focus:'木星 ♃：幸運、財富與豐盛、智慧、成長、貴人與信念'},
+  {key:'chapter7', title:'你的功課', num:7, focus:'土星 ♄：人生功課、挑戰、責任、紀律、時間會教你的事'},
+  {key:'chapter8', title:'你的渴望', num:8, focus:'羅睺 ☊：今生強烈的渴望、野心、想突破的方向、容易過度的地方'},
+  {key:'chapter9', title:'你的靈魂', num:9, focus:'計都 ☋：天生的天賦、直覺、前世帶來的、需要學會放下的執著'}
+];
+function _chartContextFromCache() {
+  const c = loadChartCache();
+  return c ? ('真實印度吠陀星盤計算結果：\n' + c) : '（星盤計算服務暫時不可用，請根據出生資料直接分析）';
+}
+
+// Generate any chapters still missing, two at a time. Never blocks the visible chapter.
+let _fillRunning = false;
+async function _fillMissingChapters(readings, dob, time, place, gender, callAPI, chartContext) {
+  if (_fillRunning) return;
+  _fillRunning = true;
+  try {
+    const ctx = chartContext || _chartContextFromCache();
+    const isMissing = ch => !readings[ch.key] || readings[ch.key].content === '此篇章正在載入中，請稍後再試。';
+    // chapter 1 first (free hook), then ascending order
+    const queue = CHAPTER_META.filter(isMissing).sort((a,b) => (a.num===1?-1:b.num===1?1:a.num-b.num));
+    const genOne = async (ch) => {
+      try {
+        const result = await callAPI(
+          LUMIS_PROMPT,
+          `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${ctx}\n\n現在只寫第${ch.num}章「${ch.title}」。\n重點：${ch.focus}\n只回傳純JSON：{"${ch.key}":{"title":"${ch.title}","content":"內容"}}`
+        );
+        const text = extractText(result).replace(/```json|```/g,'').trim();
+        const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
+        Object.assign(readings, data);
+        saveReadingsCache(readings);
+        if (allReadingsData === readings && currentChapterIndex === ch.num - 1) showChapter(ch.num - 1);
+      } catch(e) {
+        readings[ch.key] = { title: ch.title, content: '此篇章正在載入中，請稍後再試。' };
+      }
+    };
+    for (let i = 0; i < queue.length; i += 2) {
+      await Promise.all(queue.slice(i, i + 2).map(genOne));
+    }
+  } finally { _fillRunning = false; }
+}
+
 function runReading(chapterIndex) {
   formCallback = null;
   if (chapterIndex !== undefined) _pendingChapterJump = chapterIndex;
@@ -5233,12 +5351,11 @@ function showChapter(index) {
 }
 
 async function retryCurrentChapter() {
-  const keys = ['chapter1','chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'];
-  const titles = ['你是誰','愛情與關係','事業與財富','陰影與成長','你的人生之路'];
   const index = currentChapterIndex;
-  const key = keys[index];
-  const title = titles[index];
-  const num = index + 1;
+  const meta = CHAPTER_META[index];
+  const key = meta.key;
+  const title = meta.title;
+  const num = meta.num;
 
   const content = document.getElementById('display-ch-content');
   content.innerHTML = '<div class="reading-loading-pulse"></div>';
@@ -5264,12 +5381,13 @@ async function retryCurrentChapter() {
         model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: LUMIS_PROMPT,
-        messages: [{ role: 'user', content: `${userDetails}\n\n現在只寫第${num}章「${title}」。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
+        messages: [{ role: 'user', content: `${userDetails}\n\n${_chartContextFromCache()}\n\n現在只寫第${num}章「${title}」。\n重點：${meta.focus}\n只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
       }));
     });
     const text = extractText(result).replace(/```json|```/g,'').trim();
     const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
     Object.assign(allReadingsData, data);
+    saveReadingsCache(allReadingsData);
     showChapter(index);
   } catch(e) {
     allReadingsData[key] = { title, content: '此篇章正在載入中，請稍後再試。' };
@@ -5278,12 +5396,11 @@ async function retryCurrentChapter() {
 }
 
 async function regenerateCurrentChapter() {
-  const keys = ['chapter1','chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'];
-  const titles = ['你是誰','愛情與關係','事業與財富','陰影與成長','你的人生之路'];
   const index = currentChapterIndex;
-  const key = keys[index];
-  const title = titles[index];
-  const num = index + 1;
+  const meta = CHAPTER_META[index];
+  const key = meta.key;
+  const title = meta.title;
+  const num = meta.num;
 
   const regenBtn = document.getElementById('regen-chapter-btn');
   const content = document.getElementById('display-ch-content');
@@ -5309,12 +5426,13 @@ async function regenerateCurrentChapter() {
         model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: LUMIS_PROMPT,
-        messages: [{ role: 'user', content: `${userDetails}\n\n請重新生成第${num}章「${title}」，給出不同角度的深刻解讀。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
+        messages: [{ role: 'user', content: `${userDetails}\n\n${_chartContextFromCache()}\n\n請重新生成第${num}章「${title}」，給出不同角度的深刻解讀。\n重點：${meta.focus}\n只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
       }));
     });
     const text = extractText(result).replace(/```json|```/g,'').trim();
     const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
     Object.assign(allReadingsData, data);
+    saveReadingsCache(allReadingsData);
     showChapter(index);
   } catch(e) {
     content.innerHTML = '<p style="color:rgba(201,168,76,0.8);">重新生成失敗，請再試一次。</p>';
@@ -5716,69 +5834,56 @@ async function submitForm() {
   }
 
   try {
-    // STEP 1: Get real chart from VedAstro (with fallback if it fails)
-    document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
-    let chartStr = '';
-    try {
-      const vedicChart = await getVedAstroChart(dob, time, place);
-      // Check VedAstro didn't return an error status
-      const payload = vedicChart.Payload || vedicChart;
-      const payloadStr = JSON.stringify(payload);
-      if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
-        chartStr = payloadStr.substring(0, 12000);
-        window._lumisRawChart = chartStr;  // share with the reading wheel — no second fetch
-      }
-    } catch(vedaErr) {
-      // VedAstro failed — continue without chart data
+    const targetIdx = (_pendingChapterJump !== null) ? _pendingChapterJump : 0;
+
+    // FAST PATH: readings already generated for this birth data — show instantly, zero API calls
+    const cached = loadReadingsCache();
+    if (cached && cached[CHAPTER_META[targetIdx].key]) {
+      clearInterval(loadingInterval);
+      showScreen('screen-reading');
+      setTimeout(() => displayReadings(cached), 50);
+      _fillMissingChapters(cached, dob, time, place, gender, callAPI); // top up any gaps in background
+      return;
     }
-    // If no chart data, use birth details directly
+
+    // STEP 1: chart — from cache if we already computed it for this birth data
+    document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
+    let chartStr = loadChartCache();
+    if (!chartStr) {
+      try {
+        const vedicChart = await getVedAstroChart(dob, time, place);
+        const payload = vedicChart.Payload || vedicChart;
+        const payloadStr = JSON.stringify(payload);
+        if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
+          chartStr = payloadStr.substring(0, 12000);
+          saveChartCache(chartStr);
+        }
+      } catch(vedaErr) { /* VedAstro failed — continue without chart data */ }
+    }
+    if (chartStr) window._lumisRawChart = chartStr;
     const chartContext = chartStr
       ? `真實印度吠陀星盤計算結果：\n${chartStr}`
       : `（星盤計算服務暫時不可用，請根據出生資料直接分析）`;
 
-    // STEP 2: Generate chapters using real chart
-    const allReadings = {};
-
-    // Chapter 1 first (free hook), show immediately
-    document.getElementById('loading-text').textContent = '正在解讀第一章...';
-    const ch1Result = await callAPI(
+    // STEP 2: generate the chapter the user actually opened FIRST, show it, then fill the rest
+    const allReadings = cached ? Object.assign({}, cached) : {};
+    const target = CHAPTER_META[targetIdx];
+    document.getElementById('loading-text').textContent = `正在解讀第${['一','二','三','四','五','六','七','八','九'][targetIdx]}章...`;
+    const tResult = await callAPI(
       LUMIS_PROMPT,
-      `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第一章「你是誰」（對應太陽 ☉）。根據真實星盤，用溫暖、具體、像朋友的口吻，描述這個人的核心自我、性格、天賦與生命力。不要術語堆砌，不要預測未來。\n只回傳純JSON：{"chapter1":{"title":"你是誰","content":"內容"}}`
+      `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第${target.num}章「${target.title}」。\n重點：${target.focus}\n只回傳純JSON：{"${target.key}":{"title":"${target.title}","content":"內容"}}`
     );
-    const ch1Text = extractText(ch1Result).replace(/```json|```/g,'').trim();
-    const ch1Data = JSON.parse(ch1Text.substring(ch1Text.indexOf('{'), ch1Text.lastIndexOf('}')+1));
-    Object.assign(allReadings, ch1Data);
+    const tText = extractText(tResult).replace(/```json|```/g,'').trim();
+    const tData = JSON.parse(tText.substring(tText.indexOf('{'), tText.lastIndexOf('}')+1));
+    Object.assign(allReadings, tData);
+    saveReadingsCache(allReadings);
 
     clearInterval(loadingInterval);
     showScreen('screen-reading');
     setTimeout(() => displayReadings(allReadings), 50);
 
-    // Background chapters 2-5
-    const bgChapters = [
-      {key:'chapter2', title:'你的內心', num:2, focus:'月亮 ☽：情緒、安全感、內在需求、你如何被安撫、與家的連結'},
-      {key:'chapter3', title:'你的頭腦', num:3, focus:'水星 ☿：思考方式、溝通風格、學習方式、表達自己的方式'},
-      {key:'chapter4', title:'你的愛', num:4, focus:'金星 ♀：愛情模式、你怎麼愛人、會吸引的對象、對美與享受的品味'},
-      {key:'chapter5', title:'你的勇氣', num:5, focus:'火星 ♂：行動力、動力、慾望、面對衝突的方式、你為什麼而戰'},
-      {key:'chapter6', title:'你的福氣', num:6, focus:'木星 ♃：幸運、財富與豐盛、智慧、成長、貴人與信念'},
-      {key:'chapter7', title:'你的功課', num:7, focus:'土星 ♄：人生功課、挑戰、責任、紀律、時間會教你的事'},
-      {key:'chapter8', title:'你的渴望', num:8, focus:'羅睺 ☊：今生強烈的渴望、野心、想突破的方向、容易過度的地方'},
-      {key:'chapter9', title:'你的靈魂', num:9, focus:'計都 ☋：天生的天賦、直覺、前世帶來的、需要學會放下的執著'}
-    ];
-
-    for (const ch of bgChapters) {
-      try {
-        const result = await callAPI(
-          LUMIS_PROMPT,
-          `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第${ch.num}章「${ch.title}」。\n重點：${ch.focus}\n只回傳純JSON：{"${ch.key}":{"title":"${ch.title}","content":"內容"}}`
-        );
-        const text = extractText(result).replace(/```json|```/g,'').trim();
-        const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
-        Object.assign(allReadings, data);
-        if (currentChapterIndex === ch.num - 1) showChapter(ch.num - 1);
-      } catch(e) {
-        allReadings[ch.key] = { title: ch.title, content: '此篇章正在載入中，請稍後再試。' };
-      }
-    }
+    // STEP 3: fill remaining chapters in background (chapter 1 first, then ascending)
+    _fillMissingChapters(allReadings, dob, time, place, gender, callAPI, chartContext);
 
   } catch(err) {
     clearInterval(loadingInterval);
