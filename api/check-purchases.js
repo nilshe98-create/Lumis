@@ -46,6 +46,24 @@ module.exports = async function handler(req, res) {
       }
     }
 
+    // Store user feedback so the owner can read it in the Supabase 'purchases' table (chapter starts with 'feedback_')
+    if (action === 'submit_feedback') {
+      const message = String(req.body.message || '').slice(0, 4000);
+      const rating = Math.min(5, Math.max(0, parseInt(req.body.rating) || 0));
+      if (!message && !rating) return res.status(400).json({ error: 'Empty feedback' });
+      try {
+        await supabase.from('purchases').insert({
+          user_email: email || 'anonymous',
+          chapter: 'feedback_' + Date.now(),
+          payment_id: JSON.stringify({ rating, message, at: new Date().toISOString() }),
+          subscription_id: null,
+        });
+        return res.status(200).json({ ok: true });
+      } catch(e) {
+        return res.status(200).json({ ok: false });
+      }
+    }
+
     if (action === 'save_birth' && email && dob) {
       try {
         await supabase.from('purchases').upsert({
@@ -91,6 +109,8 @@ module.exports = async function handler(req, res) {
         } else if (row.chapter === 'soulmate' || row.chapter === 'starchild') {
           // Legacy permanent rows from before per-use credits existed: honor as one credit.
           if (credits[row.chapter] < 1) credits[row.chapter] = 1;
+        } else if (row.chapter && row.chapter.indexOf('feedback_') === 0) {
+          // feedback rows are owner-only records, never a user entitlement
         } else {
           chapters.push(row.chapter);
         }
