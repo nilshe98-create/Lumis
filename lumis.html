@@ -2495,7 +2495,12 @@
 
       <div class="form-group">
         <label class="form-label">📅 對方出生日期</label>
-        <input type="text" id="s-dob" class="form-input" placeholder="如：4/21/2001（月/日/年）">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select id="s-dob-y" onchange="syncSoulmateDate()" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;"><option value="">年</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option><option value="1939">1939</option><option value="1938">1938</option><option value="1937">1937</option><option value="1936">1936</option><option value="1935">1935</option><option value="1934">1934</option><option value="1933">1933</option><option value="1932">1932</option><option value="1931">1931</option><option value="1930">1930</option></select>
+          <select id="s-dob-m" onchange="syncSoulmateDate()" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;"><option value="">月</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select>
+          <select id="s-dob-d" onchange="syncSoulmateDate()" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;"><option value="">日</option><option value="1">1日</option><option value="2">2日</option><option value="3">3日</option><option value="4">4日</option><option value="5">5日</option><option value="6">6日</option><option value="7">7日</option><option value="8">8日</option><option value="9">9日</option><option value="10">10日</option><option value="11">11日</option><option value="12">12日</option><option value="13">13日</option><option value="14">14日</option><option value="15">15日</option><option value="16">16日</option><option value="17">17日</option><option value="18">18日</option><option value="19">19日</option><option value="20">20日</option><option value="21">21日</option><option value="22">22日</option><option value="23">23日</option><option value="24">24日</option><option value="25">25日</option><option value="26">26日</option><option value="27">27日</option><option value="28">28日</option><option value="29">29日</option><option value="30">30日</option><option value="31">31日</option></select>
+        </div>
+        <input type="hidden" id="s-dob" value="">
         <div style="font-size:0.78rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 日期越準確，解讀越精準</div>
       </div>
       <div class="form-group">
@@ -2612,7 +2617,12 @@
 
       <div class="form-group">
         <label class="form-label">📅 孩子出生日期</label>
-        <input type="text" id="ls-dob" class="form-input" placeholder="如：6/15/2018（月/日/年）">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select id="ls-dob-y" onchange="syncChildDate()" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;"><option value="">年</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option><option value="1939">1939</option><option value="1938">1938</option><option value="1937">1937</option><option value="1936">1936</option><option value="1935">1935</option><option value="1934">1934</option><option value="1933">1933</option><option value="1932">1932</option><option value="1931">1931</option><option value="1930">1930</option></select>
+          <select id="ls-dob-m" onchange="syncChildDate()" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;"><option value="">月</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select>
+          <select id="ls-dob-d" onchange="syncChildDate()" class="form-input" style="flex:1; padding:12px 8px; text-align:center; cursor:pointer;"><option value="">日</option><option value="1">1日</option><option value="2">2日</option><option value="3">3日</option><option value="4">4日</option><option value="5">5日</option><option value="6">6日</option><option value="7">7日</option><option value="8">8日</option><option value="9">9日</option><option value="10">10日</option><option value="11">11日</option><option value="12">12日</option><option value="13">13日</option><option value="14">14日</option><option value="15">15日</option><option value="16">16日</option><option value="17">17日</option><option value="18">18日</option><option value="19">19日</option><option value="20">20日</option><option value="21">21日</option><option value="22">22日</option><option value="23">23日</option><option value="24">24日</option><option value="25">25日</option><option value="26">26日</option><option value="27">27日</option><option value="28">28日</option><option value="29">29日</option><option value="30">30日</option><option value="31">31日</option></select>
+        </div>
+        <input type="hidden" id="ls-dob" value="">
         <div style="font-size:0.78rem; color:rgba(201,168,76,0.5); margin-top:6px; letter-spacing:1px;">✦ 日期越準確，解讀越精準</div>
       </div>
       <div class="form-group">
@@ -3699,10 +3709,14 @@ function handleDodoReturn() {
   const status = params.get('dodo_status');
   const product = params.get('product');
   if (status === 'succeeded' && product) {
-    // Mark paid
-    markFeaturePaid(product);
-    if (product === 'bundle' || product === 'all5chapters') {
-      ['chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'].forEach(c => markFeaturePaid(c));
+    // Per-use features (soulmate, starchild): each payment grants ONE credit (one new reading).
+    if (product === 'soulmate' || product === 'starchild') {
+      addCredit(product);
+    } else {
+      markFeaturePaid(product);
+      if (product === 'bundle' || product === 'all5chapters') {
+        ['chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'].forEach(c => markFeaturePaid(c));
+      }
     }
     window.history.replaceState({}, '', window.location.pathname);
 
@@ -3755,7 +3769,13 @@ async function syncPurchasesFromServer() {
     if (!email) return;
     const res = await fetch('/api/check-purchases?email=' + encodeURIComponent(email));
     const data = await res.json();
-    if (data.chapters) data.chapters.forEach(c => markFeaturePaid(c));
+    // Permanent unlocks (chapters/bundle) — but NEVER re-grant per-use features permanently
+    if (data.chapters) data.chapters.forEach(c => { if (c !== 'soulmate' && c !== 'starchild') markFeaturePaid(c); });
+    // Per-use credits: server balance is the source of truth
+    if (data.credits) {
+      if (typeof data.credits.soulmate === 'number') setCredits('soulmate', data.credits.soulmate);
+      if (typeof data.credits.starchild === 'number') setCredits('starchild', data.credits.starchild);
+    }
     refreshChapterCards();
     // Restore birth data from server if not already in localStorage
     if (data.birth && !localStorage.getItem('lumis_birth')) {
@@ -3765,6 +3785,19 @@ async function syncPurchasesFromServer() {
       window.lumisUserTime = b.time || '';
       window.lumisUserPlace = b.place || '';
       window.lumisUserGender = b.gender || '';
+    }
+    // Restore saved readings generated on any device — matching birth data only (zero API cost)
+    if (data.readings) {
+      const cache = loadReadingsCache();
+      let added = false;
+      for (const k in data.readings) {
+        const r = data.readings[k];
+        if (r && r.content && r.sig === _birthSig() && !cache[k]) {
+          cache[k] = { title: r.title, content: r.content };
+          added = true;
+        }
+      }
+      if (added) saveReadingsCache(cache);
     }
   } catch(e) { /* silent fail */ }
 }
@@ -3812,6 +3845,26 @@ function refreshChapterCards() {
   });
 }
 function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
+
+// ===== Per-use credits (soulmate, starchild): buy one -> one new reading. New person = new payment. =====
+const LUMIS_CREDITS_KEY = 'lumis_credits_v1';
+function getAllCredits() { try { return JSON.parse(localStorage.getItem(LUMIS_CREDITS_KEY) || '{}') || {}; } catch(e) { return {}; } }
+function getCredits(f) { const c = getAllCredits(); return Math.max(0, parseInt(c[f] || 0) || 0); }
+function setCredits(f, n) { const c = getAllCredits(); c[f] = Math.max(0, parseInt(n) || 0); try { localStorage.setItem(LUMIS_CREDITS_KEY, JSON.stringify(c)); } catch(e) {} }
+function addCredit(f, n) { setCredits(f, getCredits(f) + (n || 1)); }
+async function consumeCredit(f) {
+  setCredits(f, getCredits(f) - 1);
+  try {
+    const email = lumisUser?.email;
+    if (email) {
+      await fetch('/api/check-purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, action: 'consume_credit', feature: f })
+      });
+    }
+  } catch(e) { /* server best-effort; local decrement already applied */ }
+}
 // Ancient symbols — one per user based on email
 const ANCIENT_SYMBOLS = ['𓂀','𓃭','𓅃','𓆣','𓇋','𓈖','𓉐','𓊪','𓋴','𓌀','𓍢','𓎛','𓏏','𓐍','☥','𓁹','𓂋','𓄿','𓅱','𓆑','𓇯','𓈙','𓉔','𓊽','𓋹','𓌙','𓍯','𓎼','𓐀','𓑁'];
 
@@ -4194,13 +4247,13 @@ function openSoulmateModal() {
   // New user needs birth form first (no saved data yet)
   if (!window.lumisUserDob) {
     openModal(() => {
-      if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
-      openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
+      if (getCredits('soulmate') > 0) { _openSoulmateForm(); return; }
+      openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { addCredit('soulmate'); _openSoulmateForm(); }, 'soulmate');
     }, 'soulmate');
     return;
   }
-  if (hasFeaturePaid('soulmate')) { _openSoulmateForm(); return; }
-  openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { markFeaturePaid('soulmate'); _openSoulmateForm(); }, 'soulmate');
+  if (getCredits('soulmate') > 0) { _openSoulmateForm(); return; }
+  openPaymentModal('解鎖靈魂配對', 'NT$100', '完全私密，對方永遠不會知道', '靈魂配對已解鎖！<br>星辰正在計算你們的緣分', () => { addCredit('soulmate'); _openSoulmateForm(); }, 'soulmate');
 }
 function _openSoulmateForm() {
   document.getElementById('soulmate-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -4218,13 +4271,13 @@ function openStarChildModal() {
   if (!isLoggedIn()) { window._pendingOAuthAction = 'starchild'; openAuthModal(() => openStarChildModal(), '解鎖星童分析', '請先登入或建立帳號'); return; }
   if (!window.lumisUserDob) {
     openModal(() => {
-      if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
-      openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
+      if (getCredits('starchild') > 0) { _openStarChildForm(); return; }
+      openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { addCredit('starchild'); _openStarChildForm(); }, 'starchild');
     }, 'starchild');
     return;
   }
-  if (hasFeaturePaid('starchild')) { _openStarChildForm(); return; }
-  openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { markFeaturePaid('starchild'); _openStarChildForm(); }, 'starchild');
+  if (getCredits('starchild') > 0) { _openStarChildForm(); return; }
+  openPaymentModal('解鎖星童分析', 'NT$100', '了解孩子的天賦與親子關係', '星童分析已解鎖！<br>星辰正在讀取孩子的光', () => { addCredit('starchild'); _openStarChildForm(); }, 'starchild');
 }
 function _openStarChildForm() {
   document.getElementById('star-child-modal').classList.add('active'); document.body.style.overflow = 'hidden';
@@ -4304,6 +4357,9 @@ async function submitSoulmate() {
     let c;
     try { c = JSON.parse(text.substring(jStart, jEnd + 1)); }
     catch(parseErr) { throw new Error('解析失敗，請重試一次'); }
+
+    // Success — this pairing is done: spend one credit. A new person will need a new payment.
+    consumeCredit('soulmate');
 
     document.getElementById('soulmate-loading-screen').style.display = 'none';
     const res = document.getElementById('soulmate-result-screen');
@@ -4397,6 +4453,9 @@ async function submitStarChild() {
 
     const text = extractText(result).replace(/```json|```/g,'').trim();
     const c = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
+
+    // Success — this child is done: spend one credit. Another child will need a new payment.
+    consumeCredit('starchild');
 
     document.getElementById('ls-loading-screen').style.display = 'none';
     const res = document.getElementById('ls-result-screen');
@@ -4510,6 +4569,28 @@ function syncTimePicker() {
     document.getElementById('field-time').value = `${finalH}:${m}`;
   }
 }
+function syncSoulmateDate() {
+  const y = document.getElementById('s-dob-y')?.value || '';
+  const m = document.getElementById('s-dob-m')?.value || '';
+  let d = document.getElementById('s-dob-d')?.value || '';
+  if (y && m && d) {
+    const dim = new Date(parseInt(y), parseInt(m), 0).getDate();
+    if (parseInt(d) > dim) { d = String(dim); const ds = document.getElementById('s-dob-d'); if (ds) ds.value = d; }
+  }
+  const hidden = document.getElementById('s-dob');
+  if (hidden) hidden.value = (y && m && d) ? `${m}/${d}/${y}` : '';
+}
+function syncChildDate() {
+  const y = document.getElementById('ls-dob-y')?.value || '';
+  const m = document.getElementById('ls-dob-m')?.value || '';
+  let d = document.getElementById('ls-dob-d')?.value || '';
+  if (y && m && d) {
+    const dim = new Date(parseInt(y), parseInt(m), 0).getDate();
+    if (parseInt(d) > dim) { d = String(dim); const ds = document.getElementById('ls-dob-d'); if (ds) ds.value = d; }
+  }
+  const hidden = document.getElementById('ls-dob');
+  if (hidden) hidden.value = (y && m && d) ? `${m}/${d}/${y}` : '';
+}
 function syncPartnerTime() {
   const h = document.getElementById('s-time-h')?.value || '';
   const m = document.getElementById('s-time-m')?.value || '';
@@ -4538,10 +4619,10 @@ function selectChildGender(val) {
   document.getElementById('ls-gender').value = val;
   ['ls-gender-m','ls-gender-f','ls-gender-o'].forEach(id => {
     const btn = document.getElementById(id);
-    if (btn) btn.classList.remove('active');
+    if (btn) btn.classList.remove('selected');
   });
   const map = {'男孩':'ls-gender-m','女孩':'ls-gender-f','其他':'ls-gender-o'};
-  if (map[val]) document.getElementById(map[val])?.classList.add('active');
+  if (map[val]) document.getElementById(map[val])?.classList.add('selected');
 }
 
 
@@ -4777,6 +4858,104 @@ function openModal(callback, intent) {
 
 // Called after payment success — continues the reading using saved birth data
 let _pendingChapterJump = null; // jump to specific chapter after reading generates
+
+// ===== Reading & chart caches — a chapter is generated ONCE, then loads instantly with zero API cost =====
+function _birthSig() {
+  return [window.lumisUserDob||'', window.lumisUserTime||'', window.lumisUserPlace||'', window.lumisUserGender||''].join('|');
+}
+function _readingsCacheKey() { return 'lumis_readings_v1:' + (lumisUser.email||'anon') + ':' + _birthSig(); }
+function _chartCacheKey()    { return 'lumis_chart_v1:' + _birthSig(); }
+function loadReadingsCache() {
+  try { const r = JSON.parse(localStorage.getItem(_readingsCacheKey()) || 'null'); return (r && typeof r === 'object') ? r : {}; } catch(e) { return {}; }
+}
+function saveReadingsCache(readings) {
+  try {
+    const clean = {};
+    for (const k in readings) {
+      const c = readings[k] && readings[k].content;
+      if (c && c !== '此篇章正在載入中，請稍後再試。') clean[k] = readings[k];
+    }
+    localStorage.setItem(_readingsCacheKey(), JSON.stringify(clean));
+  } catch(e) { /* storage full — non-fatal */ }
+}
+function loadChartCache() { try { return localStorage.getItem(_chartCacheKey()) || ''; } catch(e) { return ''; } }
+function saveChartCache(s) { try { if (s) localStorage.setItem(_chartCacheKey(), s); } catch(e) {} }
+function _chartContext() {
+  const c = loadChartCache();
+  return c ? ('真實印度吠陀星盤計算結果：\n' + c) : '（星盤計算服務暫時不可用，請根據出生資料直接分析）';
+}
+
+const CHAPTER_META = [
+  {key:'chapter1', title:'你是誰',   num:1, focus:'太陽 ☉：核心自我、性格、天賦與生命力。用溫暖、具體、像朋友的口吻，不要術語堆砌，不要預測未來'},
+  {key:'chapter2', title:'你的內心', num:2, focus:'月亮 ☽：情緒、安全感、內在需求、你如何被安撫、與家的連結'},
+  {key:'chapter3', title:'你的頭腦', num:3, focus:'水星 ☿：思考方式、溝通風格、學習方式、表達自己的方式'},
+  {key:'chapter4', title:'你的愛',   num:4, focus:'金星 ♀：愛情模式、你怎麼愛人、會吸引的對象、對美與享受的品味'},
+  {key:'chapter5', title:'你的勇氣', num:5, focus:'火星 ♂：行動力、動力、慾望、面對衝突的方式、你為什麼而戰'},
+  {key:'chapter6', title:'你的福氣', num:6, focus:'木星 ♃：幸運、財富與豐盛、智慧、成長、貴人與信念'},
+  {key:'chapter7', title:'你的功課', num:7, focus:'土星 ♄：人生功課、挑戰、責任、紀律、時間會教你的事'},
+  {key:'chapter8', title:'你的渴望', num:8, focus:'羅睺 ☊：今生強烈的渴望、野心、想突破的方向、容易過度的地方'},
+  {key:'chapter9', title:'你的靈魂', num:9, focus:'計都 ☋：天生的天賦、直覺、前世帶來的、需要學會放下的執著'}
+];
+
+function saveReadingToServer(key, obj) {
+  try {
+    const email = lumisUser?.email;
+    if (!email) return;
+    fetch('/api/check-purchases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, action: 'save_reading', key, title: obj.title, content: obj.content, sig: _birthSig() })
+    }).catch(() => {});
+  } catch(e) {}
+}
+
+const _genInFlight = {};
+async function generateSingleChapter(index) {
+  const meta = CHAPTER_META[index];
+  if (_genInFlight[meta.key]) return _genInFlight[meta.key];
+  const dob = window.lumisUserDob || '', time = window.lumisUserTime || '';
+  const place = window.lumisUserPlace || '', gender = window.lumisUserGender || '';
+  const p = (async () => {
+    const result = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/reading');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 90000;
+      xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(new Error('Parse error')); } } else { reject(new Error('API ' + xhr.status)); } };
+      xhr.onerror = () => reject(new Error('網路錯誤'));
+      xhr.ontimeout = () => reject(new Error('連線超時'));
+      xhr.send(JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        system: LUMIS_PROMPT,
+        messages: [{ role: 'user', content: `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${_chartContext()}\n\n現在只寫第${meta.num}章「${meta.title}」。\n重點：${meta.focus}\n只回傳純JSON：{"${meta.key}":{"title":"${meta.title}","content":"內容"}}` }]
+      }));
+    });
+    const text = extractText(result).replace(/```json|```/g,'').trim();
+    const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
+    if (!allReadingsData) allReadingsData = {};
+    Object.assign(allReadingsData, data);
+    saveReadingsCache(allReadingsData);
+    if (data[meta.key]) saveReadingToServer(meta.key, data[meta.key]);
+    return data;
+  })();
+  _genInFlight[meta.key] = p;
+  try { return await p; } finally { delete _genInFlight[meta.key]; }
+}
+
+async function ensureChapterGenerated(index) {
+  try {
+    await generateSingleChapter(index);
+    if (currentChapterIndex === index) showChapter(index);
+  } catch(e) {
+    if (currentChapterIndex === index) {
+      const content = document.getElementById('display-ch-content');
+      if (content) content.innerHTML = '<p style="color:rgba(201,168,76,0.8);">生成失敗，請點擊下方「重試」。</p>';
+      const retryBtn = document.getElementById('retry-chapter-btn');
+      if (retryBtn) retryBtn.style.display = 'block';
+    }
+  }
+}
 
 function runReading(chapterIndex) {
   formCallback = null;
@@ -5172,11 +5351,12 @@ function showChapter(index) {
 
   const content = document.getElementById('display-ch-content');
 
-  // If chapter not ready yet show loading pulse
+  // If chapter not generated yet: show pulse and generate ONLY this chapter (once)
   if (!data || !data[key]) {
     content.innerHTML = '<div class="reading-loading-pulse"></div>';
     document.getElementById('display-positive-note').style.display = 'none';
     document.getElementById('next-ch-preview').style.display = 'none';
+    ensureChapterGenerated(index);
     return;
   }
 
@@ -5258,88 +5438,50 @@ function showChapter(index) {
 }
 
 async function retryCurrentChapter() {
-  const keys = ['chapter1','chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'];
-  const titles = ['你是誰','愛情與關係','事業與財富','陰影與成長','你的人生之路'];
   const index = currentChapterIndex;
-  const key = keys[index];
-  const title = titles[index];
-  const num = index + 1;
-
   const content = document.getElementById('display-ch-content');
   content.innerHTML = '<div class="reading-loading-pulse"></div>';
   document.getElementById('retry-chapter-btn').style.display = 'none';
-
-  // Get stored user details
-  const dob = window.lumisUserDob || '';
-  const time = window.lumisUserTime || '';
-  const place = window.lumisUserPlace || '';
-  const gender = window.lumisUserGender || '';
-  const userDetails = `出生日期：${dob}\n出生時間：${time}\n出生地點：${place}\n性別認同：${gender}`;
-
   try {
-    const result = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/reading');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.timeout = 60000;
-      xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else { reject(new Error(xhr.status)); } };
-      xhr.onerror = () => reject(new Error('網路錯誤'));
-      xhr.ontimeout = () => reject(new Error('超時'));
-      xhr.send(JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: LUMIS_PROMPT,
-        messages: [{ role: 'user', content: `${userDetails}\n\n現在只寫第${num}章「${title}」。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
-      }));
-    });
-    const text = extractText(result).replace(/```json|```/g,'').trim();
-    const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
-    Object.assign(allReadingsData, data);
+    await generateSingleChapter(index);
     showChapter(index);
   } catch(e) {
-    allReadingsData[key] = { title, content: '此篇章正在載入中，請稍後再試。' };
+    if (allReadingsData) allReadingsData[CHAPTER_META[index].key] = { title: CHAPTER_META[index].title, content: '此篇章正在載入中，請稍後再試。' };
     showChapter(index);
   }
 }
 
 async function regenerateCurrentChapter() {
-  const keys = ['chapter1','chapter2','chapter3','chapter4','chapter5','chapter6','chapter7','chapter8','chapter9'];
-  const titles = ['你是誰','愛情與關係','事業與財富','陰影與成長','你的人生之路'];
   const index = currentChapterIndex;
-  const key = keys[index];
-  const title = titles[index];
-  const num = index + 1;
-
+  const meta = CHAPTER_META[index];
   const regenBtn = document.getElementById('regen-chapter-btn');
   const content = document.getElementById('display-ch-content');
   if (regenBtn) { regenBtn.textContent = '生成中...'; regenBtn.disabled = true; }
   content.innerHTML = '<div class="reading-loading-pulse"></div>';
-
-  const dob = window.lumisUserDob || '';
-  const time = window.lumisUserTime || '';
-  const place = window.lumisUserPlace || '';
-  const gender = window.lumisUserGender || '';
+  const dob = window.lumisUserDob || '', time = window.lumisUserTime || '';
+  const place = window.lumisUserPlace || '', gender = window.lumisUserGender || '';
   const userDetails = `出生日期：${dob}\n出生時間：${time}\n出生地點：${place}\n性別認同：${gender}`;
-
   try {
     const result = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', '/api/reading');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.timeout = 60000;
+      xhr.timeout = 90000;
       xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else { reject(new Error(xhr.status)); } };
       xhr.onerror = () => reject(new Error('網路錯誤'));
       xhr.ontimeout = () => reject(new Error('超時'));
       xhr.send(JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
+        max_tokens: 1500,
         system: LUMIS_PROMPT,
-        messages: [{ role: 'user', content: `${userDetails}\n\n請重新生成第${num}章「${title}」，給出不同角度的深刻解讀。只回傳純JSON：{"${key}":{"title":"${title}","content":"深刻內容"}}` }]
+        messages: [{ role: 'user', content: `${userDetails}\n\n${_chartContext()}\n\n請重新生成第${meta.num}章「${meta.title}」，給出不同角度的深刻解讀。\n重點：${meta.focus}\n只回傳純JSON：{"${meta.key}":{"title":"${meta.title}","content":"深刻內容"}}` }]
       }));
     });
     const text = extractText(result).replace(/```json|```/g,'').trim();
     const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
     Object.assign(allReadingsData, data);
+    saveReadingsCache(allReadingsData);
+    if (data[meta.key]) saveReadingToServer(meta.key, data[meta.key]);
     showChapter(index);
   } catch(e) {
     content.innerHTML = '<p style="color:rgba(201,168,76,0.8);">重新生成失敗，請再試一次。</p>';
@@ -5741,69 +5883,43 @@ async function submitForm() {
   }
 
   try {
-    // STEP 1: Get real chart from VedAstro (with fallback if it fails)
-    document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
-    let chartStr = '';
-    try {
-      const vedicChart = await getVedAstroChart(dob, time, place);
-      // Check VedAstro didn't return an error status
-      const payload = vedicChart.Payload || vedicChart;
-      const payloadStr = JSON.stringify(payload);
-      if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
-        chartStr = payloadStr.substring(0, 12000);
-        window._lumisRawChart = chartStr;  // share with the reading wheel — no second fetch
-      }
-    } catch(vedaErr) {
-      // VedAstro failed — continue without chart data
+    const targetIdx = (_pendingChapterJump !== null) ? _pendingChapterJump : 0;
+    const target = CHAPTER_META[targetIdx];
+
+    // CACHE FIRST: if this chapter was generated before, show it instantly — zero API calls
+    const cached = loadReadingsCache();
+    if (cached[target.key]) {
+      clearInterval(loadingInterval);
+      showScreen('screen-reading');
+      setTimeout(() => displayReadings(cached), 50);
+      return;
     }
-    // If no chart data, use birth details directly
-    const chartContext = chartStr
-      ? `真實印度吠陀星盤計算結果：\n${chartStr}`
-      : `（星盤計算服務暫時不可用，請根據出生資料直接分析）`;
 
-    // STEP 2: Generate chapters using real chart
-    const allReadings = {};
+    // STEP 1: chart — cached after the first time for this birth data
+    document.getElementById('loading-text').textContent = '正在計算你的星辰圖案...';
+    let chartStr = loadChartCache();
+    if (!chartStr) {
+      try {
+        const vedicChart = await getVedAstroChart(dob, time, place);
+        const payload = vedicChart.Payload || vedicChart;
+        const payloadStr = JSON.stringify(payload);
+        if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
+          chartStr = payloadStr.substring(0, 12000);
+          saveChartCache(chartStr);
+        }
+      } catch(vedaErr) { /* VedAstro failed — continue without chart data */ }
+    }
+    if (chartStr) window._lumisRawChart = chartStr;
 
-    // Chapter 1 first (free hook), show immediately
-    document.getElementById('loading-text').textContent = '正在解讀第一章...';
-    const ch1Result = await callAPI(
-      LUMIS_PROMPT,
-      `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第一章「你是誰」（對應太陽 ☉）。根據真實星盤，用溫暖、具體、像朋友的口吻，描述這個人的核心自我、性格、天賦與生命力。不要術語堆砌，不要預測未來。\n只回傳純JSON：{"chapter1":{"title":"你是誰","content":"內容"}}`
-    );
-    const ch1Text = extractText(ch1Result).replace(/```json|```/g,'').trim();
-    const ch1Data = JSON.parse(ch1Text.substring(ch1Text.indexOf('{'), ch1Text.lastIndexOf('}')+1));
-    Object.assign(allReadings, ch1Data);
+    // STEP 2: generate ONLY the chapter the user opened — one API call, nothing in the background
+    document.getElementById('loading-text').textContent = `正在解讀第${['一','二','三','四','五','六','七','八','九'][targetIdx]}章...`;
+    const allReadings = Object.assign({}, cached);
+    await generateSingleChapter(targetIdx);
+    Object.assign(allReadings, allReadingsData || {});
 
     clearInterval(loadingInterval);
     showScreen('screen-reading');
     setTimeout(() => displayReadings(allReadings), 50);
-
-    // Background chapters 2-5
-    const bgChapters = [
-      {key:'chapter2', title:'你的內心', num:2, focus:'月亮 ☽：情緒、安全感、內在需求、你如何被安撫、與家的連結'},
-      {key:'chapter3', title:'你的頭腦', num:3, focus:'水星 ☿：思考方式、溝通風格、學習方式、表達自己的方式'},
-      {key:'chapter4', title:'你的愛', num:4, focus:'金星 ♀：愛情模式、你怎麼愛人、會吸引的對象、對美與享受的品味'},
-      {key:'chapter5', title:'你的勇氣', num:5, focus:'火星 ♂：行動力、動力、慾望、面對衝突的方式、你為什麼而戰'},
-      {key:'chapter6', title:'你的福氣', num:6, focus:'木星 ♃：幸運、財富與豐盛、智慧、成長、貴人與信念'},
-      {key:'chapter7', title:'你的功課', num:7, focus:'土星 ♄：人生功課、挑戰、責任、紀律、時間會教你的事'},
-      {key:'chapter8', title:'你的渴望', num:8, focus:'羅睺 ☊：今生強烈的渴望、野心、想突破的方向、容易過度的地方'},
-      {key:'chapter9', title:'你的靈魂', num:9, focus:'計都 ☋：天生的天賦、直覺、前世帶來的、需要學會放下的執著'}
-    ];
-
-    for (const ch of bgChapters) {
-      try {
-        const result = await callAPI(
-          LUMIS_PROMPT,
-          `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${chartContext}\n\n現在只寫第${ch.num}章「${ch.title}」。\n重點：${ch.focus}\n只回傳純JSON：{"${ch.key}":{"title":"${ch.title}","content":"內容"}}`
-        );
-        const text = extractText(result).replace(/```json|```/g,'').trim();
-        const data = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}')+1));
-        Object.assign(allReadings, data);
-        if (currentChapterIndex === ch.num - 1) showChapter(ch.num - 1);
-      } catch(e) {
-        allReadings[ch.key] = { title: ch.title, content: '此篇章正在載入中，請稍後再試。' };
-      }
-    }
 
   } catch(err) {
     clearInterval(loadingInterval);
