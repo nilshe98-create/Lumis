@@ -1883,7 +1883,7 @@
   padding:5px 16px; margin-bottom:2px; display:inline-block;
 }
 .lock-state.st-open{ color:var(--gold); border:1px solid rgba(201,168,76,0.55); }
-.lock-state.st-locked{ color:var(--silver); opacity:0.75; border:1px solid rgba(168,168,192,0.35); }
+.lock-state.st-locked{ display:none; } /* locked cards just show price + 解鎖 button — no redundant label */
 </style>
 </head>
 <body>
@@ -2017,7 +2017,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(2)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(2)">解鎖</button>
         </div>
       </div>
 
@@ -2028,7 +2028,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(3)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(3)">解鎖</button>
         </div>
       </div>
 
@@ -2039,7 +2039,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(4)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(4)">解鎖</button>
         </div>
       </div>
 
@@ -2050,7 +2050,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(5)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(5)">解鎖</button>
         </div>
       </div>
 
@@ -2061,7 +2061,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(6)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(6)">解鎖</button>
         </div>
       </div>
 
@@ -2072,7 +2072,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(7)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(7)">解鎖</button>
         </div>
       </div>
 
@@ -2083,7 +2083,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(8)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(8)">解鎖</button>
         </div>
       </div>
 
@@ -2094,7 +2094,7 @@
         <div class="chapter-lock">
           <div class="lock-state st-locked">未解鎖</div>
           <div class="chapter-price" translate="no"><span class="usd">NT</span>$100</div>
-          <button class="chapter-btn" onclick="openChapter(9)">查看</button>
+          <button class="chapter-btn" onclick="openChapter(9)">解鎖</button>
         </div>
       </div>
 
@@ -3834,14 +3834,15 @@ function markFeaturePaid(f) { const p = getPaidFeatures(); if (!p.includes(f)) {
 function refreshChapterCards() {
   document.querySelectorAll('.chapter-card[data-ch]').forEach(card => {
     const n = parseInt(card.dataset.ch);
-    const tag = card.querySelector('.lock-state');
-    if (!tag) return;
+    if (n === 1) return; // free chapter card unchanged
     const open = isChapterUnlocked(n - 1);
-    tag.textContent = open ? '已解鎖' : '未解鎖';
-    tag.classList.toggle('st-open', open);
-    tag.classList.toggle('st-locked', !open);
+    const tag = card.querySelector('.lock-state');
     const price = card.querySelector('.chapter-price');
+    const btn = card.querySelector('.chapter-btn');
+    // Paid -> just 開始閱讀. Locked -> NT$100 + 解鎖. No lock/unlock labels at all.
+    if (btn) btn.textContent = open ? '開始閱讀' : '解鎖';
     if (price) price.style.display = open ? 'none' : '';
+    if (tag) tag.style.display = 'none';
   });
 }
 function hasFeaturePaid(f) { return getPaidFeatures().includes(f); }
