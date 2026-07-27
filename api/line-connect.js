@@ -180,6 +180,29 @@ module.exports = async function handler(req, res) {
         { line_user_id: lineUserId, email, active: true, linked_at: new Date().toISOString() },
         { onConflict: 'line_user_id' }
       );
+
+      // Send a confirmation straight to the customer's LINE chat (in addition to the web
+      // success screen) so they know the daily horoscope is set up. Best-effort: this only
+      // delivers if the customer has added the LUMIS bot as a friend. Never blocks linking.
+      try {
+        if (process.env.LINE_CHANNEL_TOKEN) {
+          await fetch('https://api.line.me/v2/bot/message/push', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.LINE_CHANNEL_TOKEN}`,
+            },
+            body: JSON.stringify({
+              to: lineUserId,
+              messages: [{
+                type: 'text',
+                text: '\u2726 \u9023\u7d50\u6210\u529f\uff01\n\n\u5f9e\u660e\u5929\u65e9\u4e0a 6 \u9ede\u958b\u59cb\uff0c\u4f60\u6703\u6bcf\u5929\u6536\u5230\u5c08\u5c6c\u65bc\u4f60\u7684\u661f\u8fb0\u8a0a\u606f\u3002\n\n\u9858\u661f\u5149\u6bcf\u5929\u9675\u4f34\u4f60 \u2726',
+              }],
+            }),
+          });
+        }
+      } catch (e) { console.error('LINE confirm push failed:', e.message); }
+
       return res.status(200).json({ ok: true });
     }
 
