@@ -1883,7 +1883,7 @@
   padding:5px 16px; margin-bottom:2px; display:inline-block;
 }
 .lock-state.st-open{ color:var(--gold); border:1px solid rgba(201,168,76,0.55); }
-.lock-state.st-locked{ display:none; } /* locked cards just show price + 解鎖 button — no redundant label */
+.lock-state.st-locked{ display:none; } /* no label — the button text says it */
 </style>
 </head>
 <body>
@@ -3599,8 +3599,11 @@ function showReferralUI() {
 }
 
 function shareOnLine() {
-  const link = getMyReferralLink();
-  if (!link) return;
+  const base = getMyReferralLink();
+  if (!base) return;
+  // openExternalBrowser=1 tells LINE's in-app browser to open the link in the phone's REAL browser,
+  // so the referred friend can use Google login (Google blocks it inside LINE's webview).
+  const link = base + (base.indexOf('?') >= 0 ? '&' : '?') + 'openExternalBrowser=1';
   const msg = '我在 LUMIS 發現了我的星辰圖案，你也來看看吧！\n' + link;
   const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobileDevice) {
@@ -3834,12 +3837,11 @@ function markFeaturePaid(f) { const p = getPaidFeatures(); if (!p.includes(f)) {
 function refreshChapterCards() {
   document.querySelectorAll('.chapter-card[data-ch]').forEach(card => {
     const n = parseInt(card.dataset.ch);
-    if (n === 1) return; // free chapter card unchanged
+    if (n === 1) return;
     const open = isChapterUnlocked(n - 1);
     const tag = card.querySelector('.lock-state');
     const price = card.querySelector('.chapter-price');
     const btn = card.querySelector('.chapter-btn');
-    // Paid -> just 開始閱讀. Locked -> NT$100 + 解鎖. No lock/unlock labels at all.
     if (btn) btn.textContent = open ? '開始閱讀' : '解鎖';
     if (price) price.style.display = open ? 'none' : '';
     if (tag) tag.style.display = 'none';
@@ -3990,6 +3992,30 @@ function hideGoogleAuthIfEmbedded() {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  showEmbeddedBrowserHint();
+}
+
+// Show a short note (only inside in-app browsers) on how to open in a real browser for Google login.
+function showEmbeddedBrowserHint() {
+  let visible = null;
+  ['auth-login-returning', 'auth-login-new', 'auth-who'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.style.display === 'block') visible = el;
+  });
+  if (!visible) visible = document.getElementById('auth-login-returning');
+  if (!visible || visible.querySelector('.embedded-hint')) return;
+  const hint = document.createElement('div');
+  hint.className = 'embedded-hint';
+  hint.style.cssText = "background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.3); padding:12px 14px; margin-bottom:18px; font-family:'Noto Serif TC',serif; font-size:0.82rem; line-height:1.75; color:var(--soft-white); letter-spacing:0.5px; border-radius:2px;";
+  hint.innerHTML = '想用 Google 登入嗎？請在瀏覽器開啟本頁（點右上角選單 → 用預設瀏覽器開啟），或直接用下方電子郵件註冊。<br><span style="color:var(--gold); cursor:pointer; text-decoration:underline;" onclick="copyCurrentPageUrl(this)">複製網址</span>';
+  visible.insertBefore(hint, visible.firstChild);
+}
+
+function copyCurrentPageUrl(el) {
+  const url = (window.location && window.location.href) ? window.location.href.split('#')[0] : 'https://lumisstar.com';
+  try {
+    navigator.clipboard.writeText(url).then(function () { if (el) el.textContent = '已複製 ✓'; }).catch(function () { if (el) el.textContent = url; });
+  } catch (e) { if (el) el.textContent = url; }
 }
 
 function handleGoogleSignup() { startGoogleLogin(); }
@@ -6396,7 +6422,7 @@ if (feedbackSubmit) {
 })();
 </script>
 
-<!-- Vercel Web Analytics (visitor counting) -->
+<!-- Vercel Web Analytics -->
 <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
