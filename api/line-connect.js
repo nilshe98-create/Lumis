@@ -176,10 +176,15 @@ module.exports = async function handler(req, res) {
       const ok = await ensureActiveSubscription(email);
       if (!ok) return res.status(403).json({ error: '找不到有效的訂閱，請確認訂閱狀態' });
 
+      // Keep EVERY email this LINE account links (one row per line_user_id + email).
+      // People sign up with one address and pay with another; horoscope.js delivers if ANY
+      // of their linked emails has an active subscription, so nobody is cut off by a mismatch.
       await supabase.from('line_subscribers').upsert(
         { line_user_id: lineUserId, email, active: true, linked_at: new Date().toISOString() },
-        { onConflict: 'line_user_id' }
+        { onConflict: 'line_user_id,email' }
       );
+      // Re-activate any other rows for this same person (e.g. they resubscribed on an old email)
+      await supabase.from('line_subscribers').update({ active: true }).eq('line_user_id', lineUserId);
 
       // Send a confirmation straight to the customer's LINE chat (in addition to the web
       // success screen) so they know the daily horoscope is set up. Best-effort: this only
