@@ -3788,6 +3788,7 @@ async function syncPurchasesFromServer() {
     if (data.birth && !localStorage.getItem('lumis_birth')) {
       const b = data.birth;
       localStorage.setItem('lumis_birth', JSON.stringify(b));
+      try { localStorage.setItem('lumis_birth_owner', String(email).trim().toLowerCase()); } catch(e) {}
       window.lumisUserDob = b.dob || '';
       window.lumisUserTime = b.time || '';
       window.lumisUserPlace = b.place || '';
@@ -3820,6 +3821,8 @@ function saveSession(user) {
   lumisUser.loggedIn = true;
   lumisUser.email = user.email || '';
   lumisUser.name = user.name || '';
+  // A different account just signed in on this device — never reuse the previous person's chart
+  clearBirthDataIfDifferentAccount();
   updateUIForLoggedIn();
 }
 
@@ -3923,8 +3926,24 @@ document.addEventListener('click', () => {
   if (dd) dd.classList.remove('open');
 });
 
+// Birth data belongs to ONE account. If a different account signs in on this device, clear it
+// so they are asked for their own details instead of inheriting the previous person's chart.
+function clearBirthDataIfDifferentAccount() {
+  try {
+    const current = (lumisUser?.email || '').trim().toLowerCase();
+    if (!current) return;
+    const owner = (localStorage.getItem('lumis_birth_owner') || '').trim().toLowerCase();
+    if (localStorage.getItem('lumis_birth') && owner !== current) {
+      localStorage.removeItem('lumis_birth');
+      localStorage.removeItem('lumis_birth_owner');
+      window.lumisUserDob = ''; window.lumisUserTime = '';
+      window.lumisUserPlace = ''; window.lumisUserGender = '';
+    }
+  } catch (e) {}
+}
+
 function logoutUser() {
-  // Keep lumis_birth — returning user shouldn't need to re-enter birth data on same device
+  // Birth data stays only for the account that entered it (see clearBirthDataIfDifferentAccount)
   localStorage.removeItem(LUMIS_SESSION_KEY);
   localStorage.removeItem(LUMIS_PAID_KEY);
   localStorage.removeItem('lumis_credited_refs');
@@ -3942,6 +3961,7 @@ window.addEventListener('DOMContentLoaded', () => {
   checkGoogleCallback();
   if (loadSession()) {
     updateUIForLoggedIn();
+    clearBirthDataIfDifferentAccount(); // don't inherit another account's chart on a shared device
     syncPurchasesFromServer();
     try {
       const birth = JSON.parse(localStorage.getItem('lumis_birth') || '{}');
@@ -5853,6 +5873,7 @@ async function submitForm() {
   window.lumisUserPlace = place;
   window.lumisUserGender = gender;
   localStorage.setItem('lumis_birth', JSON.stringify({ dob, time, place, gender }));
+  try { localStorage.setItem('lumis_birth_owner', (lumisUser?.email || '').trim().toLowerCase()); } catch(e) {}
   // Save to Supabase so birth data persists across devices and logout/login
   saveBirthToServer(dob, time, place, gender);
 
@@ -6315,7 +6336,7 @@ if (feedbackSubmit) {
     const place=(g('ch-place')||'').trim();
     if(!dob||!place){ alert('請填好生日和出生地點 ✦'); return; }
     window.lumisUserDob=dob; window.lumisUserTime=time; window.lumisUserPlace=place; if(!window.lumisUserGender)window.lumisUserGender='未填寫';
-    try{localStorage.setItem('lumis_birth',JSON.stringify({dob:dob,time:time,place:place,gender:window.lumisUserGender}));}catch(e){}
+    try{localStorage.setItem('lumis_birth',JSON.stringify({dob:dob,time:time,place:place,gender:window.lumisUserGender}));localStorage.setItem('lumis_birth_owner',(lumisUser?.email||'').trim().toLowerCase());}catch(e){}
     loadMyChart(dob,time,place);
   };
   // ---- Birth chart shown inside the chapter reading (reuses the wheel) ----
