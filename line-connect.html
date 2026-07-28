@@ -72,8 +72,11 @@
     <!-- Success -->
     <div id="state-success" style="display:none;">
       <div class="icon gold">✦</div>
-      <div class="msg">連結成功！🎉<br>明天早上 6 點開始，<br>你會收到專屬的星辰訊息。</div>
-      <a class="btn gold" href="https://www.lumisstar.com" onclick="openLumis(event)">返回 LUMIS</a>
+      <div class="msg">連結成功！🎉<br><br><b style="color:#C9A84C;">最後一步：加入 LUMIS 官方帳號</b><br>加入後才能收到每日星辰訊息。</div>
+      <a class="btn" href="https://line.me/R/ti/p/@921tnpwp">＋ 加入 LUMIS 官方帳號</a>
+      <div style="margin-top:14px;">
+        <a class="btn gold" href="https://www.lumisstar.com" onclick="openLumis(event)">返回 LUMIS</a>
+      </div>
     </div>
 
     <!-- Error: a real failure during an actual linking attempt -->
@@ -87,13 +90,12 @@
 <script>
 const LIFF_ID = '2010456983-KoYPa3ey';
 
-// Open the main site in the device's real browser (full screen), not the cramped in-LINE sheet
+// Open the main site in the device's real browser (full screen), not the in-LINE sheet
 function openLumis(e) {
   var url = 'https://www.lumisstar.com';
   try {
     if (window.liff && liff.openWindow) { if (e) e.preventDefault(); liff.openWindow({ url: url, external: true }); return; }
   } catch (err) {}
-  // fallback: normal navigation
   if (e) { e.preventDefault(); window.location.href = url; }
 }
 
