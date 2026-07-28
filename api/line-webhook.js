@@ -96,7 +96,7 @@ module.exports = async function handler(req, res) {
           .from('line_subscribers')
           .upsert(
             { line_user_id: userId, email: email, active: true, linked_at: new Date().toISOString() },
-            { onConflict: 'line_user_id' }
+            { onConflict: 'line_user_id,email' }
           );
         await replyMessage(
           event.replyToken,
