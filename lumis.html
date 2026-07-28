@@ -2170,6 +2170,10 @@
           <li>7天免費試用 · 隨時可取消</li>
         </ul>
         <button class="pricing-btn" onclick="requireLoginForSubscription('basic')">開始體驗</button>
+        <div style="margin-top:16px; text-align:center; font-size:0.85rem; letter-spacing:1px; line-height:1.8;">
+          <span style="color:var(--silver);">已經訂閱了？</span>
+          <a href="https://customer.dodopayments.com/" target="_blank" rel="noopener" style="color:var(--gold); text-decoration:underline;">管理或取消訂閱</a>
+        </div>
       </div>
     </div>
   </section>
@@ -4171,7 +4175,13 @@ function closePaymentModal() {
   currentPaymentProduct = null;
 }
 document.getElementById('payment-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('payment-modal')) closePaymentModal(); });
-function afterPaymentSuccess() { closePaymentModal(); if (paymentCallback) { const cb = paymentCallback; paymentCallback = null; cb(); } }
+function afterPaymentSuccess() {
+  closePaymentModal();
+  if (paymentCallback) { const cb = paymentCallback; paymentCallback = null; cb(); return; }
+  // Subscription purchases have no callback — previously this button did nothing at all.
+  // Send the customer into their reading (prompts for birth data first if they haven't entered it).
+  openChapter(1);
+}
 
 // Show the LINE connection screen after a subscription is purchased (incl. after Dodo redirect)
 function showLineConnectScreen(returning) {
