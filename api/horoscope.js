@@ -15,6 +15,49 @@ const supabase = createClient(
 );
 
 const CRON_SECRET = process.env.CRON_SECRET;
+
+// Emails with an active daily-horoscope subscription according to Dodo (the payment system,
+// i.e. the real source of truth for who paid). Used as a fallback so a missing/failed webhook
+// write in Supabase can never silently stop a paying customer's messages. Never throws.
+async function getPaidEmailsFromDodo() {
+  const emails = new Set();
+  if (!process.env.DODO_API_KEY) return emails;
+  try {
+    // Which products are the daily horoscope? (match by name, same rule as the rest of the app)
+    const subProductIds = new Set();
+    for (let page = 0; page < 5; page++) {
+      const r = await fetch(`https://live.dodopayments.com/products?page_size=100&page_number=${page}`, {
+        headers: { Authorization: `Bearer ${process.env.DODO_API_KEY}` },
+      });
+      if (!r.ok) break;
+      const json = await r.json();
+      const items = (json && json.items) || [];
+      for (const it of items) {
+        const n = String(it.name || '').toLowerCase();
+        if (n.includes('daily') || n.includes('horoscope')) subProductIds.add(it.product_id);
+      }
+      if (items.length < 100) break;
+    }
+    if (!subProductIds.size) return emails;
+
+    for (let page = 0; page < 5; page++) {
+      const r = await fetch(`https://live.dodopayments.com/subscriptions?status=active&page_size=100&page_number=${page}`, {
+        headers: { Authorization: `Bearer ${process.env.DODO_API_KEY}` },
+      });
+      if (!r.ok) break;
+      const json = await r.json();
+      const items = (json && json.items) || [];
+      for (const it of items) {
+        const em = it.customer && it.customer.email;
+        if (em && subProductIds.has(it.product_id)) emails.add(String(em).trim().toLowerCase());
+      }
+      if (items.length < 100) break;
+    }
+  } catch (e) {
+    console.error('getPaidEmailsFromDodo error:', e.message);
+  }
+  return emails;
+}
 const MODEL = 'claude-sonnet-4-6';
 
 const PUNCTUATION_RULE =
@@ -327,20 +370,38 @@ module.exports = async function handler(req, res) {
           if (meta && meta.paid_until) stillValid = new Date(meta.paid_until).getTime() >= now;
         } catch (e) { /* legacy non-JSON row — treat as valid */ }
       }
-      if (stillValid) paidEmails.add(row.user_email);
+      if (stillValid && row.user_email) paidEmails.add(String(row.user_email).trim().toLowerCase());
     }
+
+    // ONE PERSON = ONE LINE ACCOUNT, but possibly SEVERAL LUMIS emails (people log in with
+    // whatever they like, and may pay with a different address than they signed up with).
+    // Group every linked email under its line_user_id and deliver if ANY of them has an
+    // active subscription — so a mismatched email can never silently cut someone off.
+    // Grouping also guarantees exactly one message per person, never a duplicate.
+    const byLineUser = new Map();
+    for (const sub of (subscribers || [])) {
+      if (!sub.line_user_id) continue;
+      if (!byLineUser.has(sub.line_user_id)) byLineUser.set(sub.line_user_id, []);
+      const e = sub.email ? String(sub.email).trim().toLowerCase() : '';
+      if (e) byLineUser.get(sub.line_user_id).push(e);
+    }
+
+    // Fold in Dodo's live active subscribers so a Supabase sync gap never cuts anyone off
+    const dodoPaid = await getPaidEmailsFromDodo();
+    for (const e of dodoPaid) paidEmails.add(e);
 
     let sent = 0, failed = 0, skipped = 0;
     const detail = [];
-    for (const sub of subscribers) {
-      if (!sub.email || !paidEmails.has(sub.email)) {
+    for (const [lineUserId, emails] of byLineUser) {
+      const matched = emails.find(e => paidEmails.has(e));
+      if (!matched) {
         skipped++;
-        detail.push({ email: sub.email || '(none)', result: 'skipped_no_active_subscription' });
+        detail.push({ email: emails.join(', ') || '(none)', result: 'skipped_no_active_subscription' });
         continue;
       }
-      const ok = await pushToUser(sub.line_user_id, flexContents, alt, plainMessage);
-      if (ok) { sent++; detail.push({ email: sub.email, result: 'sent' }); }
-      else { failed++; detail.push({ email: sub.email, result: 'push_failed_check_friend_or_token' }); }
+      const ok = await pushToUser(lineUserId, flexContents, alt, plainMessage);
+      if (ok) { sent++; detail.push({ email: matched, result: 'sent' }); }
+      else { failed++; detail.push({ email: matched, result: 'push_failed_check_friend_or_token' }); }
     }
 
     res.status(200).json({ ok: true, type, sent, failed, skipped, total: subscribers.length, detail });
