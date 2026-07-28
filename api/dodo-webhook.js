@@ -9,6 +9,30 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+// Webhook signature verification (Standard Webhooks — what Dodo uses).
+// Loaded defensively: if the package is missing we fall back to the previous behaviour
+// instead of 500-ing on every payment. Verification only ENFORCES when
+// DODO_WEBHOOK_SECRET is set in Vercel, so uploading this file alone changes nothing.
+let StandardWebhook = null;
+try { ({ Webhook: StandardWebhook } = require('standardwebhooks')); } catch (e) { StandardWebhook = null; }
+
+function verifyDodoSignature(req) {
+  const secret = process.env.DODO_WEBHOOK_SECRET;
+  if (!secret) return { ok: true, mode: 'unverified_no_secret' };
+  if (!StandardWebhook) return { ok: true, mode: 'unverified_no_library' };
+  try {
+    const wh = new StandardWebhook(secret);
+    wh.verify(JSON.stringify(req.body), {
+      'webhook-id': req.headers['webhook-id'],
+      'webhook-signature': req.headers['webhook-signature'],
+      'webhook-timestamp': req.headers['webhook-timestamp'],
+    });
+    return { ok: true, mode: 'verified' };
+  } catch (e) {
+    return { ok: false, mode: 'invalid_signature', error: e.message };
+  }
+}
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
@@ -120,6 +144,15 @@ async function revokeSubscriptionAccess(email) {
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
+
+  // Reject forged payment events. Without this, anyone who learns the webhook URL could
+  // POST a fake "payment.succeeded" and unlock paid content for free.
+  const sig = verifyDodoSignature(req);
+  if (!sig.ok) {
+    console.error('Dodo webhook REJECTED:', sig.mode, sig.error || '');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+  if (sig.mode !== 'verified') console.warn('Dodo webhook accepted WITHOUT verification:', sig.mode);
 
   const event = req.body;
 
