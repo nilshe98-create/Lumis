@@ -18,7 +18,7 @@ W, H = Wf * SS, Hf * SS
 GOLD = (201, 168, 76)
 STARW = (232, 224, 205)
 BLACK = (0, 0, 10)
-DURATION = 7  # seconds
+DURATION = 6   # short hold; every frame is identical so looping is seamless
 
 
 # ---------------------------------------------------------------- fonts
@@ -154,8 +154,11 @@ def to_video(png):
         "ffmpeg", "-y",
         "-loop", "1", "-t", str(DURATION), "-i", str(png),
         "-f", "lavfi", "-t", str(DURATION), "-i", "anullsrc=r=44100:cl=stereo",
-        "-vf", "fade=t=in:st=0:d=0.6,fade=t=out:st=%.1f:d=0.6,format=yuv420p" % (DURATION - 0.7),
-        "-r", "30", "-c:v", "libx264", "-crf", "20", "-preset", "medium",
+        # No fade-in: frame 0 IS the finished card, so the Reel cover is never black.
+        "-vf", "format=yuv420p",
+        "-r", "30", "-c:v", "libx264", "-crf", "18", "-preset", "medium",
+        "-tune", "stillimage",   # x264 tuning for static content - cleaner, no shimmer
+        "-g", "30",              # regular keyframes so the loop point stays crisp
         "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart",
         str(mp4),
     ]
