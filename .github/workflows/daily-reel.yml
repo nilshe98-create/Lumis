@@ -10,28 +10,43 @@ jobs:
   post:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-cjk fonts-liberation
-          pip install --quiet pillow
+          python -m pip install --upgrade pip
+          python -m pip install pillow
+
+      - name: Show environment (debug)
+        run: |
+          python --version
+          python -c "import PIL; print('Pillow', PIL.__version__)"
+          ffmpeg -version | head -1
+          echo "--- CJK fonts found ---"
+          ls /usr/share/fonts/opentype/noto/ 2>/dev/null | grep -i cjk || echo "none in that folder"
 
       - name: Generate today's post
-        run: python3 make_post.py
+        run: python make_post.py
 
       - name: Publish to Instagram as a Reel
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_BUCKET: ${{ secrets.SUPABASE_BUCKET }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-        run: python3 publish.py
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: python publish.py
 
       - name: Keep a copy of what was posted
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lumis-post-${{ github.run_number }}
           path: out/
+          if-no-files-found: ignore
