@@ -86,14 +86,37 @@ print(f"Fonts -> CJK: {CJK} (face {TC})\n         serif: {SB}")
 
 
 # ---------------------------------------------------------------- content
+USED = ROOT / "used.txt"
+
+
 def pick_line():
-    """Pick today's line by day-of-year; wraps around forever."""
+    """Pick a line that has never been posted before. Never repeats."""
     raw = [l.strip() for l in (ROOT / "lines.txt").read_text(encoding="utf-8").splitlines()]
     lines = [l for l in raw if l and not l.startswith("#")]
     if not lines:
         sys.exit("lines.txt is empty")
-    idx = datetime.date.today().toordinal() % len(lines)
-    return lines[idx].split("|")
+
+    used = []
+    if USED.exists():
+        used = [l.strip() for l in USED.read_text(encoding="utf-8").splitlines() if l.strip()]
+
+    remaining = [l for l in lines if l not in used]
+    if not remaining:
+        # Whole bank exhausted - start a fresh cycle rather than posting nothing.
+        print(f"NOTE: all {len(lines)} lines used. Starting a new cycle - add more to lines.txt.")
+        USED.write_text("", encoding="utf-8")
+        remaining = lines
+        used = []
+
+    random.seed()                      # genuinely random, not date-seeded
+    choice = random.choice(remaining)
+
+    # Mark it used immediately so a re-run today picks a different line.
+    with USED.open("a", encoding="utf-8") as f:
+        f.write(choice + "\n")
+
+    print(f"Bank: {len(lines)} lines | used: {len(used)} | remaining after this: {len(remaining) - 1}")
+    return choice.split("|")
 
 
 def render(parts):
