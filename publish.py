@@ -77,6 +77,7 @@ def upload(mp4):
     )
     public = f"{base}/storage/v1/object/public/{bucket}/{name}"
     print("Uploaded:", public)
+    (OUT / "video_url.txt").write_text(public, encoding="utf-8")
 
     # Instagram must be able to download this anonymously - check before proceeding
     try:
@@ -104,6 +105,7 @@ def publish(video_url, caption):
             "media_type": "REELS",
             "video_url": video_url,
             "caption": caption,
+            "thumb_offset": "0",       # use frame 0 as the cover (never black)
             "share_to_feed": "true",   # shows in the IG grid - NOT Facebook
             "access_token": token,
         },
