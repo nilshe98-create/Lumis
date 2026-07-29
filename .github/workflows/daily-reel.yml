@@ -46,6 +46,15 @@ jobs:
           set -o pipefail
           python publish.py 2>&1 | tee -a run.log
 
+      - name: Also post to Threads
+        if: always()
+        shell: bash
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+        run: |
+          set -o pipefail
+          python publish_threads.py 2>&1 | tee -a run.log
+
       # Always show the log on the run's Summary page, success or failure
       - name: Show log on summary page
         if: always()
