@@ -53,7 +53,13 @@ def http(url, data=None, method=None, headers=None, timeout=180):
 
 def upload(mp4):
     """Push the video to Supabase Storage and return its public URL."""
-    base = env("SUPABASE_URL").rstrip("/")
+    raw = env("SUPABASE_URL").strip()
+    if not raw.startswith("http"):
+        raw = "https://" + raw
+    parts = urllib.parse.urlsplit(raw)
+    base = f"{parts.scheme}://{parts.netloc}"   # drop /rest/v1 or any other path
+    if parts.path.strip("/"):
+        print(f"Note: ignoring path '{parts.path}' in SUPABASE_URL; using {base}")
     key = env("SUPABASE_SERVICE_KEY")
     bucket = env("SUPABASE_BUCKET")
     name = f"reel-{datetime.date.today().isoformat()}-{int(time.time())}.mp4"
