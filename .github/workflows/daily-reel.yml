@@ -4,7 +4,7 @@ on:
   schedule:
     # 08:30 Taiwan time (UTC+8) = 00:30 UTC
     - cron: "30 0 * * *"
-  workflow_dispatch:        # lets you also run it manually to test
+  workflow_dispatch:
 
 jobs:
   post:
@@ -17,36 +17,51 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
+        shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk fonts-liberation
-          python -m pip install --upgrade pip
-          python -m pip install pillow
-
-      - name: Show environment (debug)
-        run: |
-          python --version
-          python -c "import PIL; print('Pillow', PIL.__version__)"
-          ffmpeg -version | head -1
-          echo "--- CJK fonts found ---"
-          ls /usr/share/fonts/opentype/noto/ 2>/dev/null | grep -i cjk || echo "none in that folder"
+          set -o pipefail
+          {
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg fonts-noto-cjk fonts-liberation
+            python -m pip install --upgrade pip
+            python -m pip install pillow
+            python --version
+            ffmpeg -version | head -1
+          } 2>&1 | tee -a run.log
 
       - name: Generate today's post
-        run: python make_post.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python make_post.py 2>&1 | tee -a run.log
 
       - name: Publish to Instagram as a Reel
+        shell: bash
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_BUCKET: ${{ secrets.SUPABASE_BUCKET }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
-        run: python publish.py
+        run: |
+          set -o pipefail
+          python publish.py 2>&1 | tee -a run.log
+
+      # Always show the log on the run's Summary page, success or failure
+      - name: Show log on summary page
+        if: always()
+        shell: bash
+        run: |
+          echo "## LUMIS run log" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -n 80 run.log >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "(no log captured)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Keep a copy of what was posted
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lumis-post-${{ github.run_number }}
-          path: out/
+          path: |
+            out/
+            run.log
           if-no-files-found: ignore
