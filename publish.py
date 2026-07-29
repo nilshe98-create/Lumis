@@ -71,12 +71,25 @@ def upload(mp4):
     )
     public = f"{base}/storage/v1/object/public/{bucket}/{name}"
     print("Uploaded:", public)
+
+    # Instagram must be able to download this anonymously - check before proceeding
+    try:
+        req = urllib.request.Request(public, method="HEAD")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            print(f"Public check: HTTP {r.status}, "
+                  f"type={r.headers.get('Content-Type')}, "
+                  f"size={r.headers.get('Content-Length')}")
+    except Exception as e:
+        sys.exit(f"Uploaded file is NOT publicly readable: {e}\n"
+                 f"Make sure the '{bucket}' bucket is set to PUBLIC in Supabase.")
     return public
 
 
 def publish(video_url, caption):
     token = env("IG_ACCESS_TOKEN")
-    target = os.environ.get("IG_USER_ID") or "me"
+    # "me" is what the Graph API Explorer test proved works for this token.
+    # A numeric ID from the dashboard can belong to a different ID space and 400s.
+    target = os.environ.get("IG_TARGET") or "me"
 
     # 1. create the Reel container
     res = http(
