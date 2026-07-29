@@ -6,7 +6,7 @@ so it can be published as an Instagram Reel via the Graph API.
 
 Outputs: out/post.png, out/post.mp4, out/caption.txt
 """
-import os, math, random, subprocess, datetime, pathlib
+import os, sys, math, random, glob, subprocess, datetime, pathlib
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = pathlib.Path(__file__).parent
@@ -20,13 +20,59 @@ STARW = (232, 224, 205)
 BLACK = (0, 0, 10)
 DURATION = 7  # seconds
 
-SB = "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf"
-SI = "/usr/share/fonts/truetype/liberation/LiberationSerif-Italic.ttf"
-CJK = "/usr/share/fonts/opentype/noto/NotoSerifCJK-Light.ttc"
+
+# ---------------------------------------------------------------- fonts
+def find_font(patterns, label):
+    """Return the first font file that actually exists on this machine."""
+    for pat in patterns:
+        hits = sorted(glob.glob(pat, recursive=True))
+        if hits:
+            return hits[0]
+    found = sorted(glob.glob("/usr/share/fonts/**/*.tt[fc]", recursive=True))[:25]
+    sys.exit(
+        f"ERROR: no {label} font found.\nTried: {patterns}\n"
+        f"Fonts present on this machine:\n  " + "\n  ".join(found)
+    )
+
+
+# Chinese: prefer lighter weights, fall back to whatever exists
+CJK = find_font(
+    [
+        "/usr/share/fonts/**/NotoSerifCJK-Light.ttc",
+        "/usr/share/fonts/**/NotoSerifCJK-Regular.ttc",
+        "/usr/share/fonts/**/NotoSerifCJK*.ttc",
+        "/usr/share/fonts/**/NotoSerifCJK*.otf",
+        "/usr/share/fonts/**/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/**/NotoSansCJK*.ttc",
+    ],
+    "Chinese (CJK)",
+)
+
+# Latin serif for the LUMIS wordmark
+SB = find_font(
+    [
+        "/usr/share/fonts/**/LiberationSerif-Bold.ttf",
+        "/usr/share/fonts/**/DejaVuSerif-Bold.ttf",
+        "/usr/share/fonts/**/FreeSerifBold.ttf",
+        "/usr/share/fonts/**/*Serif*Bold*.ttf",
+    ],
+    "Latin serif bold",
+)
+SI = find_font(
+    [
+        "/usr/share/fonts/**/LiberationSerif-Italic.ttf",
+        "/usr/share/fonts/**/DejaVuSerif-Italic.ttf",
+        "/usr/share/fonts/**/FreeSerifItalic.ttf",
+        "/usr/share/fonts/**/LiberationSerif-Regular.ttf",
+        "/usr/share/fonts/**/*Serif*.ttf",
+    ],
+    "Latin serif italic",
+)
 
 
 def tc_index(path):
-    for i in range(8):
+    """Find the Traditional Chinese face inside a .ttc collection."""
+    for i in range(10):
         try:
             if "TC" in ImageFont.truetype(path, 20, index=i).getname()[0]:
                 return i
@@ -35,12 +81,17 @@ def tc_index(path):
     return 0
 
 
+TC = tc_index(CJK)
+print(f"Fonts -> CJK: {CJK} (face {TC})\n         serif: {SB}")
+
+
+# ---------------------------------------------------------------- content
 def pick_line():
     """Pick today's line by day-of-year; wraps around forever."""
     raw = [l.strip() for l in (ROOT / "lines.txt").read_text(encoding="utf-8").splitlines()]
     lines = [l for l in raw if l and not l.startswith("#")]
     if not lines:
-        raise SystemExit("lines.txt is empty")
+        sys.exit("lines.txt is empty")
     idx = datetime.date.today().toordinal() % len(lines)
     return lines[idx].split("|")
 
@@ -48,7 +99,6 @@ def pick_line():
 def render(parts):
     img = Image.new("RGBA", (W, H), BLACK + (255,))
     d = ImageDraw.Draw(img)
-    tc = tc_index(CJK)
 
     def T(text, path, idx, size, cy, track, alpha):
         f = ImageFont.truetype(path, int(size * SS), index=idx)
@@ -68,7 +118,6 @@ def render(parts):
             pts.append((cx + r * math.sin(an), cy - r * math.cos(an)))
         d.polygon(pts, fill=GOLD + (a,))
 
-    # starfield (kept clear of the text band)
     random.seed(datetime.date.today().toordinal())
     for _ in range(16):
         x = random.randint(90 * SS, 990 * SS)
@@ -81,12 +130,11 @@ def render(parts):
 
     T("LUMIS", SB, 0, 38, 340 * SS, 14, 190)
 
-    # centre the block vertically no matter how many lines
     n = len(parts)
     gap = 125
     start = 945 - (n - 1) * gap / 2
     for i, part in enumerate(parts):
-        T(part, CJK, tc, 60, (start + i * gap) * SS, 4, 248)
+        T(part, CJK, TC, 60, (start + i * gap) * SS, 4, 248)
 
     spark(W / 2, (start + (n - 1) * gap + 165) * SS, 15 * SS, 3.2 * SS, 215)
     T("lumisstar.com", SI, 0, 30, 1620 * SS, 6, 150)
@@ -111,17 +159,18 @@ def to_video(png):
         "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart",
         str(mp4),
     ]
-    subprocess.run(cmd, check=True, capture_output=True)
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        sys.exit("ffmpeg failed:\n" + r.stderr[-2000:])
     return mp4
 
 
 def main():
     parts = pick_line()
+    print("Line:", " / ".join(parts))
     png = render(parts)
     mp4 = to_video(png)
-    caption = parts[-1].replace("，", "，").strip()
-    # one-line caption, no hashtags
-    caption = "".join(parts).replace("|", "")
+    caption = "".join(parts)
     (OUT / "caption.txt").write_text(caption, encoding="utf-8")
     print("PNG:", png)
     print("MP4:", mp4, mp4.stat().st_size, "bytes")
