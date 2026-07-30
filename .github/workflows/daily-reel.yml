@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write        # needed to save used.txt back to the repo
+  issues: write          # needed to raise token / bank reminders
 
 jobs:
   post:
@@ -57,6 +58,15 @@ jobs:
         run: |
           set -o pipefail
           python publish_threads.py 2>&1 | tee -a run.log
+
+      - name: Health check (token expiry + line bank)
+        if: always()
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          python check_health.py 2>&1 | tee -a run.log
 
       - name: Remember which line was posted
         if: success()
