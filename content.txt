@@ -1,0 +1,692 @@
+# LUMIS content bank — one post per block, blocks separated by a blank line.
+# Fields: type / kicker / glyph / ring / title / body (repeat) / footer (label :: value) / note / caption
+# Only `body` is required. Add a glyph ONLY when it is genuinely the subject.
+
+type: nakshatra
+kicker: 二十七宿 · 01
+glyph: ☾
+title: Ashwini · 馬頭
+body: 象徵是一顆馬的頭，
+body: 守護神是兩位騎馬的醫者。
+body: 月亮在這裡的人跑得很快，
+body: 也很會替別人止痛。
+note: 二十七宿是月亮走過天空的二十七個家
+
+type: nakshatra
+kicker: 二十七宿 · 02
+glyph: ☾
+title: Bharani · 承載
+body: 象徵是子宮，
+body: 守護神是掌管生死的閻摩。
+body: 月亮在這裡的人能承受很重的事，
+body: 而且不太喊痛。
+
+type: nakshatra
+kicker: 二十七宿 · 03
+glyph: ☾
+title: Krittika · 火焰
+body: 象徵是一把刀，也是一團火。
+body: 守護神是火神阿耆尼。
+body: 月亮在這裡的人看得很準，
+body: 說話有時候太準了。
+
+type: nakshatra
+kicker: 二十七宿 · 04
+glyph: ☾
+title: Rohini · 生長
+body: 象徵是一台牛車，
+body: 守護神是創造之神。
+body: 月亮在這裡的人天生吸引人，
+body: 也讓身邊的東西都長得好。
+note: 傳說月亮最愛的就是這一宿
+
+type: nakshatra
+kicker: 二十七宿 · 05
+glyph: ☾
+title: Mrigashira · 鹿首
+body: 象徵是一顆鹿的頭。
+body: 月亮在這裡的人一直在找，
+body: 找一個更好的地方、
+body: 一個更對的人。
+
+type: nakshatra
+kicker: 二十七宿 · 06
+glyph: ☾
+title: Ardra · 淚滴
+body: 象徵是一滴眼淚，
+body: 守護神是暴風之神魯陀羅。
+body: 風雨過後，
+body: 空氣才真的乾淨。
+
+type: nakshatra
+kicker: 二十七宿 · 07
+glyph: ☾
+title: Punarvasu · 歸來
+body: 名字的意思是「再一次的好」。
+body: 月亮在這裡的人失去過，
+body: 但總是能回到原本的自己。
+note: 它的守護神阿底提，是「無限」的意思
+
+type: nakshatra
+kicker: 二十七宿 · 08
+glyph: ☾
+title: Pushya · 滋養
+body: 象徵是牛的乳房，
+body: 守護神是眾神的老師。
+body: 二十七宿裡最吉祥的一宿——
+body: 月亮在這裡的人天生會照顧人。
+
+type: nakshatra
+kicker: 二十七宿 · 09
+glyph: ☾
+title: Ashlesha · 盤蛇
+body: 象徵是一條盤起來的蛇。
+body: 月亮在這裡的人看穿別人很快，
+body: 也因此常常一個人。
+
+type: nakshatra
+kicker: 二十七宿 · 10
+glyph: ☾
+title: Magha · 王座
+body: 象徵是一張空的王座，
+body: 守護神是祖先。
+body: 月亮在這裡的人身上，
+body: 有很多不是自己的記憶。
+note: 這一宿主血脈與傳承
+
+type: nakshatra
+kicker: 二十七宿 · 11
+glyph: ☾
+title: Purva Phalguni · 歇息
+body: 象徵是床的前腳。
+body: 月亮在這裡的人懂得享受，
+body: 也懂得停下來——
+body: 那不是懶，是一種天賦。
+
+type: nakshatra
+kicker: 二十七宿 · 12
+glyph: ☾
+title: Uttara Phalguni · 相伴
+body: 象徵是床的後腳，
+body: 守護神主管友誼與承諾。
+body: 月亮在這裡的人，
+body: 說出口的話都算數。
+
+type: nakshatra
+kicker: 二十七宿 · 13
+glyph: ☾
+title: Hasta · 手
+body: 象徵就是一隻手。
+body: 月亮在這裡的人手很巧，
+body: 想要的東西
+body: 常常真的能握住。
+
+type: nakshatra
+kicker: 二十七宿 · 14
+glyph: ☾
+title: Chitra · 明珠
+body: 象徵是一顆閃亮的寶石，
+body: 守護神是天界的工匠。
+body: 月亮在這裡的人對美很敏感，
+body: 做出來的東西都好看。
+
+type: nakshatra
+kicker: 二十七宿 · 15
+glyph: ☾
+title: Swati · 風中的芽
+body: 象徵是風裡一株搖動的嫩芽。
+body: 月亮在這裡的人很難被綁住，
+body: 但也因此彎而不折。
+
+type: nakshatra
+kicker: 二十七宿 · 16
+glyph: ☾
+title: Vishakha · 凱旋門
+body: 象徵是一座勝利的拱門。
+body: 月亮在這裡的人一旦決定了，
+body: 就會走到最後。
+
+type: nakshatra
+kicker: 二十七宿 · 17
+glyph: ☾
+title: Anuradha · 蓮花
+body: 象徵是一朵蓮花，
+body: 守護神主管友誼。
+body: 開在水上，根在泥裡——
+body: 月亮在這裡的人也是這樣。
+
+type: nakshatra
+kicker: 二十七宿 · 18
+glyph: ☾
+title: Jyeshtha · 年長者
+body: 名字的意思是「最年長的」。
+body: 月亮在這裡的人很早就懂事，
+body: 也很早就開始保護別人。
+
+type: nakshatra
+kicker: 二十七宿 · 19
+glyph: ☾
+title: Mula · 根
+body: 象徵是一束綁起來的根。
+body: 月亮在這裡的人不滿足於表面，
+body: 一定要挖到最底下
+body: 才肯罷休。
+
+type: nakshatra
+kicker: 二十七宿 · 20
+glyph: ☾
+title: Purva Ashadha · 不敗
+body: 象徵是一把扇子，
+body: 守護神是水。
+body: 水看起來最軟，
+body: 卻沒有什麼能真的擋住它。
+
+type: nakshatra
+kicker: 二十七宿 · 21
+glyph: ☾
+title: Uttara Ashadha · 象牙
+body: 象徵是象的牙。
+body: 月亮在這裡的人贏得慢，
+body: 但贏了就不會再輸回去。
+
+type: nakshatra
+kicker: 二十七宿 · 22
+glyph: ☾
+title: Shravana · 耳
+body: 象徵是一隻耳朵。
+body: 月亮在這裡的人聽得比說得多，
+body: 所以知道得也比較多。
+note: 在吠陀傳統裡，智慧是「聽」來的，不是讀來的
+
+type: nakshatra
+kicker: 二十七宿 · 23
+glyph: ☾
+title: Dhanishta · 鼓
+body: 象徵是一面鼓。
+body: 月亮在這裡的人天生有節奏感，
+body: 走到哪裡都容易被聽見。
+
+type: nakshatra
+kicker: 二十七宿 · 24
+glyph: ☾
+title: Shatabhisha · 百位醫者
+body: 象徵是一個空的圓圈。
+body: 月亮在這裡的人喜歡獨處，
+body: 也常常在獨處裡
+body: 把自己修好。
+
+type: nakshatra
+kicker: 二十七宿 · 25
+glyph: ☾
+title: Purva Bhadrapada · 烈火
+body: 這一宿的能量很極端。
+body: 月亮在這裡的人不走中間路線，
+body: 要嘛全心，要嘛轉身。
+
+type: nakshatra
+kicker: 二十七宿 · 26
+glyph: ☾
+title: Uttara Bhadrapada · 深海之蛇
+body: 象徵是海底沉睡的蛇。
+body: 月亮在這裡的人很安靜，
+body: 但那不是空的安靜，
+body: 是很深的那一種。
+
+type: nakshatra
+kicker: 二十七宿 · 27
+glyph: ☾
+title: Revati · 魚
+body: 最後一宿，象徵是一對魚，
+body: 守護神護送旅人平安到家。
+body: 月亮在這裡的人溫柔，
+body: 也總是走在別人回家的路上。
+note: 二十七宿走到這裡結束，然後月亮又從頭開始
+
+type: planet
+glyph: ☉
+ring: yes
+title: 太陽 · 你是誰
+body: 太陽不是你的個性，
+body: 是你想成為的樣子。
+body: 是你希望別人記得的
+body: 那個版本的你。
+note: 九章旅程 · 第一章，免費
+
+type: planet
+kicker: 九曜
+glyph: ☽
+ring: yes
+title: 月亮 · 你的內心
+body: 太陽是你在人前的樣子，
+body: 月亮是你獨處時，
+body: 真正的樣子。
+note: 吠陀占星從月亮讀你，而不是太陽
+
+type: planet
+glyph: ☿
+ring: yes
+title: 水星 · 你的頭腦
+body: 水星不管你聰不聰明，
+body: 它管你怎麼想事情——
+body: 以及那些話
+body: 為什麼總是說不出口。
+
+type: planet
+glyph: ♀
+ring: yes
+title: 金星 · 你的愛
+body: 金星不只是愛情。
+body: 它是你覺得什麼有價值，
+body: 包括你怎麼看待
+body: 你自己。
+
+type: planet
+kicker: 九曜
+glyph: ♂
+ring: yes
+title: 火星 · 你的勇氣
+body: 火星不是憤怒，
+body: 是你願意為某件事
+body: 站起來的那一刻。
+
+type: planet
+glyph: ♃
+ring: yes
+title: 木星 · 你的福氣
+body: 木星是那些
+body: 不需要你努力
+body: 就來到你身邊的東西。
+body: 每個人都有，只是位置不同。
+
+type: planet
+glyph: ♄
+ring: yes
+title: 土星 · 你的功課
+body: 土星給的東西都很慢，
+body: 也都很痛。
+body: 但你回頭看會發現，
+body: 那些正是撐住你的東西。
+
+type: planet
+glyph: ☊
+ring: yes
+title: 羅睺 · 你的渴望
+body: 羅睺是一顆沒有身體的頭，
+body: 所以它永遠吃不飽。
+body: 你人生裡追得最兇的那件事，
+body: 通常就在這裡。
+
+type: planet
+glyph: ☋
+ring: yes
+title: 計都 · 你的靈魂
+body: 計都是一具沒有頭的身體，
+body: 所以它不再渴望什麼。
+body: 你不用學就會的事，
+body: 常常藏在這裡。
+note: 羅睺與計都永遠相對——一個要，一個放
+
+type: fact
+kicker: 你不知道的吠陀
+body: 西方占星說你是獅子座，
+body: 吠陀可能說你是巨蟹。
+body: 兩者相差約二十四度，
+body: 因為星空真的移動了。
+note: 這不是誰對誰錯，而是兩種看星星的方式
+
+type: fact
+kicker: 你不知道的吠陀
+title: 為什麼是月亮
+body: 太陽走完一圈要一年，
+body: 月亮只要二十七天。
+body: 它變得快，
+body: 就像我們的情緒。
+note: 所以吠陀用月亮，來讀一個人的內在
+
+type: fact
+kicker: 你不知道的吠陀
+title: 二十七宿
+body: 西方有十二星座，
+body: 吠陀還多看一層——
+body: 月亮每天住進不同的「宿」，
+body: 一共二十七個家。
+note: 宿，是月亮走過天空的二十七個驛站
+
+type: fact
+kicker: 今天學一個字
+title: 業 · Karma
+body: 業不是懲罰，
+body: 原意只是「行動」。
+body: 你做過的事會回到你身上——
+body: 那其實是一種公平。
+
+type: fact
+kicker: 今天學一個字
+title: 大運 · Dasha
+body: 吠陀有一套獨有的時間系統，
+body: 把人生切成一段一段，
+body: 每一段由一顆星主導。
+body: 所以「時候到了」是真的有時候。
+
+type: fact
+kicker: 你不知道的吠陀
+title: 九曜，不是十顆
+body: 吠陀不看天王星、海王星、冥王星。
+body: 它只看肉眼看得見的七顆，
+body: 加上羅睺與計都——
+body: 兩個看不見的交點。
+note: 因為古人相信：能被看見的，才能被驗證
+
+type: fact
+kicker: 你不知道的吠陀
+body: 羅睺與計都不是星星。
+body: 它們是月亮軌道
+body: 與太陽軌道的交叉點。
+body: 日食月食，就發生在那裡。
+note: 看不見，卻能遮住太陽——這就是它們的意義
+
+type: myth
+kicker: 星曜神話
+body: 羅睺與計都，
+body: 原本是同一個身體。
+body: 因為偷喝了長生的甘露，
+body: 被斬成兩半——
+body: 一半永遠渴望，
+body: 一半徹底放下。
+note: 所以羅睺主慾望，計都主解脫
+
+type: myth
+kicker: 星曜神話
+glyph: ☉
+body: 太陽神駕著七匹馬的車，
+body: 每天橫越天空。
+body: 七匹馬，
+body: 是光的七種顏色。
+note: 所以太陽代表你被看見的那一面
+
+type: myth
+kicker: 星曜神話
+glyph: ♄
+body: 土星是太陽的兒子，
+body: 卻連父親都不敢看他一眼。
+body: 傳說他的目光
+body: 能讓一切停下來。
+note: 所以土星主延遲——它不是不給，是要你等
+
+type: myth
+kicker: 星曜神話
+glyph: ☽
+body: 月亮娶了二十七個女兒，
+body: 卻只偏愛其中一個。
+body: 岳父因此下咒，
+body: 讓他從此有圓有缺。
+note: 那二十七個女兒，就是二十七宿
+
+type: voice
+kicker: 星曜語錄
+glyph: ♄
+body: 土星：
+body: 「我不是在懲罰你，
+body: 我是在教你。」
+note: 土星主紀律與時間，它給的功課都很慢，但很牢
+
+type: voice
+kicker: 星曜語錄
+glyph: ♀
+body: 金星：
+body: 「你值得的，
+body: 不只是被需要。」
+note: 金星主愛與價值感
+
+type: voice
+kicker: 星曜語錄
+glyph: ☿
+body: 水星：
+body: 「你想太多不是問題，
+body: 你不說才是。」
+note: 水星主語言與思考
+
+type: voice
+kicker: 星曜語錄
+glyph: ☽
+body: 月亮：
+body: 「你今天不用很好，
+body: 我看過你所有的樣子。」
+note: 月亮主情緒與記憶
+
+type: voice
+kicker: 星曜語錄
+glyph: ♂
+body: 火星：
+body: 「你不是沒有勇氣，
+body: 你只是太累了。」
+note: 火星主行動與意志
+
+type: voice
+kicker: 星曜語錄
+glyph: ♃
+body: 木星：
+body: 「你以為錯過的，
+body: 我還在幫你留著。」
+note: 木星主恩典與擴張
+
+type: voice
+kicker: 星曜語錄
+glyph: ☉
+body: 太陽：
+body: 「你不用發光給別人看，
+body: 你本來就是光源。」
+note: 太陽主自我與生命力
+
+type: reflection
+body: 你不是想太多，
+body: 你只是感受得更深。
+
+type: reflection
+body: 你習慣先照顧別人的情緒，
+body: 卻常常忘了問問自己，
+body: 今天好不好。
+
+type: reflection
+body: 你以為早就放下的事，
+body: 其實只是學會了
+body: 安靜地帶著它走。
+
+type: reflection
+body: 你的溫柔，
+body: 從來不是軟弱，
+body: 而是一種力量。
+
+type: question
+glyph: ☽
+body: 你的月亮，
+body: 住在哪一個星座？
+body: 留言告訴我，
+body: 我告訴你它在說什麼。
+
+type: question
+body: 如果星辰能為你
+body: 寫一句話，
+body: 你希望它說什麼？
+
+type: question
+kicker: 二十七宿
+body: 二十七個宿，
+body: 你猜你的月亮
+body: 住在哪一個？
+
+type: fact
+kicker: 你不知道的吠陀
+title: 星空會移動
+body: 兩千年前春分點在牡羊，
+body: 現在已經退到雙魚。
+body: 西方沿用了古代的座標，
+body: 吠陀跟著真實的星星走。
+note: 這個差距叫做「歲差」
+
+type: fact
+kicker: 你不知道的吠陀
+title: 九顆，不是十顆
+body: 吠陀只用九曜，
+body: 沒有天王星、海王星、冥王星。
+body: 因為這套系統成形的時候，
+body: 那三顆還沒被看見。
+
+type: fact
+kicker: 你不知道的吠陀
+title: 上升，比太陽重要
+body: 西方先看太陽星座，
+body: 吠陀先看上升與月亮。
+body: 太陽是你給世界看的，
+body: 上升是世界看見的你。
+
+type: fact
+kicker: 你不知道的吠陀
+title: 羅睺與計都不是星
+body: 它們沒有實體，
+body: 是月亮軌道與太陽軌道的交點。
+body: 日食月食就發生在那裡——
+body: 古人說，那是被吞掉的光。
+
+type: fact
+kicker: 今天學一個字
+title: 宿 · Nakshatra
+body: 西方有十二星座，
+body: 吠陀還多看一層——
+body: 月亮每天住進不同的宿，
+body: 一共二十七個家。
+
+type: fact
+kicker: 你不知道的吠陀
+title: 為什麼要出生時間
+body: 上升星座每兩小時就換一次。
+body: 差二十分鐘，
+body: 整張星盤可能就不一樣了。
+note: 這也是為什麼「只看星座」看不準
+
+type: fact
+kicker: 你不知道的吠陀
+title: 月亮不只有星座
+body: 你的月亮在哪個星座是一層，
+body: 在哪個宿是另一層，
+body: 在宿的第幾等分又是一層。
+body: 越看越細，也越像你。
+
+type: fact
+kicker: 你不知道的吠陀
+title: 星盤不會改變
+body: 出生那一刻的天空，
+body: 一輩子只會出現那一次。
+body: 所以星盤不是預測，
+body: 是一張你來的時候的地圖。
+
+type: voice
+kicker: 星曜語錄
+glyph: ☿
+body: 水星：
+body: 「你想說的話，
+body: 比你說出口的多。」
+note: 水星主語言與思考，也主那些沒說出口的
+
+type: voice
+kicker: 星曜語錄
+glyph: ♂
+body: 火星：
+body: 「你不是沒有勇氣，
+body: 你只是太會忍。」
+note: 火星主行動與界線——忍太久的人，通常火星被壓著
+
+type: voice
+kicker: 星曜語錄
+glyph: ♃
+body: 木星：
+body: 「別謝我，
+body: 那本來就是你的。」
+note: 木星主福氣與擴張，它給的東西不用搶
+
+type: voice
+kicker: 星曜語錄
+glyph: ☽
+body: 月亮：
+body: 「你可以在別人面前笑，
+body: 但在我這裡不用。」
+note: 月亮主情緒與內心，是你獨處時的樣子
+
+type: voice
+kicker: 星曜語錄
+glyph: ☉
+body: 太陽：
+body: 「你一直在演一個
+body: 你以為別人喜歡的人。」
+note: 太陽主自我與被看見的那一面
+
+type: voice
+kicker: 星曜語錄
+glyph: ☊
+body: 羅睺：
+body: 「再一點點就好。」
+body: （它每次都這樣說。）
+note: 羅睺是沒有身體的頭，所以永遠吃不飽
+
+type: voice
+kicker: 星曜語錄
+glyph: ☋
+body: 計都：
+body: 「你其實已經夠了，
+body: 只是你不相信。」
+note: 計都是沒有頭的身體，它早就不渴望了
+
+type: myth
+kicker: 星曜神話
+glyph: ☽
+body: 月亮娶了二十七位妻子，
+body: 卻只偏愛其中一位。
+body: 因此被詛咒日漸消瘦——
+body: 這就是月亮的圓缺。
+note: 那二十七位，就是二十七宿
+
+type: myth
+kicker: 星曜神話
+glyph: ♄
+body: 土星是太陽的兒子，
+body: 卻和父親不合。
+body: 傳說他看誰一眼，
+body: 誰的人生就會慢下來。
+note: 慢，不一定是壞事——慢的東西才長得久
+
+type: myth
+kicker: 星曜神話
+body: 眾神攪動乳海，
+body: 想取出長生的甘露。
+body: 攪了一千年，
+body: 先浮上來的是毒。
+body: 甘露，是最後才出現的。
+note: 吠陀的老故事，常常在講同一件事：好東西都在後面
+
+type: myth
+kicker: 星曜神話
+glyph: ♂
+body: 火星生於大地，
+body: 一出生就在找對手。
+body: 後來他才明白，
+body: 那個對手一直是自己。
+
+type: question
+body: 你最近一次
+body: 覺得被真正理解，
+body: 是什麼時候？
+
+type: question
+glyph: ♄
+body: 如果土星問你：
+body: 「你這幾年學會了什麼？」
+body: 你會怎麼回答？
+
+type: question
+body: 星辰如果為你寫一句話，
+body: 你希望它說什麼？
+
+type: question
+glyph: ☊
+body: 你追得最久的那件事，
+body: 現在還在追嗎？
