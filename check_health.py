@@ -34,8 +34,8 @@ def issued_date():
 
 
 def bank_status():
-    raw = [l.strip() for l in (ROOT / "lines.txt").read_text(encoding="utf-8").splitlines()]
-    lines = [l for l in raw if l and not l.startswith("#")]
+    from content_loader import load
+    lines = [i["body"][0][:40] for i in load()]
     used_f = ROOT / "used.txt"
     used = []
     if used_f.exists():
@@ -79,7 +79,7 @@ def open_issue(title, body):
 
 def main():
     total, remaining = bank_status()
-    print(f"HEALTH | bank: {remaining}/{total} lines left (~{remaining} days)")
+    print(f"HEALTH | bank: {remaining}/{total} posts left (~{remaining} days)")
 
     issued = issued_date()
     if issued:
@@ -104,10 +104,9 @@ def main():
     if remaining <= BANK_WARN_REMAINING:
         open_issue(
             "LUMIS: line bank running low",
-            f"Only **{remaining}** unused lines left out of {total}.\n\n"
+            f"Only **{remaining}** unused posts left out of {total}.\n\n"
             "When it runs out the system restarts the cycle and begins repeating.\n\n"
-            "**To fix:** add more lines to `lines.txt` (one per line, use `|` "
-            "to split a line across the card).\n")
+            "**To fix:** add more posts to `content.txt` (one block per post).\n")
 
 
 if __name__ == "__main__":
