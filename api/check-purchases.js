@@ -64,6 +64,21 @@ module.exports = async function handler(req, res) {
       }
     }
 
+    // Save the compact natal-chart summary used to personalise each subscriber's daily horoscope
+    if (action === 'save_natal' && email && req.body.summary) {
+      try {
+        await supabase.from('purchases').upsert({
+          user_email: String(email).trim().toLowerCase(),
+          chapter: 'natal_summary',
+          payment_id: JSON.stringify({ summary: String(req.body.summary).slice(0, 2000), sig: req.body.sig || '' }),
+          subscription_id: null,
+        }, { onConflict: 'user_email,chapter' });
+        return res.status(200).json({ ok: true });
+      } catch(e) {
+        return res.status(200).json({ ok: false });
+      }
+    }
+
     if (action === 'save_birth' && email && dob) {
       try {
         await supabase.from('purchases').upsert({
@@ -109,6 +124,8 @@ module.exports = async function handler(req, res) {
         } else if (row.chapter === 'soulmate' || row.chapter === 'starchild') {
           // Legacy permanent rows from before per-use credits existed: honor as one credit.
           if (credits[row.chapter] < 1) credits[row.chapter] = 1;
+        } else if (row.chapter === 'natal_summary') {
+          // internal chart summary for personalising the daily horoscope, never an entitlement
         } else if (row.chapter && row.chapter.indexOf('feedback_') === 0) {
           // feedback rows are owner-only records, never a user entitlement
         } else {
