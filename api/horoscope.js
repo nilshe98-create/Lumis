@@ -466,6 +466,8 @@ module.exports = async function handler(req, res) {
 
     let sent = 0, failed = 0, skipped = 0;
     const detail = [];
+    // Build the recipient list first, so generation can run in parallel batches.
+    const recipients = [];
     for (const [lineUserId, emails] of byLineUser) {
       const matched = emails.find(e => paidEmails.has(e));
       if (!matched) {
@@ -473,29 +475,55 @@ module.exports = async function handler(req, res) {
         detail.push({ email: emails.join(', ') || '(none)', result: 'skipped_no_active_subscription' });
         continue;
       }
-
-      // Interpret today's real sky against THIS person's real chart. Falls back to the shared
-      // broadcast if they have no summary yet, or if their personal generation fails —
-      // a subscriber must never receive nothing.
-      let myFlex = flexContents, myPlain = plainMessage, personalised = false;
-      const summary = emails.map(e => natalMap[e]).find(Boolean);
-      if (type === 'daily' && summary) {
-        try {
-          const myText = await generatePersonalDaily(summary);
-          if (myText && myText.trim()) {
-            myPlain = myText + '\n\n\u2014 LUMIS \u2726\n\u770b\u4f60\u7684\u5b8c\u6574\u661f\u8fb0\u5716\u6848 \u2192 lumisstar.com';
-            myFlex = buildFlexMessage(myText, header);
-            personalised = true;
-          }
-        } catch (e) { console.error('personal daily failed for', matched, e.message); }
-      }
-
-      const ok = await pushToUser(lineUserId, myFlex, alt, myPlain);
-      if (ok) { sent++; detail.push({ email: matched, result: personalised ? 'sent_personalised' : 'sent' }); }
-      else { failed++; detail.push({ email: matched, result: 'push_failed_check_friend_or_token' }); }
+      recipients.push({ lineUserId, matched, summary: emails.map(e => natalMap[e]).find(Boolean) });
     }
 
-    res.status(200).json({ ok: true, type, sent, failed, skipped, total: subscribers.length, detail });
+    // TIMEOUT SAFETY: this runs in a serverless function with a hard wall-clock limit.
+    // One AI call per subscriber, run sequentially, would blow past it as soon as a handful of
+    // people subscribe. So: generate in small parallel batches, and keep a time budget —
+    // once the budget is spent, everyone remaining gets the shared broadcast instead.
+    // Nobody is ever skipped; the worst case is a less personal message, never a missing one.
+    const startedAt = Date.now();
+    const BUDGET_MS = Number(process.env.HOROSCOPE_BUDGET_MS || 40000);
+    const BATCH = 4;
+    const personalText = new Map();
+
+    if (type === 'daily') {
+      const needing = recipients.filter(r => r.summary);
+      for (let i = 0; i < needing.length; i += BATCH) {
+        if (Date.now() - startedAt > BUDGET_MS) {
+          console.warn('horoscope: time budget reached, remaining subscribers get the shared message');
+          break;
+        }
+        const slice = needing.slice(i, i + BATCH);
+        await Promise.all(slice.map(async (r) => {
+          try {
+            const t = await generatePersonalDaily(r.summary);
+            if (t && t.trim()) personalText.set(r.lineUserId, t.trim());
+          } catch (e) { console.error('personal daily failed for', r.matched, e.message); }
+        }));
+      }
+    }
+
+    for (const r of recipients) {
+      let myFlex = flexContents, myPlain = plainMessage, personalised = false;
+      const myText = personalText.get(r.lineUserId);
+      if (myText) {
+        myPlain = myText + '\n\n\u2014 LUMIS \u2726\n\u770b\u4f60\u7684\u5b8c\u6574\u661f\u8fb0\u5716\u6848 \u2192 lumisstar.com';
+        myFlex = buildFlexMessage(myText, header);
+        personalised = true;
+      }
+      const ok = await pushToUser(r.lineUserId, myFlex, alt, myPlain);
+      if (ok) { sent++; detail.push({ email: r.matched, result: personalised ? 'sent_personalised' : 'sent' }); }
+      else { failed++; detail.push({ email: r.matched, result: 'push_failed_check_friend_or_token' }); }
+    }
+
+    res.status(200).json({
+      ok: true, type, sent, failed, skipped,
+      personalised: personalText.size,
+      elapsed_ms: Date.now() - startedAt,
+      total: subscribers.length, detail
+    });
   } catch (err) {
     console.error('Horoscope error:', err);
     res.status(500).json({ error: err.message });
