@@ -165,6 +165,10 @@ async function generateDaily() {
 - 圍繞今天的主題「${area}」具體展開，真實、新鮮、不老套。
 - 絕對避免陳腔濫調與重複句型，不要再用「停下來、聽聽內心的聲音」「給自己一點空間」這類用過很多次的句子。
 
+【讓天象看得見 — 很重要】
+- 在前兩段的其中一段，自然帶出「今天為什麼是這個能量」：今天由${planet.name}主宰（這是印度吠陀占星的七曜日概念），或現在的月相是${moon.name}。一句話就好，要像朋友順口說出來，不要像教科書。
+- 讓讀者每天都學到一點點真實的天象知識，而不是只收到一句安慰。
+
 【風格】
 - 不要用傳統算命格式（不要幸運色、幸運數字、運勢評分）。
 - 誠實面對挑戰，但結尾一定帶向成長與希望。像朋友說話，溫暖、真實、不說教。
@@ -296,6 +300,71 @@ async function pushToUser(userId, flexContents, altText, plainText) {
   return textRes.ok;
 }
 
+// Personalised daily — same real sky as everyone else, but interpreted against THIS person's
+// own natal chart. Uses the compact summary saved once per person, so the daily cost stays low
+// (a ~120-character summary instead of the full chart on every send).
+async function generatePersonalDaily(natalSummary) {
+  const { now, tw } = twParts();
+  const today = now.toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
+  const planet = PLANET_RULERS[tw.getDay()];
+  const start = new Date(tw.getFullYear(), 0, 0);
+  const doy = Math.floor((tw - start) / 86400000);
+  const area = LIFE_AREAS[doy % LIFE_AREAS.length];
+  const moon = moonInfo(now);
+  const angle = ANGLES[Math.floor(Math.random() * ANGLES.length)];
+
+  const prompt = `你是 LUMIS 的星辰嚮導，溫暖、真誠、有智慧，像一位很懂這個人的朋友。
+
+今天是 ${today}。
+今天由「${planet.name}」主宰，能量關於：${planet.energy}。整體氛圍：${planet.mood}。
+目前月相：${moon.name}，${moon.trend}。
+今天的主題請聚焦在：${area}。
+開場方式：${angle}。
+
+【這個人的真實出生星盤摘要】
+${natalSummary}
+
+請用繁體中文寫一段「今日訊息」給這位使用者。
+
+【格式】
+✦ 今天的你 ✦
+（2 到 3 個短段落，每段 1 到 2 句，段落之間空一行；總長約 90 到 130 字）
+💫 （最後加一句溫柔有力的提醒，約 15 到 20 字）
+
+【最重要 — 必須是「他的」訊息，不是通用訊息】
+- 把今天的天象和「他星盤裡的真實落點」對照著寫。至少一次明確講出他星盤的某個落點，再說今天的能量會怎麼碰到那個位置。
+- 例如：「今天由火星主宰，而你的火星本來就落在天蠍 — 這種日子你不是變得急躁，是變得很有針對性。」
+- 絕對不要寫成每個人都適用的通用文字。讀完要讓他覺得「這是寫給我的」。
+
+【每天都要不一樣】
+- 情緒基調貼合「${planet.name}」的能量（${planet.mood}）。不要每天都是「放慢、休息」。
+- 避免陳腔濫調與重複句型，不要再用「停下來、聽聽內心的聲音」「給自己一點空間」這類句子。
+
+【風格】
+- 不要用傳統算命格式（不要幸運色、幸運數字、運勢評分）。
+- 可以直接說出今天要注意的難處，不要只講好聽的，但結尾帶向成長與希望。
+- ${PUNCTUATION_RULE}
+
+只回傳訊息內容，不要任何其他文字。`;
+  return callClaude(prompt, 600);
+}
+
+// Every subscriber's saved natal summary, in one query. email(lowercased) -> summary
+async function getNatalSummaries() {
+  const map = {};
+  try {
+    const { data } = await supabase
+      .from('purchases').select('user_email, payment_id').eq('chapter', 'natal_summary');
+    for (const row of (data || [])) {
+      try {
+        const meta = JSON.parse(row.payment_id);
+        if (meta && meta.summary) map[String(row.user_email).trim().toLowerCase()] = meta.summary;
+      } catch (e) {}
+    }
+  } catch (e) { console.error('getNatalSummaries error:', e.message); }
+  return map;
+}
+
 // Decide which broadcast today is, and generate it.
 async function buildTodaysMessage(forceType) {
   const { tw } = twParts();
@@ -345,8 +414,13 @@ module.exports = async function handler(req, res) {
 
   try {
     const { type, text, header, alt } = await buildTodaysMessage(forceType);
+    // Shared fallback: used for weekly/monthly sky overviews (which are genuinely about the sky,
+    // not one person), and for anyone who has no saved natal summary yet.
     const plainMessage = text + '\n\n\u2014 LUMIS \u2726\n\u770b\u4f60\u7684\u5b8c\u6574\u661f\u8fb0\u5716\u6848 \u2192 lumisstar.com';
     const flexContents = buildFlexMessage(text, header);
+
+    // Personalised DAILY: every subscriber's own chart summary, one query.
+    const natalMap = (type === 'daily') ? await getNatalSummaries() : {};
 
     const { data: subscribers, error } = await supabase
       .from('line_subscribers')
@@ -399,8 +473,25 @@ module.exports = async function handler(req, res) {
         detail.push({ email: emails.join(', ') || '(none)', result: 'skipped_no_active_subscription' });
         continue;
       }
-      const ok = await pushToUser(lineUserId, flexContents, alt, plainMessage);
-      if (ok) { sent++; detail.push({ email: matched, result: 'sent' }); }
+
+      // Interpret today's real sky against THIS person's real chart. Falls back to the shared
+      // broadcast if they have no summary yet, or if their personal generation fails —
+      // a subscriber must never receive nothing.
+      let myFlex = flexContents, myPlain = plainMessage, personalised = false;
+      const summary = emails.map(e => natalMap[e]).find(Boolean);
+      if (type === 'daily' && summary) {
+        try {
+          const myText = await generatePersonalDaily(summary);
+          if (myText && myText.trim()) {
+            myPlain = myText + '\n\n\u2014 LUMIS \u2726\n\u770b\u4f60\u7684\u5b8c\u6574\u661f\u8fb0\u5716\u6848 \u2192 lumisstar.com';
+            myFlex = buildFlexMessage(myText, header);
+            personalised = true;
+          }
+        } catch (e) { console.error('personal daily failed for', matched, e.message); }
+      }
+
+      const ok = await pushToUser(lineUserId, myFlex, alt, myPlain);
+      if (ok) { sent++; detail.push({ email: matched, result: personalised ? 'sent_personalised' : 'sent' }); }
       else { failed++; detail.push({ email: matched, result: 'push_failed_check_friend_or_token' }); }
     }
 
