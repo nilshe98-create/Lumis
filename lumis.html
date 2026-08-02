@@ -1869,6 +1869,21 @@
 .form-hint{font-size:0.88rem;}
 .modal-subtitle{font-size:0.98rem;}
 .reading-ch-content{font-size:1.22rem;line-height:2.0;}
+/* real chart placement shown above each chapter — the proof line */
+.ch-placement{ text-align:center; margin:16px auto 2px; max-width:92%; }
+.ch-placement .cp-line{
+  font-family:'Noto Serif TC',serif; font-weight:600;
+  font-size:1rem; letter-spacing:2.5px; color:var(--gold);
+}
+.ch-placement .cp-note{
+  font-family:'Noto Serif TC',serif;
+  font-size:0.85rem; color:var(--silver); opacity:0.8;
+  letter-spacing:0.5px; margin-top:8px; line-height:1.75;
+}
+.ch-placement .cp-rule{
+  width:60px; height:1px; margin:14px auto 0;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent);
+}
 .pricing-features li{font-size:0.98rem;line-height:1.95;}
 .pricing-period{font-size:0.92rem;}
 .modal ul li{font-size:0.95rem;line-height:1.9;}
@@ -3311,6 +3326,11 @@
             <div style="font-size:0.82rem; letter-spacing:4px; color:var(--gold-deep); margin-bottom:6px;" id="display-ch-num">✦ 第一章 ✦</div>
             <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold); letter-spacing:2px;" id="display-ch-title">你是誰</div>
           </div>
+          <div class="ch-placement" id="display-ch-placement" style="display:none;">
+            <div class="cp-line" id="display-ch-placement-line"></div>
+            <div class="cp-note">吠陀占星依真實天象計算，星座可能與你熟悉的西方占星不同。</div>
+            <div class="cp-rule"></div>
+          </div>
           <div class="reading-ch-content" id="display-ch-content" style="padding-bottom:0;">
             <div class="reading-loading-pulse"></div>
           </div>
@@ -3794,6 +3814,8 @@ async function syncPurchasesFromServer() {
       window.lumisUserPlace = b.place || '';
       window.lumisUserGender = b.gender || '';
     }
+    // Subscribers who never open a chapter still need a chart summary for their daily message
+    setTimeout(() => { try { ensureNatalSummaryAnySource(); } catch(e) {} }, 3000);
     // Restore saved readings generated on any device — matching birth data only (zero API cost)
     if (data.readings) {
       const cache = loadReadingsCache();
@@ -4403,7 +4425,7 @@ async function submitSoulmate() {
       xhr.send(JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 2000,
-        system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。請根據雙方真實的星盤（行星落點與彼此的相互關係）做深度配對分析——這是 LUMIS 的核心，把真實星象翻譯成簡單人話。如果訊息中提供了「真實星盤計算結果」，請務必以星盤為主要依據，讓內容對這兩個人獨一無二，不要寫成通用文字。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位 2 到 3 句，簡潔有力。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
+        system: `你是 LUMIS 靈魂配對解讀師。現在是2026年。請根據雙方真實的星盤（行星落點與彼此的相互關係）做深度配對分析——這是 LUMIS 的核心，把真實星象翻譯成簡單人話。如果訊息中提供了「真實星盤計算結果」，請務必以星盤為主要依據，讓內容對這兩個人獨一無二，不要寫成通用文字。繁體中文。請明確講出兩人星盤裡的真實落點（例如「你的金星在天蠍、他的月亮在雙魚」），並立刻用生活化的白話解釋那代表什麼 — 先講星象，再講它在關係裡怎麼運作。至少要有一處把「兩個人的星」連起來看，這是 LUMIS 和其他配對網站最大的不同。可以直接說出關係裡真正的難處，不要只講好聽的。使用正確代詞：我方用「我」，對方用「${sPronoun}」。每個欄位 2 到 3 句，簡潔有力。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"score":"數字%","title":"一句話描述這段緣分，讓人想截圖分享","combo":"你們是什麼樣的組合，2句，非常具體","strength":"你們最強的地方，2句，說出他們自己都感覺到的事","challenge":"你們需要注意的事，2句，說出他們心裡的擔憂","future":"你們的未來，2句，用「最近某個階段」「未來某段時間」等方式描述，不提具體年份","message":"給你們的話，1句，溫暖有力讓人想哭"}`,
         messages: [{ role: 'user', content: `我的出生資料：${window.lumisUserDob || ''} ${window.lumisUserTime || ''} ${window.lumisUserPlace || ''} ${window.lumisUserGender || ''}\n對方的出生資料：${sDob} ${sTime} ${sPlace} ${sGender}${chartBlock}\n\n請根據我們兩人的真實星盤，分析我們的靈魂配對。` }]
       }));
     });
@@ -4503,7 +4525,7 @@ async function submitStarChild() {
       xhr.send(JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 1500,
-        system: `你是 LUMIS 星童解讀師。現在是2026年。請根據孩子真實的星盤（行星落點），並參考親子之間的星盤關係，做溫暖深刻的分析——這是 LUMIS 的核心，把真實星象翻譯成簡單人話。如果訊息中提供了「真實星盤計算結果」，請務必以星盤為主要依據，讓內容對這個孩子獨一無二，不要寫成通用文字。繁體中文。絕對不提任何占星術語如星座、宮位、行星名稱、四柱等。用簡單溫暖的話說出深刻真相。每個欄位 2 到 3 句，簡潔有力，像一個真正了解這個孩子的人在說話。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"title":"一句話描述這個孩子的靈魂","who":"這個孩子是誰，性格天賦合在一起，2-3句，非常具體，讓父母說這說的就是我的孩子","future":"孩子的未來方向，包含適合的工作環境和天賦發光的時間點，2-3句，具體但不限制","bond":"親子關係，2句，說出父母和孩子之間真實的動力","message":"給父母的話，2句，溫暖有力，讓父母感動"}`,
+        system: `你是 LUMIS 星童解讀師。現在是2026年。請根據孩子真實的星盤（行星落點），並參考親子之間的星盤關係，做溫暖深刻的分析——這是 LUMIS 的核心，把真實星象翻譯成簡單人話。如果訊息中提供了「真實星盤計算結果」，請務必以星盤為主要依據，讓內容對這個孩子獨一無二，不要寫成通用文字。繁體中文。請明確講出孩子星盤裡的真實落點（例如「他的月亮在巨蟹」），並立刻用生活化的白話解釋那代表什麼 — 先講星象，再講它在孩子身上怎麼展現。至少要有一處把孩子和父母的星盤連起來看。用簡單溫暖的話說出深刻真相，包括父母可能還沒發現的難處。每個欄位 2 到 3 句，簡潔有力，像一個真正了解這個孩子的人在說話。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。只回傳純JSON：{"title":"一句話描述這個孩子的靈魂","who":"這個孩子是誰，性格天賦合在一起，2-3句，非常具體，讓父母說這說的就是我的孩子","future":"孩子的未來方向，包含適合的工作環境和天賦發光的時間點，2-3句，具體但不限制","bond":"親子關係，2句，說出父母和孩子之間真實的動力","message":"給父母的話，2句，溫暖有力，讓父母感動"}`,
         messages: [{ role: 'user', content: `父母的出生資料：${myDob} ${myTime} ${myPlace} ${myGender}\n孩子的出生資料：${lsDob} ${lsTime} ${lsPlace} ${lsGender}${chartBlock}\n\n請根據孩子的真實星盤，分析這個孩子。` }]
       }));
     });
@@ -4696,127 +4718,6 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// =====================
-// TEST COMPATIBILITY
-// =====================
-async function testCompatibility() {
-  const result = document.getElementById('soulmate-result-screen');
-  result.style.display = 'block';
-  result.innerHTML = '<div style="color:var(--silver); font-size:1.05rem; letter-spacing:1px; text-align:center; padding:16px;">💕 星辰正在計算你們的緣分...</div>';
-
-  const myDob = window.lumisUserDob || '';
-  const myTime = window.lumisUserTime || '';
-  const myPlace = window.lumisUserPlace || '';
-  const compatDob = document.getElementById('s-dob')?.value || '';
-  const compatTime = document.getElementById('s-time')?.value || '';
-  const compatPlace = document.getElementById('s-place')?.value || '';
-
-  if (!compatDob || !compatPlace) {
-    result.innerHTML = '<div style="color:#FF6B6B; font-size:0.85rem; text-align:center; padding:12px;">⚠ 請填寫對方的出生資料</div>';
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/reading', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `你是 LUMIS 靈魂配對解讀師。根據兩人出生資料生成非常深度的配對分析。
-繁體中文。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。
-像認識兩個人二十年的摯友說話。非常具體，非常深刻，不提占星術語。
-讓人讀完說「天啊這說的就是我們」。每個部分至少80字。
-只回傳純JSON：{"compatibility":{"score":"數字%","title":"兩句話描述這段緣分","content":"深度配對分析，至少250字，非常具體，包含這段關係的優勢、挑戰和未來","warning":"需要注意的事，至少60字，非常具體","strength":"最大優勢，至少60字，非常具體"}}`,
-        messages: [{
-          role: 'user',
-          content: `我：${myDob} ${myTime} ${myPlace}\n對方：${compatDob} ${compatTime} ${compatPlace}\n請分析我們的靈魂配對`
-        }]
-      })
-    });
-    const data = await res.json();
-    const text = extractText(data).replace(/```json|```/g,'').trim();
-    const reading = JSON.parse(text);
-    const c = reading.compatibility;
-    result.innerHTML = `
-      <div class="reading-chapter">
-        <div class="reading-ch-header">
-          <span class="reading-ch-num">💕 靈魂配對 · ${c.score}</span>
-          <span class="reading-ch-title">${c.title}</span>
-        </div>
-        <div class="reading-ch-content" style="margin-bottom:12px;">${c.content}</div>
-        <div style="font-size:0.85rem; color:var(--gold); margin-bottom:4px; letter-spacing:1px;">✦ 你們的優勢</div>
-        <div class="reading-ch-content" style="margin-bottom:12px; font-size:0.82rem;">${c.strength}</div>
-        <div style="font-size:0.85rem; color:var(--gold); margin-bottom:4px; letter-spacing:1px;">⚠ 需要注意</div>
-        <div class="reading-ch-content" style="font-size:0.82rem;">${c.warning}</div>
-      </div>`;
-  } catch(err) {
-    result.innerHTML = '<div style="color:var(--silver); font-size:1.05rem; text-align:center; padding:12px;">配對分析暫時無法載入，請稍後再試。</div>';
-  }
-}
-
-// =====================
-// TEST CHILDREN
-// =====================
-async function testChildren() {
-  const result = document.getElementById('ls-result-screen');
-  result.style.display = 'block';
-  result.innerHTML = '<div style="color:var(--silver); font-size:1.05rem; letter-spacing:1px; text-align:center; padding:16px;">👶 星辰正在讀取孩子的光...</div>';
-
-  const childDob = document.getElementById('ls-dob')?.value || '';
-  const childTime = document.getElementById('ls-time')?.value || '';
-  const childPlace = document.getElementById('ls-place')?.value || '';
-  const childGender = document.getElementById('ls-gender')?.value || '';
-
-  if (!childDob || !childPlace) {
-    result.innerHTML = '<div style="color:#FF6B6B; font-size:0.85rem; text-align:center; padding:12px;">⚠ 請填寫孩子的出生資料</div>';
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/reading', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `你是 LUMIS 星童解讀師。根據孩子出生資料生成溫暖的個人分析。
-繁體中文。標點一律使用台灣全形標點，句子之間用全形逗號「，」、並列用頓號「、」、句尾用全形句號「。」，不要使用半形逗號或句號。
-像了解孩子的朋友說話，溫暖充滿愛，給父母實用建議。不提占星術語。
-只回傳純JSON：{"child":{"title":"孩子的獨特之光","personality":"個性特質80字","talent":"天生才能60字","learning":"最適合的學習方式60字","bond":"親子關係指引60字"}}`,
-        messages: [{
-          role: 'user',
-          content: `孩子資料：${childDob} ${childTime} ${childPlace} ${childGender}\n請分析這個孩子的星辰圖案`
-        }]
-      })
-    });
-    const data = await res.json();
-    const text = extractText(data).replace(/```json|```/g,'').trim();
-    const reading = JSON.parse(text);
-    const c = reading.child;
-    result.innerHTML = `
-      <div class="reading-chapter">
-        <div class="reading-ch-header">
-          <span class="reading-ch-num">👶 星童 ✦</span>
-          <span class="reading-ch-title">${c.title}</span>
-        </div>
-        <div style="font-size:0.82rem; color:var(--gold); margin-bottom:6px; letter-spacing:1px;">✦ 個性特質</div>
-        <div class="reading-ch-content" style="margin-bottom:14px;">${c.personality}</div>
-        <div style="font-size:0.82rem; color:var(--gold); margin-bottom:6px; letter-spacing:1px;">✦ 天生才能</div>
-        <div class="reading-ch-content" style="margin-bottom:14px;">${c.talent}</div>
-        <div style="font-size:0.82rem; color:var(--gold); margin-bottom:6px; letter-spacing:1px;">✦ 學習方式</div>
-        <div class="reading-ch-content" style="margin-bottom:14px;">${c.learning}</div>
-        <div style="font-size:0.82rem; color:var(--gold); margin-bottom:6px; letter-spacing:1px;">✦ 親子關係</div>
-        <div class="reading-ch-content">${c.bond}</div>
-      </div>`;
-  } catch(err) {
-    result.innerHTML = '<div style="color:var(--silver); font-size:1.05rem; text-align:center; padding:12px;">星童分析暫時無法載入，請稍後再試。</div>';
-  }
-}
 const heroLogo = document.querySelector('.hero-logo');
 const heroTagline = document.querySelector('.hero-tagline');
 if (!isMobile) {
@@ -4943,15 +4844,15 @@ function _chartContext() {
 }
 
 const CHAPTER_META = [
-  {key:'chapter1', title:'你是誰',   num:1, focus:'太陽 ☉：核心自我、性格、天賦與生命力。用溫暖、具體、像朋友的口吻，不要術語堆砌，不要預測未來'},
-  {key:'chapter2', title:'你的內心', num:2, focus:'月亮 ☽：情緒、安全感、內在需求、你如何被安撫、與家的連結'},
-  {key:'chapter3', title:'你的頭腦', num:3, focus:'水星 ☿：思考方式、溝通風格、學習方式、表達自己的方式'},
-  {key:'chapter4', title:'你的愛',   num:4, focus:'金星 ♀：愛情模式、你怎麼愛人、會吸引的對象、對美與享受的品味'},
-  {key:'chapter5', title:'你的勇氣', num:5, focus:'火星 ♂：行動力、動力、慾望、面對衝突的方式、你為什麼而戰'},
-  {key:'chapter6', title:'你的福氣', num:6, focus:'木星 ♃：幸運、財富與豐盛、智慧、成長、貴人與信念'},
-  {key:'chapter7', title:'你的功課', num:7, focus:'土星 ♄：人生功課、挑戰、責任、紀律、時間會教你的事'},
-  {key:'chapter8', title:'你的渴望', num:8, focus:'羅睺 ☊：今生強烈的渴望、野心、想突破的方向、容易過度的地方'},
-  {key:'chapter9', title:'你的靈魂', num:9, focus:'計都 ☋：天生的天賦、直覺、前世帶來的、需要學會放下的執著'}
+  {key:'chapter1', title:'你是誰',   num:1, planet:'太陽', governs:'核心自我、你是誰、生命力、你想成為什麼樣的人', focus:'太陽 ☉：核心自我、性格、天賦與生命力'},
+  {key:'chapter2', title:'你的內心', num:2, planet:'月亮', governs:'情緒、內在需求、安全感、什麼能真正安撫你', focus:'月亮 ☽：情緒、安全感、內在需求、與家的連結'},
+  {key:'chapter3', title:'你的頭腦', num:3, planet:'水星', governs:'思考方式、溝通、學習、你怎麼理解世界', focus:'水星 ☿：思考方式、溝通風格、學習方式、表達自己的方式'},
+  {key:'chapter4', title:'你的愛',   num:4, planet:'金星', governs:'愛、吸引力、你怎麼愛人、你覺得什麼是美', focus:'金星 ♀：愛情模式、你怎麼愛人、會吸引的對象、對美與享受的品味'},
+  {key:'chapter5', title:'你的勇氣', num:5, planet:'火星', governs:'行動力、慾望、憤怒、你為什麼而戰', focus:'火星 ♂：行動力、動力、慾望、面對衝突的方式'},
+  {key:'chapter6', title:'你的福氣', num:6, planet:'木星', governs:'幸運、豐盛、信念、你在哪裡容易被眷顧', focus:'木星 ♃：幸運、財富與豐盛、智慧、成長、貴人與信念'},
+  {key:'chapter7', title:'你的功課', num:7, planet:'土星', governs:'人生功課、責任、限制、時間會教你的事', focus:'土星 ♄：人生功課、挑戰、責任、紀律'},
+  {key:'chapter8', title:'你的渴望', num:8, planet:'羅睺', governs:'今生強烈的渴望、野心、你想突破的方向', focus:'羅睺 ☊：今生強烈的渴望、野心、想突破的方向、容易過度的地方'},
+  {key:'chapter9', title:'你的靈魂', num:9, planet:'計都', governs:'天生的天賦、直覺、需要學會放下的執著', focus:'計都 ☋：天生的天賦、直覺、前世帶來的、需要學會放下的執著'}
 ];
 
 function saveReadingToServer(key, obj) {
@@ -4983,9 +4884,9 @@ async function generateSingleChapter(index) {
       xhr.ontimeout = () => reject(new Error('連線超時'));
       xhr.send(JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
+        max_tokens: 2000,
         system: LUMIS_PROMPT,
-        messages: [{ role: 'user', content: `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${_chartContext()}\n\n現在只寫第${meta.num}章「${meta.title}」。\n重點：${meta.focus}\n只回傳純JSON：{"${meta.key}":{"title":"${meta.title}","content":"內容"}}` }]
+        messages: [{ role: 'user', content: `出生資料：${dob}, ${time}, ${place}, ${gender}\n\n${_chartContext()}\n\n現在只寫第${meta.num}章「${meta.title}」。\n這一章的星體是「${meta.planet}」，它主管：${meta.governs}。\n重點：${meta.focus}\n請從星盤中找出${meta.planet}的真實落點（星座、度數、宮位），寫進 placement，並在內容裡明確提到它。\n只回傳純JSON：{"${meta.key}":{"title":"${meta.title}","placement":"${meta.planet} · 星座 度數 · 第X宮","content":"內容"}}` }]
       }));
     });
     const text = extractText(result).replace(/```json|```/g,'').trim();
@@ -4998,6 +4899,66 @@ async function generateSingleChapter(index) {
   })();
   _genInFlight[meta.key] = p;
   try { return await p; } finally { delete _genInFlight[meta.key]; }
+}
+
+// Distil the user's real chart into a compact summary, ONCE. Stored server-side so the daily
+// horoscope can be personalised cheaply (small summary each day, not the whole chart).
+async function ensureNatalSummary(chartStr) {
+  try {
+    const email = lumisUser?.email;
+    if (!email || !chartStr) return;
+    if (localStorage.getItem('lumis_natal_done:' + email + ':' + _birthSig())) return;
+
+    const result = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/reading');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 60000;
+      xhr.onload = () => { if (xhr.status >= 200 && xhr.status < 300) { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } } else reject(new Error('API ' + xhr.status)); };
+      xhr.onerror = () => reject(new Error('network'));
+      xhr.ontimeout = () => reject(new Error('timeout'));
+      xhr.send(JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        system: '你是吠陀占星資料整理員。請把星盤數據濃縮成一段極精簡的摘要，只列出九曜的落點星座與宮位，以及最明顯的一到兩個特徵（廟旺弱陷或緊密相位）。全部繁體中文，不要解釋、不要形容詞、不要換行以外的格式，控制在 120 字以內。',
+        messages: [{ role: 'user', content: '真實吠陀星盤數據：\n' + chartStr + '\n\n請輸出精簡摘要。' }]
+      }));
+    });
+    const summary = extractText(result).trim();
+    if (!summary) return;
+
+    await fetch('/api/check-purchases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, action: 'save_natal', summary, sig: _birthSig() })
+    });
+    localStorage.setItem('lumis_natal_done:' + email + ':' + _birthSig(), '1');
+  } catch (e) { /* best-effort — never blocks the reading */ }
+}
+
+// Make sure this person has a natal summary saved, from any available source.
+// Safe to call often: ensureNatalSummary() no-ops once it has run for this birth data.
+async function ensureNatalSummaryAnySource() {
+  try {
+    const email = lumisUser?.email;
+    if (!email) return;
+    if (!window.lumisUserDob || !window.lumisUserPlace) return;
+    if (localStorage.getItem('lumis_natal_done:' + email + ':' + _birthSig())) return;
+
+    let chartStr = loadChartCache();
+    if (!chartStr) {
+      try {
+        const vedicChart = await getVedAstroChart(window.lumisUserDob, window.lumisUserTime, window.lumisUserPlace);
+        const payload = vedicChart.Payload || vedicChart;
+        const payloadStr = JSON.stringify(payload);
+        if (!payloadStr.includes('Incorrect') && !payloadStr.includes('Error') && !payloadStr.includes('error')) {
+          chartStr = payloadStr.substring(0, 12000);
+          saveChartCache(chartStr);
+        }
+      } catch (e) { return; }
+    }
+    if (chartStr) await ensureNatalSummary(chartStr);
+  } catch (e) { /* best-effort, never blocks anything */ }
 }
 
 async function ensureChapterGenerated(index) {
@@ -5298,31 +5259,48 @@ function extractText(r) {
 
 const LUMIS_PROMPT = `你是 LUMIS 最頂尖的星辰解讀師。現在是 2026 年。
 
-你會收到這個人「真實的印度吠陀星盤計算數據」。LUMIS 的核心，就是把這份真實的星盤，翻譯成溫暖、簡單、像朋友說話的人生洞察。請務必根據星盤裡的真實資訊寫作（行星落點、相位、強弱），讓內容對「這一個人」獨一無二，絕對不要寫成適用於每個人的通用文字。
+你會收到這個人「真實的印度吠陀星盤計算數據」（恆星黃道／Lahiri）。LUMIS 的核心，是把這份真實星盤翻譯成溫暖、簡單、像朋友說話的人生洞察 — 而且要讓讀者清楚看見：這是從「他的」星盤算出來的，不是每個人都適用的通用文字。
 
-寫作規則（絕對遵守）：
+【語言】
 - 全部使用繁體中文，絕對不要出現任何英文字。
-- 結構：先一段簡短開頭（2 到 3 句，點出這一章的核心），接著 3 到 4 個犀利具體的洞察，最後一段簡短收尾（2 到 3 句，給希望與力量）。
-- 每個洞察都要根據星盤的真實特徵，一針見血、非常具體，讓人讀完忍不住說「天啊這就是我」。
-- 完全不提任何占星術語（不要出現星座、宮位、行星名稱、相位、四柱、希臘字、梵文等）。把星盤的能量直接翻譯成生活化的人話。
+- 標點一律使用台灣全形：句子之間用「，」，並列用「、」，句尾用「。」。不要使用半形逗號或句號。
+
+【結構】
+1. 開頭 2 到 3 句：先用一句話說明這一章的星體在人生中主管什麼（讓讀者學到東西），再點出這個人在這一章的核心主題。
+2. 中間 3 到 4 個洞察，每一個都必須根據星盤裡的真實資訊：落點星座、宮位、度數、廟旺弱陷、相位、星座主星。
+3. 收尾 2 到 3 句：給希望與方向。
+
+【最重要 — 讓星盤看得見】
+- 至少 2 個洞察要明確講出真實落點，例如「你的太陽落在摩羯座、第一宮」，接著立刻用生活化的白話解釋那代表什麼。先講星象，再講它在他身上怎麼運作。
+- 不要只丟術語不解釋，也不要完全不提星象。每次提到星象，都要在同一段話裡翻譯成人話。
+- 至少 1 個洞察要把這一章的星體和星盤裡「另一顆」星連起來，例如「你的月亮在處女，讓你太陽那份野心多了一層自我檢查」。這是 LUMIS 和其他占星網站最大的不同 — 別人只會一顆一顆分開講，你要把它們織成同一個人。
+
+【誠實 — 不要怕講重話】
+- 其中至少 2 個洞察，要直接說出真正的難處、盲點或代價。可以尖銳、可以讓人愣一下，只要是真的。
+- 不要為了讓人舒服而把話講軟。「你太害怕被討厭，所以常常先讓步」比「你可能有點在意別人的看法」有價值一百倍。
+- 說出他可能一直在迴避的模式：他重複犯的錯、他慣用的藉口、他當成優點但其實是在自保的地方。
+- 不要用「或許」「可能」「有時候」「某種程度上」把每句話都稀釋掉。該肯定的地方就肯定地講。
+- 界線是：可以尖銳，不可以刻薄。目的是讓他看見自己，不是讓他難堪。真正懂一個人的朋友，會說出他不一定想聽、但需要聽的那句話。
+- 不要每一句都是安慰。安慰留給收尾，而且收尾的力量必須來自前面說過的真話，不是空泛的加油。
+
+【其他】
 - 用「過去」「最近幾年」「未來某個階段」這類方式描述時間，不要寫具體年份。
-- 語言要溫柔——不說「你很冷漠」，而說「你可能在不熟的人面前給人一點距離感」。
 - 像一個認識這個人十年、真正懂他的朋友在說話，不是高高在上的算命師。
-- 不要陳腔濫調、不要空話、不要每一章都用類似的句型或結尾。每一章的角度與語氣都要不一樣。
-- 標點符號一律使用台灣全形標點：句子之間用全形逗號「，」，並列時用頓號「、」，句尾用全形句號「。」。不要使用半形的逗號或句號。
+- 不要陳腔濫調、不要空話、不要心靈雞湯。每一章的角度、切入點與語氣都要不一樣。
+- 自我檢查：如果一句話換成任何人身上都成立，就刪掉重寫，直到它只適用於這張星盤。
+- 不要在結尾加「你已讀完所有篇章」或任何章節總結。不要提到章節數量。
 
-格式範例：
-「簡短開頭，點出本章主題（2 到 3 句）
+【格式範例】
+「開頭 2 到 3 句，說明這個星體主管什麼、點出本章主題
 
-- 根據星盤的犀利洞察一
-- 根據星盤的犀利洞察二
-- 根據星盤的犀利洞察三
+- 明確講出落點的犀利洞察一
+- 明確講出落點的犀利洞察二
+- 與另一顆星連結的洞察三
+- 溫柔而誠實的難處洞察四
 
-溫暖有力的收尾，給希望與方向（2 到 3 句）」
+溫暖有力的收尾（2 到 3 句）」
 
-只回傳純 JSON，不要任何 markdown 標記或程式碼框。
-- 不要在結尾加「你已讀完所有篇章」或任何章節總結。
-- 不要提到章節數量（不要說「九章」「全部篇章」等）。`;
+只回傳純 JSON，不要任何 markdown 標記或程式碼框。JSON 必須同時包含 placement 與 content 兩個欄位。placement 是這一章星體的真實落點，格式為「太陽 · 摩羯座 25°39' · 第一宮」（星體 · 星座 度數 · 宮位），全部繁體中文；若星盤資料裡沒有宮位，就只寫星體、星座與度數。`;
 
 const LOADING_MSGS = ['星辰正在為你排列...','讀取你的星辰圖案...','宇宙正在書寫你的故事...','你的光正在顯現...','篇章即將揭示...'];
 
@@ -5413,8 +5391,20 @@ function showChapter(index) {
     content.innerHTML = '<div class="reading-loading-pulse"></div>';
     document.getElementById('display-positive-note').style.display = 'none';
     document.getElementById('next-ch-preview').style.display = 'none';
+    const pv0 = document.getElementById('display-ch-placement');
+    if (pv0) pv0.style.display = 'none';
     ensureChapterGenerated(index);
     return;
+  }
+
+  // Show the REAL chart placement this reading was calculated from.
+  // Older cached readings have no placement field — hide the block rather than show an empty one.
+  const placeWrap = document.getElementById('display-ch-placement');
+  const placeLine = document.getElementById('display-ch-placement-line');
+  if (placeWrap && placeLine) {
+    const pl = (data[key].placement || '').trim();
+    if (pl) { placeLine.textContent = pl; placeWrap.style.display = 'block'; }
+    else { placeWrap.style.display = 'none'; }
   }
 
   // Update content with fade - paragraphs + bullet points
@@ -5531,7 +5521,7 @@ async function regenerateCurrentChapter() {
         model: 'claude-sonnet-4-6',
         max_tokens: 1500,
         system: LUMIS_PROMPT,
-        messages: [{ role: 'user', content: `${userDetails}\n\n${_chartContext()}\n\n請重新生成第${meta.num}章「${meta.title}」，給出不同角度的深刻解讀。\n重點：${meta.focus}\n只回傳純JSON：{"${meta.key}":{"title":"${meta.title}","content":"深刻內容"}}` }]
+        messages: [{ role: 'user', content: `${userDetails}\n\n${_chartContext()}\n\n請重新生成第${meta.num}章「${meta.title}」，給出不同角度的深刻解讀。\n這一章的星體是「${meta.planet}」，它主管：${meta.governs}。\n重點：${meta.focus}\n請從星盤中找出${meta.planet}的真實落點，寫進 placement，並在內容裡明確提到它。\n只回傳純JSON：{"${meta.key}":{"title":"${meta.title}","placement":"${meta.planet} · 星座 度數 · 第X宮","content":"深刻內容"}}` }]
       }));
     });
     const text = extractText(result).replace(/```json|```/g,'').trim();
@@ -5950,6 +5940,7 @@ async function submitForm() {
       clearInterval(loadingInterval);
       showScreen('screen-reading');
       setTimeout(() => displayReadings(cached), 50);
+      ensureNatalSummaryAnySource(); // cached readers still need a summary for the daily
       return;
     }
 
@@ -5967,7 +5958,7 @@ async function submitForm() {
         }
       } catch(vedaErr) { /* VedAstro failed — continue without chart data */ }
     }
-    if (chartStr) window._lumisRawChart = chartStr;
+    if (chartStr) { window._lumisRawChart = chartStr; ensureNatalSummary(chartStr); }
 
     // STEP 2: generate ONLY the chapter the user opened — one API call, nothing in the background
     document.getElementById('loading-text').textContent = `正在解讀第${['一','二','三','四','五','六','七','八','九'][targetIdx]}章...`;
