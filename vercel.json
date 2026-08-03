@@ -1,9 +1,19 @@
 {
-  "rewrites": [{ "source": "/", "destination": "/lumis.html" }],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/lumis.html"
+    }
+  ],
   "crons": [
     {
       "path": "/api/horoscope",
       "schedule": "0 22 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/horoscope.js": {
+      "maxDuration": 60
+    }
+  }
 }
